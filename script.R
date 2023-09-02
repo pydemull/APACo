@@ -1,237 +1,168 @@
 
-# -------------
-# Load packages ----
-# -------------
-library(tidyverse)
-library(skimr)
-library(psych)
-library(questionr)
-library(ggrain)
-library(TOSTER)
-library(effectsize)
-library(patchwork)
-library(ragg)
-
-# --------------------------
-# Set theme for the graphics ----
-theme_set(theme_bw())
-# --------------------------
-
 # -----------
 # Import data ----
 # -----------
-INCLUSION <- read_csv2("data/INCLUSION.csv")
-VISIT_6M <- read_csv2("data/VISIT_6M.csv")
-VISIT_12M <- read_csv2("data/VISIT_12M.csv")
-IPAQ <- read_csv2("data/IPAQ.csv")
-EMAPS <- read_csv2("data/EMAPS.csv")
-BARRIERS <- read_csv2("data/BARRIERS.csv")
+INCLUSION <- readr::read_csv2("data/INCLUSION.csv")
+VISIT_6M <- readr::read_csv2("data/VISIT_6M.csv")
+VISIT_12M <- readr::read_csv2("data/VISIT_12M.csv")
+IPAQ <- readr::read_csv2("data/IPAQ.csv")
+EMAPS <- readr::read_csv2("data/EMAPS.csv")
+BARRIERS <- readr::read_csv2("data/BARRIERS.csv")
+
 
 # -----------------------
 # Configure the dataset(s) ----
 # -----------------------
-INCLUSION_cleaned <- 
-  INCLUSION |> 
-  mutate(
-    across(c(angioplasty, bypass), as.factor),
+INCLUSION_cleaned <-
+  INCLUSION |>
+  dplyr::mutate(
+    dplyr::across(c(angioplasty, bypass), as.factor),
     BMI = weight / ((height/100)^2)
   )
 
-# -------------------------------------------------------------------------------------
-# Participants characteristics at the inclusion stage (anthropometry & surgery history) ----
-# -------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------
+# Describe participants characteristics at the inclusion stage ----
+# -------------------------------------------------------------
 
 # Get an overview of the variables
-INCLUSION_cleaned |> skim()
+INCLUSION_cleaned |> skimr::skim()
 
 # Analyse sex
-freq(INCLUSION_cleaned$sex, digits = 2)
+questionr::freq(INCLUSION_cleaned$sex, digits = 2)
 
 # Analyse height
+analyse_distribution(data = INCLUSION_cleaned, var = "height", id = "patient")
 
-   ## Raincloud plot
-   ggplot(data = INCLUSION_cleaned, aes(x = 0, y = height)) +
-     geom_rain(
-       alpha = 0.4, 
-       id.long.var = "patient",
-       point.args = rlang::list2(alpha = 0.4),
-       line.args = rlang::list2(alpha = 0.1),
-       line.args.pos = rlang::list2(position = position_jitter(width = .04, height = 0, seed = 42)),
-       point.args.pos = rlang::list2(position = position_jitter(width = .04, height = 0, seed = 42))
-     ) +
-     stat_summary(fun = "mean", geom = "point",  color = "red", size = 3) +
-     coord_flip()
+  ## => Comment: Height approximately follows a gaussian distribution.
 
-   ## Q-Q plot
-   ggplot(data = INCLUSION_cleaned, aes(sample = height)) + 
-     stat_qq() + 
-     stat_qq_line()
-   
-   ## Comment: Height approximately follows a gaussian distribution.
-   
 # Analyse weight
-   
-   ## Raincloud plot
-   ggplot(data = INCLUSION_cleaned, aes(x = 0, y = weight)) +
-     geom_rain(
-       alpha = 0.4, 
-       id.long.var = "patient",
-       point.args = rlang::list2(alpha = 0.4),
-       line.args = rlang::list2(alpha = 0.1),
-       line.args.pos = rlang::list2(position = position_jitter(width = .04, height = 0, seed = 42)),
-       point.args.pos = rlang::list2(position = position_jitter(width = .04, height = 0, seed = 42))
-     ) +
-     stat_summary(fun = "mean", geom = "point",  color = "red", size = 3) +
-     coord_flip()
-   
-   ## Q-Q plot
-   ggplot(data = INCLUSION_cleaned, aes(sample = weight)) + 
-     stat_qq() + 
-     stat_qq_line()
-   
-   ## Comment: Weight approximately follows a gaussian distribution.
-   
-# Analyse BMI
-   
-   ## Raincloud plot
-   ggplot(data = INCLUSION_cleaned, aes(x = 0, y = BMI)) +
-     geom_rain(
-       alpha = 0.4, 
-       id.long.var = "patient",
-       point.args = rlang::list2(alpha = 0.4),
-       line.args = rlang::list2(alpha = 0.1),
-       line.args.pos = rlang::list2(position = position_jitter(width = .04, height = 0, seed = 42)),
-       point.args.pos = rlang::list2(position = position_jitter(width = .04, height = 0, seed = 42))
-     ) +
-     stat_summary(fun = "mean", geom = "point",  color = "red", size = 3) +
-     coord_flip()
+analyse_distribution(data = INCLUSION_cleaned, var = "weight", id = "patient")
 
-   ## Q-Q plot
-   ggplot(data = INCLUSION_cleaned, aes(sample = BMI)) + 
-     stat_qq() + 
-     stat_qq_line()
-   
-   ## Comment: BMI approximately follows a gaussian distribution.
+  ## => Comment: Weight approximately follows a gaussian distribution.
+
+# Analyse BMI
+analyse_distribution(data = INCLUSION_cleaned, var = "BMI", id = "patient")
+
+  ## => Comment: BMI approximately follows a gaussian distribution.
 
 # Analyse % Angioplasty
-freq(INCLUSION_cleaned$angioplasty, digits = 2)
+questionr::freq(INCLUSION_cleaned$angioplasty, digits = 2)
 
 # Analyse % Bypass
-freq(INCLUSION_cleaned$bypass, digits = 2)
+questionr::freq(INCLUSION_cleaned$bypass, digits = 2)
 
 
-# ----------------------------------------------------------
-# Analysis of the change in six-minute walking test distance ----
-# ----------------------------------------------------------
+# ------------------------------------------------------
+# Analyse the change in six-minute walking test distance ----
+# ------------------------------------------------------
 
 # Combine the datasets and recode the variables
-DB_6MWT <- 
-  INCLUSION_cleaned |> 
-  left_join(VISIT_6M, by = "patient") |> 
-  left_join(VISIT_12M, by = "patient") |> 
-  select(patient, DIST_6WT_M0, DIST_6WT_M6, DIST_6WT_M12) |> 
-  rename(
+DB_6MWT <-
+  INCLUSION_cleaned |>
+  dplyr::left_join(VISIT_6M, by = "patient") |>
+  dplyr::left_join(VISIT_12M, by = "patient") |>
+  dplyr::select(patient, DIST_6WT_M0, DIST_6WT_M6, DIST_6WT_M12) |>
+  dplyr::rename(
     MONTH_0 = DIST_6WT_M0,
     MONTH_6 = DIST_6WT_M6,
     MONTH_12 = DIST_6WT_M12
-  ) |> 
-  pivot_longer(cols = c(MONTH_0, MONTH_6, MONTH_12), names_to = "MONTH", values_to = "DIST_M") |> 
-  mutate(
-    MONTH = fct_relevel(MONTH, "MONTH_0", "MONTH_6", "MONTH_12"),
-    MONTH = fct_recode(MONTH, "0" = "MONTH_0", "6" = "MONTH_6", "12" = "MONTH_12")
+  ) |>
+  tidyr::pivot_longer(cols = c(MONTH_0, MONTH_6, MONTH_12), names_to = "MONTH", values_to = "DIST_M") |>
+  dplyr::mutate(
+    MONTH = forcats::fct_relevel(MONTH, "MONTH_0", "MONTH_6", "MONTH_12"),
+    MONTH = forcats::fct_recode(MONTH, "0" = "MONTH_0", "6" = "MONTH_6", "12" = "MONTH_12")
     )
 
-# Make a figure with all the participants and measurements
+# Visualize all the participants at the three times of measurement
 
-  ## Set colors
-  raindclould_color_6MWT <- "#0089C6"
-  stat_color <- "black"
-  
   ## Make the plot
   p_6MWT_all <-
-    ggplot(DB_6MWT, aes(x = MONTH, y = DIST_M)) +
-    geom_rain(
-      fill = raindclould_color_6MWT,
-      id.long.var = "patient",
-      point.args = rlang::list2(alpha = 0.3, color = raindclould_color_6MWT, size = 4),
-      line.args = rlang::list2(alpha = 0.2, color = raindclould_color_6MWT, size = 1),
-      line.args.pos = rlang::list2(position = position_jitter(width = .04, height = 0, seed = 42)),
-      point.args.pos = rlang::list2(position = position_jitter(width = .04, height = 0, seed = 42))
-    ) +
-    stat_summary(aes(group = 1), fun = "mean", geom = "line", size = 1, color = stat_color) +
-    stat_summary(aes(group = MONTH), fun = "mean", geom = "point", size = 3, color = stat_color) +
-    stat_summary( aes(group = MONTH), fun.data = "mean_sdl", geom = "errorbar", fun.args = list(mult = 1), width = 0.05, linewidth = 0.7, color = stat_color) +
-    labs(
-      x = "Months post-program",
-      y = "6-min walking test distance (m)"
-    ) +
-    theme(
-      legend.position = "none",
-      axis.title = element_text(size = 15),
-      axis.text = element_text(size = 15)
-      ) 
-  
+    view_rainclouds(
+     data = DB_6MWT,
+     id = "patient",
+     x = "MONTH",
+     y = "DIST_M",
+     color_fill = "#0089C6",
+     color_stat = "black",
+     labs_1x = "Months post-program",
+     labs_1y = "6-min walking test distance (m)"
+     )
+
   ## View the plot
   p_6MWT_all
-  
+
   ## Export the plot
-  agg_tiff("out/p_6MWT_all.tiff", scaling = 0.5, height = 10, width = 10, unit = "cm", res = 400)
+  ragg::agg_tiff("out/p_6MWT_all.tiff", scaling = 0.5, height = 10, width = 10, unit = "cm", res = 400)
   p_6MWT_all
   dev.off()
 
-# Keep the rows for months 0 and 12, and keep the participants with data at both 0 and 12 months
-DB_6MWT_0_12 <-
-  DB_6MWT |>  
-  filter(MONTH != "6") |> 
-  drop_na() |> 
-  group_by(patient) |> 
-  nest() |> 
-  mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-  filter(n_visits == 2) |> 
-  ungroup() |> 
-  unnest(data)
 
-# Make a figure with the participants having data at both 0 and 12 months
+# Analyse the change between 0 and 12 months
 
-  ## Set colors
-  raindclould_color_6MWT <- "#0089C6"
-  stat_color <- "black"
-  
-  ## Make the plot
-  p_6MWT_0_12 <-
-    ggplot(DB_6MWT_0_12, aes(x = MONTH, y = DIST_M)) +
-    geom_rain(
-      rain.side = 'f1x1',
-      fill = raindclould_color_6MWT,
-      id.long.var = "patient",
-      point.args = rlang::list2(alpha = 0.3, color = raindclould_color_6MWT, size = 4),
-      line.args = rlang::list2(alpha = 0.2, color = raindclould_color_6MWT, size = 1),
-      line.args.pos = rlang::list2(position = position_jitter(width = .04, height = 0, seed = 42)),
-      point.args.pos = rlang::list2(position = position_jitter(width = .04, height = 0, seed = 42))
-    ) +
-    stat_summary(aes(group = 1), fun = "mean", geom = "line", size = 1, color = stat_color) +
-    stat_summary(aes(group = MONTH), fun = "mean", geom = "point", size = 3, color = stat_color) +
-    stat_summary(aes(group = MONTH), fun.data = "mean_sdl", geom = "errorbar", fun.args = list(mult = 1), width = 0.05, linewidth = 0.7, color = stat_color) +
-    stat_summary(fun.data = function(x){m <- quantile(x,.1)[[1]]; c(y = m, ymin = m, ymax = m)}, geom = "errorbar", linewidth = 1, width = 0.05, color = "red") +
-    stat_summary(aes(x = ifelse(MONTH == "12", 1.98, 1.02),group = 1), 
-                 fun.data = function(x){m <- quantile(x,.1)[[1]]; c(y = m, ymin = m, ymax = m)}, 
-                 geom = "line", linewidth = 1, width = 0.05, color = "red", position = position_dodge2(0.05)) +
-    labs(
-      title = "Data at each time of measurement",
-      x = "Months post-program",
-      y = "6-min walking test distance (m)"
-    ) +
-    theme(legend.position = "none")
-  
-  ## View the plot
-  p_6MWT_0_12
-  
+  ## Keep the rows for months 0 and 12, and keep the participants with data at both 0 and 12 months
+  DB_6MWT_0_12 <-
+    DB_6MWT |>
+    dplyr::filter(MONTH != "6") |>
+    dplyr::mutate(MONTH = factor(MONTH, levels = c("0", "12"))) |>
+    tidyr::drop_na() |>
+    dplyr::group_by(patient) |>
+    tidyr::nest() |>
+    dplyr::mutate(n_visits = purrr::map_dbl(data, ~nrow(.x))) |>
+    dplyr::filter(n_visits == 2) |>
+    dplyr::ungroup() |>
+    tidyr::unnest(data) |>
+    dplyr::mutate(MONTH = factor(MONTH, levels = c("0", "12")))
+
+  ## Visualize the changes
+  analyse_change(
+    data = DB_6MWT_0_12,
+    id = "patient",
+    x = "MONTH",
+    y = "DIST_M",
+    rain_side = "f1x1",
+    nudge_y = 3,
+    color_fill = "#0089C6",
+    color_stat = "black",
+    labs_1x = "Months post-program",
+    labs_1y = "6-min walking test distance (m)",
+    labs_2x = "",
+    labs_2y = "Month 12 - Month 0 (m)",
+    labs_3x = "Month 0 (m)",
+    labs_3y = "Month 12 (m)",
+    labs_4x = NULL,
+    labs_4y = NULL,
+    labs_5x = "Quantiles of 6-min walking test distance (m) at Month 0",
+    labs_5y = "Quantile Month 12 - Quantile Month 0 (m)",
+    labs_6x = NULL,
+    labs_6y = NULL
+  )
+
+
+  ## Visualize pairwise changes using a raincloud plot
+
+  ## Visualize correlation between measurements
+
+  ## Visualize beeswarm
+
+  ## Visualize shift functions
+
+  ## Visualize asymetry
+
+
+
+
+
+
+
+
+
 # Explore normality for difference between 6MWT distances at 0 and 12 months using a qqplot
-ggplot(data = DB_6MWT_0_12 |> 
+ggplot(data = DB_6MWT_0_12 |>
          pivot_wider(names_from = MONTH, values_from = DIST_M) |>
          mutate(diff = `12` - `0`),
-       aes(sample = diff)) + 
-  stat_qq() + 
+       aes(sample = diff)) +
+  stat_qq() +
   stat_qq_line()
 
   ## Comment: Pairwise differences in 6MWT distance approximately follows a gaussian distribution,
@@ -241,12 +172,12 @@ ggplot(data = DB_6MWT_0_12 |>
 
   ## Get the mean of the 6MWT at Month 0
   mean_6MWT_0 <- mean(DB_6MWT_0_12 |> filter(MONTH == "0") |>  pull(DIST_M))
-  
+
   ## Define a function to perform TOSTs for several equivalence bounds
   do_tost_6MWT <- function(perc){
-   
+
     equiv_bound <- mean_6MWT_0 * perc / 100
-    
+
     res_tost_6MWT <-
       t_TOST(
       formula = DIST_M ~ MONTH,
@@ -262,8 +193,8 @@ ggplot(data = DB_6MWT_0_12 |>
       smd_ci = c("nct"),
       mu = 0
       )
-    
-    tab <- 
+
+    tab <-
       data.frame(
         lower_ci = res_tost_6MWT$effsize$lower.ci[1],
         estimate = res_tost_6MWT$effsize$estimate[1],
@@ -272,27 +203,27 @@ ggplot(data = DB_6MWT_0_12 |>
         high_eq = res_tost_6MWT$eqb$high_eq[1],
         decision_tost = res_tost_6MWT$decision$TOST[1],
         decision_ttest = res_tost_6MWT$decision$ttest[1]
-      ) |> 
+      ) |>
       mutate(perc = perc)
-    
+
     return(tab)
-  
+
   }
 
   ## Get and combine the results of the TOSTs
-  res_all_tost_6MWT <- 
-    map(c(1, 5, 10, 15, 20), do_tost_6MWT) |> 
-    bind_rows() |> 
+  res_all_tost_6MWT <-
+    map(c(1, 5, 10, 15, 20), do_tost_6MWT) |>
+    bind_rows() |>
     mutate(equiv_zone = paste0("±", perc, "%"))
 
 # Make the figure for the TOSTs
-  
+
   # Set color palette
   colfunc_6MWT <- colorRampPalette(c("#F2F9FC", "#0089C6"))
-  
+
   # Make the plot
   p_6MWT_0_12_tost <-
-  ggplot(data = DB_6MWT_0_12 |> 
+  ggplot(data = DB_6MWT_0_12 |>
            pivot_wider(names_from = MONTH, values_from = DIST_M) |>
            mutate(diff = `12` - `0`),
          aes(x = "", y = diff)
@@ -332,20 +263,20 @@ ggplot(data = DB_6MWT_0_12 |>
     size = 7
   ) +
   annotate(
-    geom = "curve", 
-    x = 0.79, 
-    y = 17, 
-    xend = 0.87, 
-    yend = res_all_tost_6MWT[1, 2]+2, 
+    geom = "curve",
+    x = 0.79,
+    y = 17,
+    xend = 0.87,
+    yend = res_all_tost_6MWT[1, 2]+2,
     curvature = -.4, arrow = arrow(length = unit(2, "mm"))
   )
 
   # View the plot
-  p_6MWT_0_12_tost  
-  
+  p_6MWT_0_12_tost
+
 
 # Make the figure for the correlation bewteen 0 and 12 months
-  
+
   # Make the plot
   p_6MWT_0_12_cor <-
     ggplot(data = DB_6MWT_0_12 |> pivot_wider(names_from = MONTH, values_from = DIST_M),
@@ -357,12 +288,12 @@ ggplot(data = DB_6MWT_0_12 |>
     x = "Month 0 (m)",
     y = "\nMonth 12 (m)"
     )
-  
+
   # View the plot
   p_6MWT_0_12_cor
 
 # Make the final figure
-p_6MWT_final <- (p_6MWT_0_12 | p_6MWT_0_12_tost | p_6MWT_0_12_cor) + 
+p_6MWT_final <- (p_6MWT_0_12 | p_6MWT_0_12_tost | p_6MWT_0_12_cor) +
   plot_annotation(tag_levels = 'A') +
   plot_layout(widths = c(2, 2, 2)) & theme(
     plot.title = element_text(size = 25),
@@ -383,7 +314,7 @@ dev.off()
 # -----------------------------------------------------------
 
 # Create and recode the variables of interest
-DB_IPAQ <- 
+DB_IPAQ <-
      IPAQ |>
      mutate(
        total_hours_heavy = ifelse(is.na(total_hours_heavy) | total_hours_heavy == 999, 0, total_hours_heavy),
@@ -391,13 +322,13 @@ DB_IPAQ <-
        total_hours_moderate = ifelse(is.na(total_hours_moderate) | total_hours_moderate == 999, 0, total_hours_moderate),
        total_minutes_moderate = ifelse(is.na(total_minutes_moderate) | total_minutes_moderate == 999, 0, total_minutes_moderate),
        bouts_walk_7days = ifelse(is.na(bouts_walk_7days) | bouts_walk_7days == 9999, 0, bouts_walk_7days),
-       
+
        MINUTES_VPA_WK = total_hours_heavy * 60 + total_minutes_heavy,
        MINUTES_MPA_WK = total_hours_moderate * 60 + total_minutes_moderate,
        MINUTES_WALK_WK = bouts_walk_7days * 10,
        MINUTES_TOT_WK = MINUTES_VPA_WK + MINUTES_MPA_WK + MINUTES_WALK_WK,
        MET_MIN_WK = MINUTES_VPA_WK * 8 + MINUTES_MPA_WK * 4 + MINUTES_WALK_WK * 3.3,
-       
+
        MONTH = as.factor(num_visit),
        MONTH = fct_recode(MONTH, "0" = "1", "6" = "2", "12" = "3")
      )
@@ -430,27 +361,27 @@ DB_IPAQ <-
      legend.position = "none",
      axis.title = element_text(size = 15),
      axis.text = element_text(size = 15)
-     ) 
-  
+     )
+
   ## View the plot
   p_IPAQ_all
-  
+
   ## Export the plot
   agg_tiff("out/p_IPAQ_all.tiff", scaling = 0.5, height = 10, width = 10, unit = "cm", res = 400)
   p_IPAQ_all
   dev.off()
-   
+
 # Keep the rows for months 6 and 12, and keep the participants with data at both 6 and 12 months
 DB_IPAQ_6_12 <-
-  DB_IPAQ |>  
-  filter(MONTH != "0") |> 
-  select(patient, MONTH, MET_MIN_WK) |> 
-  drop_na() |> 
-  group_by(patient) |> 
-  nest() |> 
-  mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-  filter(n_visits == 2) |> 
-  ungroup() |> 
+  DB_IPAQ |>
+  filter(MONTH != "0") |>
+  select(patient, MONTH, MET_MIN_WK) |>
+  drop_na() |>
+  group_by(patient) |>
+  nest() |>
+  mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+  filter(n_visits == 2) |>
+  ungroup() |>
   unnest(data)
 
 # Make a figure with the participants having data at both 6 and 12 months
@@ -480,38 +411,38 @@ DB_IPAQ_6_12 <-
     ) +
     coord_cartesian(ylim = c(0, 25000)) +
     theme(legend.position = "none")
-  
+
   ## View the plot
   p_IPAQ_6_12
 
-   
+
 # Explore normality for the IPAQ MET-min/week at 6 and 12 months using qqplots
-  ggplot(data = DB_IPAQ_6_12, aes(sample = MET_MIN_WK)) + 
-    stat_qq() + 
+  ggplot(data = DB_IPAQ_6_12, aes(sample = MET_MIN_WK)) +
+    stat_qq() +
     stat_qq_line() +
     facet_wrap(~ MONTH)
-  
+
   ## Comment: The variable MET-min/week does not follow a gaussian distribution.
-  
+
 # Perform TOSTs
-  
+
   ## Get the median of the IPAQ at Month 6
   median_IPAQ_6 <- median(DB_IPAQ_6_12 |> filter(MONTH == "6") |>  pull(MET_MIN_WK))
-  
+
   ## Define a function to perform TOSTs for several equivalence bounds
   do_tost_IPAQ <- function(perc){
-    
+
     equiv_bound <- median_IPAQ_6 * perc / 100
-    
+
     res_tost_IPAQ <-
       simple_htest(data = DB_IPAQ_6_12,
                    MET_MIN_WK ~ MONTH,
-                   mu = .1, 
-                   alternative = "equ", 
-                   test = "brunner", 
+                   mu = .1,
+                   alternative = "equ",
+                   test = "brunner",
                    perm = TRUE)
-    
-    tab <- 
+
+    tab <-
       data.frame(
         lower_ci = res_tost_IPAQ$effsize$lower.ci[1],
         estimate = res_tost_IPAQ$effsize$estimate[1],
@@ -520,27 +451,27 @@ DB_IPAQ_6_12 <-
         high_eq = res_tost_IPAQ$eqb[2],
         decision_tost = res_tost_IPAQ$decision$TOST[1],
         decision_test = res_tost_IPAQ$decision$test[1]
-      ) |> 
+      ) |>
       mutate(perc = perc)
-    
+
     return(tab)
-    
+
   }
-  
+
   ## Get and combine the results of the TOSTs
-  res_all_tost_IPAQ <- 
-    map(c(1, 5, 10, 15, 20), do_tost_IPAQ) |> 
-    bind_rows() |> 
-    mutate(equiv_zone = paste0("±", perc, "%"))  
-  
-  
+  res_all_tost_IPAQ <-
+    map(c(1, 5, 10, 15, 20), do_tost_IPAQ) |>
+    bind_rows() |>
+    mutate(equiv_zone = paste0("±", perc, "%"))
+
+
 # Make the figure for the TOSTs
-  
+
   # Set color palette
   colfunc_IPAQ <- colorRampPalette(c("#F3F8CC", "#91A117"))
-  
+
   p_IPAQ_6_12_tost <-
-    ggplot(data = DB_IPAQ_6_12 |> 
+    ggplot(data = DB_IPAQ_6_12 |>
              pivot_wider(names_from = MONTH, values_from = MET_MIN_WK ) |>
              mutate(diff = `12` - `6`),
            aes(x = "", y = diff)
@@ -569,7 +500,7 @@ DB_IPAQ_6_12 <-
       panel.grid.minor = element_blank(),
       legend.position = c(0.2, 0.83),
       legend.background = element_rect(color = "black", fill = "white")
-    ) 
+    )
    #annotate(
    #  geom = "text",
    #  x = 1.05,
@@ -580,20 +511,20 @@ DB_IPAQ_6_12 <-
    #  size = 7
    #) +
    #annotate(
-   #  geom = "curve", 
+   #  geom = "curve",
    #  x = 1.15,
-   #  y = -135, 
-   #  xend = 1.03, 
-   #  yend = res_all_tost_IPAQ[1, 2]-5, 
+   #  y = -135,
+   #  xend = 1.03,
+   #  yend = res_all_tost_IPAQ[1, 2]-5,
    #  curvature = .35, arrow = arrow(length = unit(2, "mm"))
    #)
-  
+
   # View the fgure
-  p_IPAQ_6_12_tost  
-  
-  
+  p_IPAQ_6_12_tost
+
+
 # Make the figure for the correlation bewteen 0 and 12 months
-  
+
   # Make the plot
   p_IPAQ_6_12_cor <-
     ggplot(data = DB_IPAQ_6_12 |> pivot_wider(names_from = MONTH, values_from = MET_MIN_WK),
@@ -605,13 +536,13 @@ DB_IPAQ_6_12 <-
       x = "Month 0 (m)",
       y = "\nMonth 12 (m)"
     )
-  
+
   # View the plot
   p_IPAQ_6_12_cor
-  
-  
+
+
 # Make the final figure
-p_IPAQ_6_12_final <- (p_IPAQ_6_12 | p_IPAQ_6_12_tost) + 
+p_IPAQ_6_12_final <- (p_IPAQ_6_12 | p_IPAQ_6_12_tost) +
   plot_layout(widths = c(2, 2)) & theme(
     plot.title = element_text(size = 25),
     axis.title = element_text(size = 20),
@@ -624,8 +555,8 @@ p_IPAQ_6_12_final <- (p_IPAQ_6_12 | p_IPAQ_6_12_tost) +
 agg_tiff("out/p_IPAQ.tiff", scaling = 0.3, height = 5, width = 10, unit = "cm", res = 400)
 p_IPAQ_6_12_final
 dev.off()
-  
-  
+
+
 # --------------------------------------
 # Analysis of the change in EMAPS scores ----
 # --------------------------------------
@@ -635,16 +566,16 @@ dev.off()
 
 # Compute summary scores and recode variables
 DB_EMAPS <-
-  EMAPS |> 
-  rename(MONTH = num_visit) |> 
+  EMAPS |>
+  rename(MONTH = num_visit) |>
   mutate(MONTH = fct_recode(
-    as.factor(MONTH), 
-    "0" = "1", 
-    "6" = "2", 
+    as.factor(MONTH),
+    "0" = "1",
+    "6" = "2",
     "12" = "3"
     )
-    ) |> 
-  group_by(MONTH) |> 
+    ) |>
+  group_by(MONTH) |>
   mutate(
     "Intrinsic motivation"    = (AP_q1  %+% AP_q6  %+%  AP_q11) / 3,
     "Integrated regulation"   = (AP_q7  %+% AP_q10 %+%  AP_q13) / 3,
@@ -652,9 +583,9 @@ DB_EMAPS <-
     "Introjected regulation"  = (AP_q3  %+% AP_14  %+%  AP_q18) / 3,
     "External regulation"     = (AP_q9  %+% AP_q15 %+%  AP_q17) / 3,
     "Amotivation"             = (AP_q2  %+% AP_q5  %+%  AP_q8)  / 3
-  ) |> 
+  ) |>
   select(patient, MONTH, "Intrinsic motivation":"Amotivation")
-    
+
 # Set norms of the EMAPS (not used in manuscript results)
 norm_emaps <-
   tribble(
@@ -665,31 +596,31 @@ norm_emaps <-
     "Introjected regulation",     3.4,      4.83,      6.2,
     "External regulation",          1,      1.91,      3.3,
     "Amotivation",                  1,      1.76,      2.9
-    
-  ) |> 
-  mutate(type_motiv = fct_relevel(type_motiv, 
-                                  "Intrinsic motivation",           
-                                  "Integrated regulation",   
-                                  "Identified regulation", 
+
+  ) |>
+  mutate(type_motiv = fct_relevel(type_motiv,
+                                  "Intrinsic motivation",
+                                  "Integrated regulation",
+                                  "Identified regulation",
                                   "Introjected regulation",
-                                  "External regulation",    
-                                  "Amotivation"         
+                                  "External regulation",
+                                  "Amotivation"
                                   ))
 
 # Make a figure with all the participants and measurements
 
   ## Make the plot
   p_emaps_all <-
-    DB_EMAPS |> 
-    pivot_longer(cols= -c(patient, MONTH), names_to = "type_motiv", values_to = "val") |> 
+    DB_EMAPS |>
+    pivot_longer(cols= -c(patient, MONTH), names_to = "type_motiv", values_to = "val") |>
     mutate(across(type_motiv, \(x) factor(x, levels=c(
-      "Intrinsic motivation",           
-      "Integrated regulation",   
-      "Identified regulation", 
+      "Intrinsic motivation",
+      "Integrated regulation",
+      "Identified regulation",
       "Introjected regulation",
-      "External regulation",    
-      "Amotivation"   
-      )))) |> 
+      "External regulation",
+      "Amotivation"
+      )))) |>
     ggplot(aes(x = MONTH, y = val, fill = type_motiv)) +
     geom_rain(
       id.long.var = "patient",
@@ -706,7 +637,7 @@ norm_emaps <-
     scale_fill_manual(values = c("#C3D69B", "#C3D69B", "#C3D69B", "#D9D9D9", "#FAC090", "#E46C0A")) +
     scale_color_manual(values = c("#C3D69B", "#C3D69B", "#C3D69B", "#D9D9D9", "#FAC090", "#E46C0A")) +
     labs(
-      x = "Months post-program", 
+      x = "Months post-program",
       y = "Score"
       ) +
     theme(
@@ -717,10 +648,10 @@ norm_emaps <-
       strip.text.x = element_text(size = 15)
       ) +
     facet_wrap(.~type_motiv)
-  
+
   ## View the plot
   p_emaps_all
-  
+
   ## Export the plot
   agg_tiff("out/p_emaps_all.tiff", scaling = 0.7, height = 15, width = 25, unit = "cm", res = 400)
   p_emaps_all
@@ -728,32 +659,32 @@ norm_emaps <-
 
 # Keep the rows for months 0 and 12, and keep the participants with data at both 0 and 12 months
 DB_EMAPS_0_12 <-
-  DB_EMAPS |>  
-  filter(MONTH != "6") |> 
-  drop_na() |> 
-  group_by(patient) |> 
-  nest() |> 
-  mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-  filter(n_visits == 2) |> 
-  ungroup() |> 
+  DB_EMAPS |>
+  filter(MONTH != "6") |>
+  drop_na() |>
+  group_by(patient) |>
+  nest() |>
+  mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+  filter(n_visits == 2) |>
+  ungroup() |>
   unnest(data)
-  
+
 # Make a figure with the participants having data at both 0 and 12 months
 
   ## Make the plot
   p_emaps_0_12 <-
-    DB_EMAPS_0_12 |> 
-    select(-n_visits) |> 
-    mutate(patient = as.factor(patient)) |> 
-    pivot_longer(cols= -c(patient, MONTH), names_to = "type_motiv", values_to = "val") |> 
+    DB_EMAPS_0_12 |>
+    select(-n_visits) |>
+    mutate(patient = as.factor(patient)) |>
+    pivot_longer(cols= -c(patient, MONTH), names_to = "type_motiv", values_to = "val") |>
     mutate(across(type_motiv, \(x) factor(x, levels=c(
-      "Intrinsic motivation",           
-      "Integrated regulation",   
-      "Identified regulation", 
+      "Intrinsic motivation",
+      "Integrated regulation",
+      "Identified regulation",
       "Introjected regulation",
-      "External regulation",    
-      "Amotivation"   
-    )))) |> 
+      "External regulation",
+      "Amotivation"
+    )))) |>
     ggplot(aes(x = MONTH, y = val, fill = type_motiv)) +
       geom_rain(
         rain.side = "f1x1",
@@ -773,7 +704,7 @@ DB_EMAPS_0_12 <-
       scale_color_manual(values = c("#C3D69B", "#C3D69B", "#C3D69B", "#D9D9D9", "#FAC090", "#E46C0A")) +
       labs(
         title = "A. Distributions of data",
-        x = "Months post-program", 
+        x = "Months post-program",
         y = "Score"
       ) +
       theme_bw() +
@@ -787,20 +718,20 @@ DB_EMAPS_0_12 <-
   ## Adjust the positions of the clouds in the plot
   p_emaps_0_12$layers[[2]]$position <- position_nudge(x = c(rep(c(-0.22, 0.22), each = 1024*3)))
   p_emaps_0_12$layers[[3]]$position <- position_nudge(x = c(-0.15, 0.15))
-  
+
   ## View the plot
   p_emaps_0_12
 
 # Perform the TOSTs - INTRINSIC motivation
-  
+
   ## Get the median of the EMAPS scores (INTRINSIC motivation) at Month 0
   median_EMAPS_0_INTRINSIC <- median(DB_EMAPS_0_12 |> filter(MONTH == "0") |>  pull(`Intrinsic motivation`))
-  
+
   ## Define a function to perform the TOSTs for several equivalence bounds
   do_tost_EMAPS_INTRINSIC <- function(perc){
-    
+
     equiv_bound <- median_EMAPS_0_INTRINSIC * perc / 100
-    
+
     res_tost_EMAPS_INTRINSIC <-
       wilcox_TOST(
         formula = `Intrinsic motivation` ~ MONTH,
@@ -813,8 +744,8 @@ DB_EMAPS_0_12 <-
         ses = "rb",
         mu = 0
       )
-    
-    tab <- 
+
+    tab <-
       data.frame(
         lower_ci = res_tost_EMAPS_INTRINSIC$effsize$lower.ci[1],
         estimate = res_tost_EMAPS_INTRINSIC$effsize$estimate[1],
@@ -823,19 +754,19 @@ DB_EMAPS_0_12 <-
         high_eq = res_tost_EMAPS_INTRINSIC$eqb[2],
         decision_tost = res_tost_EMAPS_INTRINSIC$decision$TOST[1],
         decision_test = res_tost_EMAPS_INTRINSIC$decision$test[1]
-      ) |> 
+      ) |>
       mutate(perc = perc)
-    
+
     return(tab)
-    
+
   }
-  
+
   ## Get and combine the results of the TOSTs
-  res_all_tost_EMAPS_INTRINSIC <- 
-    map(c(1, 5, 10, 15, 20), do_tost_EMAPS_INTRINSIC) |> 
-    bind_rows() |> 
-    mutate(equiv_zone = paste0("±", perc, "%"))  
-  
+  res_all_tost_EMAPS_INTRINSIC <-
+    map(c(1, 5, 10, 15, 20), do_tost_EMAPS_INTRINSIC) |>
+    bind_rows() |>
+    mutate(equiv_zone = paste0("±", perc, "%"))
+
   ## Make a figure for the TOSTs
   p_EMAPS_0_12_INTRINSIC_tost <-
     ggplot() +
@@ -860,14 +791,14 @@ DB_EMAPS_0_12 <-
       legend.background = element_rect(color = "black", fill = "white")
       ) +
     annotate(
-      geom = "text", 
-      label = "Intrinsic motivation", 
-      x = Inf, 
-      y = Inf, 
-      size = 8, 
+      geom = "text",
+      label = "Intrinsic motivation",
+      x = Inf,
+      y = Inf,
+      size = 8,
       fontface = "bold",
       color = "white",
-      hjust = 1.05, 
+      hjust = 1.05,
       vjust = 1.8
       ) +
     annotate(
@@ -880,27 +811,27 @@ DB_EMAPS_0_12 <-
       size = 7
     ) +
     annotate(
-      geom = "curve", 
+      geom = "curve",
       x = 1.15,
-      y = 0.14, 
-      xend = 1.03, 
-      yend = res_all_tost_EMAPS_INTRINSIC[1, 2], 
+      y = 0.14,
+      xend = 1.03,
+      yend = res_all_tost_EMAPS_INTRINSIC[1, 2],
       curvature = -.35, arrow = arrow(length = unit(2, "mm"))
     )
-  
+
   # View the figure
-  p_EMAPS_0_12_INTRINSIC_tost  
-  
+  p_EMAPS_0_12_INTRINSIC_tost
+
 # Perform the TOSTs - INTEGRATED regulation
-  
+
   ## Get the median of the EMAPS scores (INTEGRATED regulation) at Month 0
   median_EMAPS_0_INTEGRATED <- median(DB_EMAPS_0_12 |> filter(MONTH == "0") |>  pull(`Integrated regulation`))
-  
+
   ## Define a function to perform the TOSTs for several equivalence bounds
   do_tost_EMAPS_INTEGRATED <- function(perc){
-    
+
     equiv_bound <- median_EMAPS_0_INTEGRATED * perc / 100
-    
+
     res_tost_EMAPS_INTEGRATED <-
       wilcox_TOST(
         formula = `Integrated regulation` ~ MONTH,
@@ -913,8 +844,8 @@ DB_EMAPS_0_12 <-
         ses = "rb",
         mu = 0
       )
-    
-    tab <- 
+
+    tab <-
       data.frame(
         lower_ci = res_tost_EMAPS_INTEGRATED$effsize$lower.ci[1],
         estimate = res_tost_EMAPS_INTEGRATED$effsize$estimate[1],
@@ -923,19 +854,19 @@ DB_EMAPS_0_12 <-
         high_eq = res_tost_EMAPS_INTEGRATED$eqb[2],
         decision_tost = res_tost_EMAPS_INTEGRATED$decision$TOST[1],
         decision_test = res_tost_EMAPS_INTEGRATED$decision$test[1]
-      ) |> 
+      ) |>
       mutate(perc = perc)
-    
+
     return(tab)
-    
+
   }
-  
+
   ## Get and combine the results of the TOSTs
-  res_all_tost_EMAPS_INTEGRATED <- 
-    map(c(1, 5, 10, 15, 20), do_tost_EMAPS_INTEGRATED) |> 
-    bind_rows() |> 
-    mutate(equiv_zone = paste0("±", perc, "%"))  
-  
+  res_all_tost_EMAPS_INTEGRATED <-
+    map(c(1, 5, 10, 15, 20), do_tost_EMAPS_INTEGRATED) |>
+    bind_rows() |>
+    mutate(equiv_zone = paste0("±", perc, "%"))
+
   ## Make the figure for the TOSTs
   p_EMAPS_0_12_INTEGRATED_tost <-
     ggplot() +
@@ -958,14 +889,14 @@ DB_EMAPS_0_12 <-
       legend.background = element_rect(color = "black", fill = "white")
       ) +
     annotate(
-      geom = "text", 
-      label = "Integrated regulation", 
-      x = Inf, 
-      y = Inf, 
-      size = 8, 
+      geom = "text",
+      label = "Integrated regulation",
+      x = Inf,
+      y = Inf,
+      size = 8,
       fontface = "bold",
       color = "white",
-      hjust = 1.05, 
+      hjust = 1.05,
       vjust = 1.8
     ) +
     annotate(
@@ -978,28 +909,28 @@ DB_EMAPS_0_12 <-
       size = 7
     ) +
     annotate(
-      geom = "curve", 
+      geom = "curve",
       x = 1.17,
-      y = 0.22, 
-      xend = 1.03, 
-      yend = res_all_tost_EMAPS_INTEGRATED[1, 2], 
+      y = 0.22,
+      xend = 1.03,
+      yend = res_all_tost_EMAPS_INTEGRATED[1, 2],
       curvature = .35, arrow = arrow(length = unit(2, "mm"))
     )
-  
+
   # View the figure
-  p_EMAPS_0_12_INTEGRATED_tost  
-  
-  
+  p_EMAPS_0_12_INTEGRATED_tost
+
+
 # Perform the TOSTs - IDENTIFIED regulation
-  
+
   ## Get the the median of EMAPS scores (IDENTIFIED regulation) at Month 0
   median_EMAPS_0_IDENTIFIED <- median(DB_EMAPS_0_12 |> filter(MONTH == "0") |>  pull(`Identified regulation`))
-  
+
   ## Define a function to perform the TOSTs for several equivalence bounds
   do_tost_EMAPS_IDENTIFIED <- function(perc){
-    
+
     equiv_bound <- median_EMAPS_0_IDENTIFIED * perc / 100
-    
+
     res_tost_EMAPS_IDENTIFIED <-
       wilcox_TOST(
         formula = `Identified regulation` ~ MONTH,
@@ -1012,8 +943,8 @@ DB_EMAPS_0_12 <-
         ses = "rb",
         mu = 0
       )
-    
-    tab <- 
+
+    tab <-
       data.frame(
         lower_ci = res_tost_EMAPS_IDENTIFIED$effsize$lower.ci[1],
         estimate = res_tost_EMAPS_IDENTIFIED$effsize$estimate[1],
@@ -1022,18 +953,18 @@ DB_EMAPS_0_12 <-
         high_eq = res_tost_EMAPS_IDENTIFIED$eqb[2],
         decision_tost = res_tost_EMAPS_IDENTIFIED$decision$TOST[1],
         decision_test = res_tost_EMAPS_IDENTIFIED$decision$test[1]
-      ) |> 
+      ) |>
       mutate(perc = perc)
-    
+
     return(tab)
   }
-  
+
   ## Get and combine the results of the TOSTs
-  res_all_tost_EMAPS_IDENTIFIED <- 
-    map(c(1, 5, 10, 15, 20), do_tost_EMAPS_IDENTIFIED) |> 
-    bind_rows() |> 
-    mutate(equiv_zone = paste0("±", perc, "%"))  
-  
+  res_all_tost_EMAPS_IDENTIFIED <-
+    map(c(1, 5, 10, 15, 20), do_tost_EMAPS_IDENTIFIED) |>
+    bind_rows() |>
+    mutate(equiv_zone = paste0("±", perc, "%"))
+
   ## Make a figure for the TOSTs
   p_EMAPS_0_12_IDENTIFIED_tost <-
     ggplot() +
@@ -1056,14 +987,14 @@ DB_EMAPS_0_12 <-
       legend.background = element_rect(color = "black", fill = "white")
     ) +
     annotate(
-      geom = "text", 
-      label = "Identified regulation", 
-      x = Inf, 
-      y = Inf, 
-      size = 8, 
+      geom = "text",
+      label = "Identified regulation",
+      x = Inf,
+      y = Inf,
+      size = 8,
       fontface = "bold",
       color = "white",
-      hjust = 1.05, 
+      hjust = 1.05,
       vjust = 1.8
     ) +
     annotate(
@@ -1076,28 +1007,28 @@ DB_EMAPS_0_12 <-
       size = 7
     ) +
     annotate(
-      geom = "curve", 
+      geom = "curve",
       x = 1.17,
-      y = 0.31, 
-      xend = 1.03, 
-      yend = res_all_tost_EMAPS_IDENTIFIED[1, 2], 
+      y = 0.31,
+      xend = 1.03,
+      yend = res_all_tost_EMAPS_IDENTIFIED[1, 2],
       curvature = -.35, arrow = arrow(length = unit(2, "mm"))
     )
-  
+
   # View the figure
-  p_EMAPS_0_12_IDENTIFIED_tost    
-  
-  
+  p_EMAPS_0_12_IDENTIFIED_tost
+
+
 # Perform the TOSTs - INTROJECTED regulation
-  
+
   ## Get the median of the EMAPS scores (INTROJECTED regulation) at Month 0
   median_EMAPS_0_INTROJECTED <- median(DB_EMAPS_0_12 |> filter(MONTH == "0") |>  pull(`Introjected regulation`))
-  
+
   ## Define a function to perform the TOSTs for several equivalence bounds
   do_tost_EMAPS_INTROJECTED <- function(perc){
-    
+
     equiv_bound <- median_EMAPS_0_INTROJECTED * perc / 100
-    
+
     res_tost_EMAPS_INTROJECTED <-
       wilcox_TOST(
         formula = `Introjected regulation` ~ MONTH,
@@ -1110,8 +1041,8 @@ DB_EMAPS_0_12 <-
         ses = "rb",
         mu = 0
       )
-    
-    tab <- 
+
+    tab <-
       data.frame(
         lower_ci = res_tost_EMAPS_INTROJECTED$effsize$lower.ci[1],
         estimate = res_tost_EMAPS_INTROJECTED$effsize$estimate[1],
@@ -1120,18 +1051,18 @@ DB_EMAPS_0_12 <-
         high_eq = res_tost_EMAPS_INTROJECTED$eqb[2],
         decision_tost = res_tost_EMAPS_INTROJECTED$decision$TOST[1],
         decision_test = res_tost_EMAPS_INTROJECTED$decision$test[1]
-      ) |> 
+      ) |>
       mutate(perc = perc)
-    
+
     return(tab)
   }
-  
+
   ## Get and combine the results of the TOSTs
-  res_all_tost_EMAPS_INTROJECTED <- 
-    map(c(1, 5, 10, 15, 20), do_tost_EMAPS_INTROJECTED) |> 
-    bind_rows() |> 
-    mutate(equiv_zone = paste0("±", perc, "%"))  
-  
+  res_all_tost_EMAPS_INTROJECTED <-
+    map(c(1, 5, 10, 15, 20), do_tost_EMAPS_INTROJECTED) |>
+    bind_rows() |>
+    mutate(equiv_zone = paste0("±", perc, "%"))
+
   ## Make the figure for the TOSTs
   p_EMAPS_0_12_INTROJECTED_tost <-
     ggplot() +
@@ -1154,14 +1085,14 @@ DB_EMAPS_0_12 <-
       legend.background = element_rect(color = "black", fill = "white")
     ) +
     annotate(
-      geom = "text", 
-      label = "Introjected regulation", 
-      x = Inf, 
-      y = Inf, 
-      size = 8, 
+      geom = "text",
+      label = "Introjected regulation",
+      x = Inf,
+      y = Inf,
+      size = 8,
       fontface = "bold",
       color = "white",
-      hjust = 1.05, 
+      hjust = 1.05,
       vjust = 1.8
     ) +
     annotate(
@@ -1174,28 +1105,28 @@ DB_EMAPS_0_12 <-
       size = 7
     ) +
     annotate(
-      geom = "curve", 
+      geom = "curve",
       x = 1.17,
-      y = 0.17, 
-      xend = 1.03, 
-      yend = res_all_tost_EMAPS_INTROJECTED[1, 2], 
+      y = 0.17,
+      xend = 1.03,
+      yend = res_all_tost_EMAPS_INTROJECTED[1, 2],
       curvature = .35, arrow = arrow(length = unit(2, "mm"))
     )
-  
+
   # View the figure
-  p_EMAPS_0_12_INTROJECTED_tost   
-  
- 
+  p_EMAPS_0_12_INTROJECTED_tost
+
+
 # Perform the TOSTs - EXTERNAL regulation
-  
+
   ## Get the median of the EMAPS scores (EXTERNAL regulation) at Month 0
   median_EMAPS_0_EXTERNAL <- median(DB_EMAPS_0_12 |> filter(MONTH == "0") |>  pull(`External regulation`))
-  
+
   ## Define a function to perform the TOSTs for several equivalence bounds
   do_tost_EMAPS_EXTERNAL <- function(perc){
-    
+
     equiv_bound <- median_EMAPS_0_EXTERNAL * perc / 100
-    
+
     res_tost_EMAPS_EXTERNAL <-
       wilcox_TOST(
         formula = `External regulation` ~ MONTH,
@@ -1208,8 +1139,8 @@ DB_EMAPS_0_12 <-
         ses = "rb",
         mu = 0
       )
-    
-    tab <- 
+
+    tab <-
       data.frame(
         lower_ci = res_tost_EMAPS_EXTERNAL$effsize$lower.ci[1],
         estimate = res_tost_EMAPS_EXTERNAL$effsize$estimate[1],
@@ -1218,18 +1149,18 @@ DB_EMAPS_0_12 <-
         high_eq = res_tost_EMAPS_EXTERNAL$eqb[2],
         decision_tost = res_tost_EMAPS_EXTERNAL$decision$TOST[1],
         decision_test = res_tost_EMAPS_EXTERNAL$decision$test[1]
-      ) |> 
+      ) |>
       mutate(perc = perc)
-    
+
     return(tab)
   }
-  
+
   ## Get and combine the results of the TOSTs
-  res_all_tost_EMAPS_EXTERNAL <- 
-    map(c(1, 5, 10, 15, 20), do_tost_EMAPS_EXTERNAL) |> 
-    bind_rows() |> 
-    mutate(equiv_zone = paste0("±", perc, "%"))  
-  
+  res_all_tost_EMAPS_EXTERNAL <-
+    map(c(1, 5, 10, 15, 20), do_tost_EMAPS_EXTERNAL) |>
+    bind_rows() |>
+    mutate(equiv_zone = paste0("±", perc, "%"))
+
   ## Make a figure for the TOSTs
   p_EMAPS_0_12_EXTERNAL_tost <-
     ggplot() +
@@ -1253,14 +1184,14 @@ DB_EMAPS_0_12 <-
       plot.subtitle = element_text(size = 17)
     ) +
     annotate(
-      geom = "text", 
-      label = "External regulation", 
-      x = Inf, 
-      y = Inf, 
-      size = 8, 
+      geom = "text",
+      label = "External regulation",
+      x = Inf,
+      y = Inf,
+      size = 8,
       fontface = "bold",
       color = "black",
-      hjust = 1.05, 
+      hjust = 1.05,
       vjust = 1.8
     ) +
     annotate(
@@ -1273,28 +1204,28 @@ DB_EMAPS_0_12 <-
       size = 7
     ) +
     annotate(
-      geom = "curve", 
+      geom = "curve",
       x = 1.23,
-      y = -0.58, 
-      xend = 1.03, 
-      yend = res_all_tost_EMAPS_EXTERNAL[1, 2], 
+      y = -0.58,
+      xend = 1.03,
+      yend = res_all_tost_EMAPS_EXTERNAL[1, 2],
       curvature = .35, arrow = arrow(length = unit(2, "mm"))
     )
-  
+
   # View the figure
-  p_EMAPS_0_12_EXTERNAL_tost  
-  
+  p_EMAPS_0_12_EXTERNAL_tost
+
 
 # Perform the TOSTs - AMOTIVATION
-  
+
   ## Get the median of the EMAPS scores (AMOTIVATION) at Month 0
   median_EMAPS_0_AMOTIVATION <- median(DB_EMAPS_0_12 |> filter(MONTH == "0") |>  pull(`Amotivation`))
-  
+
   ## Define a function to perform the TOSTs for several equivalence bounds
   do_tost_EMAPS_AMOTIVATION <- function(perc){
-    
+
     equiv_bound <- median_EMAPS_0_AMOTIVATION * perc / 100
-    
+
     res_tost_EMAPS_AMOTIVATION <-
       wilcox_TOST(
         formula = `Amotivation` ~ MONTH,
@@ -1307,8 +1238,8 @@ DB_EMAPS_0_12 <-
         ses = "rb",
         mu = 0
       )
-    
-    tab <- 
+
+    tab <-
       data.frame(
         lower_ci = res_tost_EMAPS_AMOTIVATION$effsize$lower.ci[1],
         estimate = res_tost_EMAPS_AMOTIVATION$effsize$estimate[1],
@@ -1317,19 +1248,19 @@ DB_EMAPS_0_12 <-
         high_eq = res_tost_EMAPS_AMOTIVATION$eqb[2],
         decision_tost = res_tost_EMAPS_AMOTIVATION$decision$TOST[1],
         decision_test = res_tost_EMAPS_AMOTIVATION$decision$test[1]
-      ) |> 
+      ) |>
       mutate(perc = perc)
-    
+
     return(tab)
-    
+
   }
-  
+
   ## Get and combine the results of the TOSTs
-  res_all_tost_EMAPS_AMOTIVATION <- 
-    map(c(1, 5, 10, 15, 20), do_tost_EMAPS_AMOTIVATION) |> 
-    bind_rows() |> 
-    mutate(equiv_zone = paste0("±", perc, "%"))  
-  
+  res_all_tost_EMAPS_AMOTIVATION <-
+    map(c(1, 5, 10, 15, 20), do_tost_EMAPS_AMOTIVATION) |>
+    bind_rows() |>
+    mutate(equiv_zone = paste0("±", perc, "%"))
+
   ## Make a figure for the TOSTs
   p_EMAPS_0_12_AMOTIVATION_tost <-
     ggplot() +
@@ -1353,14 +1284,14 @@ DB_EMAPS_0_12 <-
       plot.subtitle = element_text(size = 17)
     ) +
     annotate(
-      geom = "text", 
-      label = "Amotivation", 
-      x = Inf, 
-      y = Inf, 
-      size = 8, 
+      geom = "text",
+      label = "Amotivation",
+      x = Inf,
+      y = Inf,
+      size = 8,
       fontface = "bold",
       color = "black",
-      hjust = 1.05, 
+      hjust = 1.05,
       vjust = 1.8
     ) +
     annotate(
@@ -1373,27 +1304,27 @@ DB_EMAPS_0_12 <-
       size = 7
     ) +
     annotate(
-      geom = "curve", 
+      geom = "curve",
       x = 1.23,
-      y = -0.45, 
-      xend = 1.03, 
-      yend = res_all_tost_EMAPS_AMOTIVATION[1, 2], 
+      y = -0.45,
+      xend = 1.03,
+      yend = res_all_tost_EMAPS_AMOTIVATION[1, 2],
       curvature = -.35, arrow = arrow(length = unit(2, "mm"))
     )
-  
+
   # View the figure
-  p_EMAPS_0_12_AMOTIVATION_tost    
-  
-  
+  p_EMAPS_0_12_AMOTIVATION_tost
+
+
 # Make the final figure
-  p_EMAPS_0_12_final <- 
-    (p_emaps_0_12 | 
+  p_EMAPS_0_12_final <-
+    (p_emaps_0_12 |
        (
          (p_EMAPS_0_12_INTRINSIC_tost   | p_EMAPS_0_12_INTEGRATED_tost ) /
          (p_EMAPS_0_12_IDENTIFIED_tost  | p_EMAPS_0_12_INTROJECTED_tost) /
           (p_EMAPS_0_12_EXTERNAL_tost   | p_EMAPS_0_12_AMOTIVATION_tost)
          )
-     ) + 
+     ) +
     plot_layout(widths = c(2, 2)) & theme(
       plot.title = element_text(size = 25),
       axis.title = element_text(size = 20),
@@ -1411,10 +1342,10 @@ DB_EMAPS_0_12 <-
 # --------------
 
 # Make the figure
-p_bar <- 
-  BARRIERS |> 
-  select(patient:isolement_faible_RS) |> 
-  pivot_longer(cols = c(-patient), names_to = "var", values_to = "rep") |> 
+p_bar <-
+  BARRIERS |>
+  select(patient:isolement_faible_RS) |>
+  pivot_longer(cols = c(-patient), names_to = "var", values_to = "rep") |>
   mutate(
     rep  = as.factor(rep),
     var = fct_recode(var,
@@ -1427,16 +1358,16 @@ p_bar <-
       "Too old" = "trop_vieux",
       "Social isolation / weak social network" = "isolement_faible_RS",
       "Too costly" = "cout_trop_eleve"
-      
+
     )
-    ) |> 
-  count(var, rep) |> 
-  group_by(var) |> 
+    ) |>
+  count(var, rep) |>
+  group_by(var) |>
   mutate(
     perc = round(n / sum(n) * 100, 1),
     magnitude = ifelse(perc > 15, "high", "low"),
-    ) |> 
-  filter(rep == 1) |> 
+    ) |>
+  filter(rep == 1) |>
   ggplot(aes(x = fct_reorder(var, n), y = n, color = magnitude)) +
   geom_segment(aes(x = fct_reorder(var, n), y = 0, xend = fct_reorder(var, n), yend = n), linewidth  = 1) +
   geom_point(shape = 21,  stroke = 2, fill = "grey90", size = 4) +
@@ -1474,658 +1405,658 @@ dev.off()
 
    ### Keep the rows for the months 0 and 6, and keep the participants with data at both 0 and 6 months
    DB_6MWT_6_0 <-
-     DB_6MWT |>  
-     filter(MONTH != "12") |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_6MWT |>
+     filter(MONTH != "12") |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "6", "0"))
 
    ### Get descriptive statistics
    describeBy(DB_6MWT_6_0$DIST_M, DB_6MWT_6_0$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     DIST_M ~ MONTH, 
-     data = DB_6MWT_6_0, 
-     paired = TRUE, 
+     DIST_M ~ MONTH,
+     data = DB_6MWT_6_0,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
+
   ## 12 vs 6 months
-   
+
    ### Keep the rows for the months 6 and 12, and keep the participants with data at both 6 and 12 months
    DB_6MWT_12_6 <-
-     DB_6MWT |>  
-     filter(MONTH != "0") |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_6MWT |>
+     filter(MONTH != "0") |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "12", "6"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_6MWT_12_6$DIST_M, DB_6MWT_12_6$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     DIST_M ~ MONTH, 
-     data = DB_6MWT_12_6, 
-     paired = TRUE, 
+     DIST_M ~ MONTH,
+     data = DB_6MWT_12_6,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
+
    ## 12 vs 0 months
-   
+
    ### Keep the rows for the months 0 and 12, and keep the participants with data at both 0 and 12 months
    DB_6MWT_12_0 <-
-     DB_6MWT |>  
-     filter(MONTH != "6") |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_6MWT |>
+     filter(MONTH != "6") |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "12", "0"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_6MWT_12_0$DIST_M, DB_6MWT_12_0$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     DIST_M ~ MONTH, 
-     data = DB_6MWT_12_0, 
-     paired = TRUE, 
+     DIST_M ~ MONTH,
+     data = DB_6MWT_12_0,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
+
 # IPAQ MET-min/week
-   
+
   ## 6 vs 0 months
-   
+
    ### Keep the rows for the months 0 and 6, and keep the participants with data at both 0 and 6 months
    DB_IPAQ_6_0 <-
-     DB_IPAQ |> 
-     filter(MONTH != "12") |> 
-     select(patient, MONTH, MET_MIN_WK) |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_IPAQ |>
+     filter(MONTH != "12") |>
+     select(patient, MONTH, MET_MIN_WK) |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "6", "0"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_IPAQ_6_0$MET_MIN_WK, DB_IPAQ_6_0$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     MET_MIN_WK ~ MONTH, 
-     data = DB_IPAQ_6_0, 
-     paired = TRUE, 
+     MET_MIN_WK ~ MONTH,
+     data = DB_IPAQ_6_0,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
+
   ## 12 vs 6 months
-   
+
    ### Keep the rows for the months 6 and 12, and keep the participants with data at both 6 and 12 months
    DB_IPAQ_12_6 <-
-     DB_IPAQ |> 
-     filter(MONTH != "0") |> 
-     select(patient, MONTH, MET_MIN_WK) |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_IPAQ |>
+     filter(MONTH != "0") |>
+     select(patient, MONTH, MET_MIN_WK) |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "12", "6"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_IPAQ_12_6$MET_MIN_WK, DB_IPAQ_12_6$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     MET_MIN_WK ~ MONTH, 
-     data = DB_IPAQ_12_6, 
-     paired = TRUE, 
+     MET_MIN_WK ~ MONTH,
+     data = DB_IPAQ_12_6,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
+
   ## 12 vs 0 months
-   
+
    ### Keep the rows for the months 0 and 12, and keep the participants with data at both 0 and 12 months
    DB_IPAQ_12_0 <-
-     DB_IPAQ |> 
-     filter(MONTH != "6") |> 
-     select(patient, MONTH, MET_MIN_WK) |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_IPAQ |>
+     filter(MONTH != "6") |>
+     select(patient, MONTH, MET_MIN_WK) |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "12", "0"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_IPAQ_12_0$MET_MIN_WK, DB_IPAQ_12_0$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     MET_MIN_WK ~ MONTH, 
-     data = DB_IPAQ_12_0, 
-     paired = TRUE, 
+     MET_MIN_WK ~ MONTH,
+     data = DB_IPAQ_12_0,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
-   
+
+
 # EMAPS - Intrinsic motivation
-   
+
   ## 6 vs 0 months
-   
+
    ### Keep the rows for the months 0 and 6, and keep the participants with data at both 0 and 6 months
    DB_EMAPS_6_0_IM <-
-     DB_EMAPS |> 
-     filter(MONTH != "12") |> 
-     select(patient, MONTH, `Intrinsic motivation`) |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_EMAPS |>
+     filter(MONTH != "12") |>
+     select(patient, MONTH, `Intrinsic motivation`) |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "6", "0"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_EMAPS_6_0_IM$`Intrinsic motivation`, DB_EMAPS_6_0_IM$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     `Intrinsic motivation` ~ MONTH, 
-     data = DB_EMAPS_6_0_IM, 
-     paired = TRUE, 
+     `Intrinsic motivation` ~ MONTH,
+     data = DB_EMAPS_6_0_IM,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
+
   ## 12 vs 6 months
-   
+
    ### Keep the rows for months 6 and 12, and keep the participants with data at both 6 and 12 months
    DB_EMAPS_12_6_IM <-
-     DB_EMAPS |> 
-     filter(MONTH != "0") |> 
-     select(patient, MONTH, `Intrinsic motivation`) |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_EMAPS |>
+     filter(MONTH != "0") |>
+     select(patient, MONTH, `Intrinsic motivation`) |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "12", "6"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_EMAPS_12_6_IM$`Intrinsic motivation`, DB_EMAPS_12_6_IM$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     `Intrinsic motivation` ~ MONTH, 
-     data = DB_EMAPS_12_6_IM, 
-     paired = TRUE, 
+     `Intrinsic motivation` ~ MONTH,
+     data = DB_EMAPS_12_6_IM,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
+
   ## 12 vs 0 months
-   
+
    ### Keep the rows for the months 0 and 12, and keep the participants with data at both 0 and 12 months
    DB_EMAPS_12_0_IM <-
-     DB_EMAPS |> 
-     filter(MONTH != "6") |> 
-     select(patient, MONTH, `Intrinsic motivation`) |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_EMAPS |>
+     filter(MONTH != "6") |>
+     select(patient, MONTH, `Intrinsic motivation`) |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "12", "0"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_EMAPS_12_0_IM$`Intrinsic motivation`, DB_EMAPS_12_0_IM$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     `Intrinsic motivation` ~ MONTH, 
-     data = DB_EMAPS_12_0_IM, 
-     paired = TRUE, 
+     `Intrinsic motivation` ~ MONTH,
+     data = DB_EMAPS_12_0_IM,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
+
 # EMAPS - Integrated regulation
-   
+
   ## 6 vs 0 months
-   
+
    ### Keep the rows for the months 0 and 6, and keep the participants with data at both 0 and 6 months
    DB_EMAPS_6_0_INTEG <-
-     DB_EMAPS |> 
-     filter(MONTH != "12") |> 
-     select(patient, MONTH, `Integrated regulation`) |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_EMAPS |>
+     filter(MONTH != "12") |>
+     select(patient, MONTH, `Integrated regulation`) |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "6", "0"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_EMAPS_6_0_INTEG$`Integrated regulation`, DB_EMAPS_6_0_INTEG$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     `Integrated regulation` ~ MONTH, 
-     data = DB_EMAPS_6_0_INTEG, 
-     paired = TRUE, 
+     `Integrated regulation` ~ MONTH,
+     data = DB_EMAPS_6_0_INTEG,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
+
   ## 12 vs 6 months
-   
+
    ### Keep the rows for the months 6 and 12, and keep the participants with data at both 6 and 12 months
    DB_EMAPS_12_6_INTEG <-
-     DB_EMAPS |> 
-     filter(MONTH != "0") |> 
-     select(patient, MONTH, `Integrated regulation`) |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_EMAPS |>
+     filter(MONTH != "0") |>
+     select(patient, MONTH, `Integrated regulation`) |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "12", "6"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_EMAPS_12_6_INTEG$`Integrated regulation`, DB_EMAPS_12_6_INTEG$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     `Integrated regulation` ~ MONTH, 
-     data = DB_EMAPS_12_6_INTEG, 
-     paired = TRUE, 
+     `Integrated regulation` ~ MONTH,
+     data = DB_EMAPS_12_6_INTEG,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
+
   ## 12 vs 0 months
-   
+
    ### Keep the rows for the months 0 and 12, and keep the participants with data at both 0 and 12 months
    DB_EMAPS_12_0_INTEG <-
-     DB_EMAPS |> 
-     filter(MONTH != "6") |> 
-     select(patient, MONTH, `Integrated regulation`) |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_EMAPS |>
+     filter(MONTH != "6") |>
+     select(patient, MONTH, `Integrated regulation`) |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "12", "0"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_EMAPS_12_0_INTEG$`Integrated regulation`, DB_EMAPS_12_0_INTEG$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     `Integrated regulation` ~ MONTH, 
-     data = DB_EMAPS_12_0_INTEG, 
-     paired = TRUE, 
+     `Integrated regulation` ~ MONTH,
+     data = DB_EMAPS_12_0_INTEG,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
+
 # EMAPS - Identified regulation
-   
+
   ## 6 vs 0 months
-   
+
    ### Keep the rows for the months 0 and 6, and keep the participants with data at both 0 and 6 months
    DB_EMAPS_6_0_IDEN <-
-     DB_EMAPS |> 
-     filter(MONTH != "12") |> 
-     select(patient, MONTH, `Identified regulation`) |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_EMAPS |>
+     filter(MONTH != "12") |>
+     select(patient, MONTH, `Identified regulation`) |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "6", "0"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_EMAPS_6_0_IDEN$`Identified regulation`, DB_EMAPS_6_0_IDEN$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     `Identified regulation` ~ MONTH, 
-     data = DB_EMAPS_6_0_IDEN, 
-     paired = TRUE, 
+     `Identified regulation` ~ MONTH,
+     data = DB_EMAPS_6_0_IDEN,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
+
   ## 12 vs 6 months
-   
+
    ### Keep the rows for the months 6 and 12, and keep the participants with data at both 6 and 12 months
    DB_EMAPS_12_6_IDEN <-
-     DB_EMAPS |> 
-     filter(MONTH != "0") |> 
-     select(patient, MONTH, `Identified regulation`) |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_EMAPS |>
+     filter(MONTH != "0") |>
+     select(patient, MONTH, `Identified regulation`) |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "12", "6"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_EMAPS_12_6_IDEN$`Identified regulation`, DB_EMAPS_12_6_IDEN$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     `Identified regulation` ~ MONTH, 
-     data = DB_EMAPS_12_6_IDEN, 
-     paired = TRUE, 
+     `Identified regulation` ~ MONTH,
+     data = DB_EMAPS_12_6_IDEN,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
+
   ## 12 vs 0 months
-   
+
    ### Keep the rows for the months 0 and 12, and keep the participants with data at both 0 and 12 months
    DB_EMAPS_12_0_IDEN <-
-     DB_EMAPS |> 
-     filter(MONTH != "6") |> 
-     select(patient, MONTH, `Identified regulation`) |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_EMAPS |>
+     filter(MONTH != "6") |>
+     select(patient, MONTH, `Identified regulation`) |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "12", "0"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_EMAPS_12_0_IDEN$`Identified regulation`, DB_EMAPS_12_0_IDEN$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     `Identified regulation` ~ MONTH, 
-     data = DB_EMAPS_12_0_IDEN, 
-     paired = TRUE, 
+     `Identified regulation` ~ MONTH,
+     data = DB_EMAPS_12_0_IDEN,
+     paired = TRUE,
      pooled_sd = TRUE
    )
 
 # EMAPS - Introjected regulation
-   
+
  ## 6 vs 0 months
-   
+
    ### Keep the rows for the months 0 and 6, and keep the participants with data at both 0 and 6 months
    DB_EMAPS_6_0_INTRO <-
-     DB_EMAPS |> 
-     filter(MONTH != "12") |> 
-     select(patient, MONTH, `Introjected regulation`) |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_EMAPS |>
+     filter(MONTH != "12") |>
+     select(patient, MONTH, `Introjected regulation`) |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "6", "0"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_EMAPS_6_0_INTRO$`Introjected regulation`, DB_EMAPS_6_0_INTRO$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     `Introjected regulation` ~ MONTH, 
-     data = DB_EMAPS_6_0_INTRO, 
-     paired = TRUE, 
+     `Introjected regulation` ~ MONTH,
+     data = DB_EMAPS_6_0_INTRO,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
+
   ## 12 vs 6 months
-   
+
    ### Keep the rows for the months 6 and 12, and keep the participants with data at both 6 and 12 months
    DB_EMAPS_12_6_INTRO <-
-     DB_EMAPS |> 
-     filter(MONTH != "0") |> 
-     select(patient, MONTH, `Introjected regulation`) |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_EMAPS |>
+     filter(MONTH != "0") |>
+     select(patient, MONTH, `Introjected regulation`) |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "12", "6"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_EMAPS_12_6_INTRO$`Introjected regulation`, DB_EMAPS_12_6_INTRO$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     `Introjected regulation` ~ MONTH, 
-     data = DB_EMAPS_12_6_INTRO, 
-     paired = TRUE, 
+     `Introjected regulation` ~ MONTH,
+     data = DB_EMAPS_12_6_INTRO,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
+
   ## 12 vs 0 months
-   
+
    ### Keep the rows for the months 0 and 12, and keep the participants with data at both 0 and 12 months
    DB_EMAPS_12_0_INTRO <-
-     DB_EMAPS |> 
-     filter(MONTH != "6") |> 
-     select(patient, MONTH, `Introjected regulation`) |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_EMAPS |>
+     filter(MONTH != "6") |>
+     select(patient, MONTH, `Introjected regulation`) |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "12", "0"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_EMAPS_12_0_INTRO$`Introjected regulation`, DB_EMAPS_12_0_INTRO$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     `Introjected regulation` ~ MONTH, 
-     data = DB_EMAPS_12_0_INTRO, 
-     paired = TRUE, 
+     `Introjected regulation` ~ MONTH,
+     data = DB_EMAPS_12_0_INTRO,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
+
 # EMAPS - External regulation
-   
+
   ## 6 vs 0 months
-   
+
    ### Keep the rows for the months 0 and 6, and keep the participants with data at both 0 and 6 months
    DB_EMAPS_6_0_EXT <-
-     DB_EMAPS |> 
-     filter(MONTH != "12") |> 
-     select(patient, MONTH, `External regulation`) |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_EMAPS |>
+     filter(MONTH != "12") |>
+     select(patient, MONTH, `External regulation`) |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "6", "0"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_EMAPS_6_0_EXT$`External regulation`, DB_EMAPS_6_0_EXT$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     `External regulation` ~ MONTH, 
-     data = DB_EMAPS_6_0_EXT, 
-     paired = TRUE, 
+     `External regulation` ~ MONTH,
+     data = DB_EMAPS_6_0_EXT,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
+
   ## 12 vs 6 months
-   
+
    ### Keep the rows for the months 6 and 12, and keep the participants with data at both 6 and 12 months
    DB_EMAPS_12_6_EXT <-
-     DB_EMAPS |> 
-     filter(MONTH != "0") |> 
-     select(patient, MONTH, `External regulation`) |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_EMAPS |>
+     filter(MONTH != "0") |>
+     select(patient, MONTH, `External regulation`) |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "12", "6"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_EMAPS_12_6_EXT$`External regulation`, DB_EMAPS_12_6_EXT$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     `External regulation` ~ MONTH, 
-     data = DB_EMAPS_12_6_EXT, 
-     paired = TRUE, 
+     `External regulation` ~ MONTH,
+     data = DB_EMAPS_12_6_EXT,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
+
   ## 12 vs 0 months
-   
+
    ### Keep the rows for the months 0 and 12, and keep the participants with data at both 0 and 12 months
    DB_EMAPS_12_0_EXT <-
-     DB_EMAPS |> 
-     filter(MONTH != "6") |> 
-     select(patient, MONTH, `External regulation`) |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_EMAPS |>
+     filter(MONTH != "6") |>
+     select(patient, MONTH, `External regulation`) |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "12", "0"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_EMAPS_12_0_EXT$`External regulation`, DB_EMAPS_12_0_EXT$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     `External regulation` ~ MONTH, 
-     data = DB_EMAPS_12_0_EXT, 
-     paired = TRUE, 
+     `External regulation` ~ MONTH,
+     data = DB_EMAPS_12_0_EXT,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
+
 # EMAPS - Amotivation
-   
+
   ## 6 vs 0 months
-   
+
    ### Keep the rows for months 0 and 6, and keep the participants with data at both 0 and 6 months
    DB_EMAPS_6_0_AM <-
-     DB_EMAPS |> 
-     filter(MONTH != "12") |> 
-     select(patient, MONTH, `Amotivation`) |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_EMAPS |>
+     filter(MONTH != "12") |>
+     select(patient, MONTH, `Amotivation`) |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "6", "0"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_EMAPS_6_0_AM$`Amotivation`, DB_EMAPS_6_0_AM$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     `Amotivation` ~ MONTH, 
-     data = DB_EMAPS_6_0_AM, 
-     paired = TRUE, 
+     `Amotivation` ~ MONTH,
+     data = DB_EMAPS_6_0_AM,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
+
   ## 12 vs 6 months
-   
+
    ### Keep the rows for the months 6 and 12, and keep the participants with data at both 6 and 12 months
    DB_EMAPS_12_6_AM <-
-     DB_EMAPS |> 
-     filter(MONTH != "0") |> 
-     select(patient, MONTH, `Amotivation`) |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_EMAPS |>
+     filter(MONTH != "0") |>
+     select(patient, MONTH, `Amotivation`) |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "12", "6"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_EMAPS_12_6_AM$`Amotivation`, DB_EMAPS_12_6_AM$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     `Amotivation` ~ MONTH, 
-     data = DB_EMAPS_12_6_AM, 
-     paired = TRUE, 
+     `Amotivation` ~ MONTH,
+     data = DB_EMAPS_12_6_AM,
+     paired = TRUE,
      pooled_sd = TRUE
    )
-   
+
   ## 12 vs 0 months
-   
+
    ### Keep the rows for the months 0 and 12, and keep the participants with data at both 0 and 12 months
    DB_EMAPS_12_0_AM <-
-     DB_EMAPS |> 
-     filter(MONTH != "6") |> 
-     select(patient, MONTH, `Amotivation`) |> 
-     drop_na() |> 
-     group_by(patient) |> 
-     nest() |> 
-     mutate(n_visits = map_dbl(data, ~nrow(.x))) |> 
-     filter(n_visits == 2) |> 
-     ungroup() |> 
-     unnest(data) |> 
+     DB_EMAPS |>
+     filter(MONTH != "6") |>
+     select(patient, MONTH, `Amotivation`) |>
+     drop_na() |>
+     group_by(patient) |>
+     nest() |>
+     mutate(n_visits = map_dbl(data, ~nrow(.x))) |>
+     filter(n_visits == 2) |>
+     ungroup() |>
+     unnest(data) |>
      mutate(MONTH = fct_relevel(MONTH, "12", "0"))
-   
+
    ### Get descriptive statistics
    describeBy(DB_EMAPS_12_0_AM$`Amotivation`, DB_EMAPS_12_0_AM$MONTH, quant = c(0.25, 0.75))
-   
+
    ### Get dz
    cohens_d(
-     `Amotivation` ~ MONTH, 
-     data = DB_EMAPS_12_0_AM, 
-     paired = TRUE, 
+     `Amotivation` ~ MONTH,
+     data = DB_EMAPS_12_0_AM,
+     paired = TRUE,
      pooled_sd = TRUE
    )
