@@ -13,8 +13,18 @@
 #' @param color_stat If required, a character string to indicate the color of the statistics summaries.
 #' @param labs_1x If required, a character string to name the X axis.
 #' @param labs_1y If required, a character string to name the Y axis.
-#' @param nudge_y If required, a numeric value to move vertically the label of the graphics (in units of the
-#'     Y axis)
+#' @param labs_2x If required, a character string to name the X axis.
+#' @param labs_2y If required, a character string to name the Y axis.
+#' @param labs_3x If required, a character string to name the X axis.
+#' @param labs_3y If required, a character string to name the Y axis.
+#' @param labs_4x If required, a character string to name the X axis.
+#' @param labs_4y If required, a character string to name the Y axis.
+#' @param labs_5x If required, a character string to name the X axis.
+#' @param labs_5y If required, a character string to name the Y axis.
+#' @param labs_6x If required, a character string to name the X axis.
+#' @param labs_6y If required, a character string to name the Y axis.
+#' @param nudge_y If required, a numeric value to move vertically the label of
+#'     the graphics (in units of the Y axis).
 
 #'
 #' @export
@@ -153,16 +163,16 @@ if(is.null(color_stat)) color_stat <- "black"
 # Set labels
 if(is.null(labs_1x)) labs_1x <- x
 if(is.null(labs_1y)) labs_1y <- y
-if(is.null(labs_2x)) labs_1x <- x
-if(is.null(labs_2y)) labs_1y <- y
-if(is.null(labs_3x)) labs_1x <- x
-if(is.null(labs_3y)) labs_1y <- y
-if(is.null(labs_4x)) labs_1x <- x
-if(is.null(labs_4y)) labs_1y <- y
-if(is.null(labs_5x)) labs_1x <- x
-if(is.null(labs_5y)) labs_1y <- y
-if(is.null(labs_6x)) labs_1x <- x
-if(is.null(labs_6y)) labs_1y <- y
+if(is.null(labs_2x)) labs_2x <- x
+if(is.null(labs_2y)) labs_2y <- y
+if(is.null(labs_3x)) labs_3x <- x
+if(is.null(labs_3y)) labs_3y <- y
+if(is.null(labs_4x)) labs_4x <- x
+if(is.null(labs_4y)) labs_4y <- y
+if(is.null(labs_5x)) labs_5x <- x
+if(is.null(labs_5y)) labs_5y <- y
+if(is.null(labs_6x)) labs_6x <- x
+if(is.null(labs_6y)) labs_6y <- y
 
 # Set vertical move of the labels
 if(is.null(nudge_y)) nudge_y <- 0
@@ -192,11 +202,11 @@ p1 <-
 
 # Make a raincloud plot to visualize pairwise differences
 
-  # Get levels of interest
+  # Get the levels of interest
   level1 <- levels((data |> dplyr::arrange(id, x) |> dplyr::pull(x)))[[1]]
   level2 <- levels((data |> dplyr::arrange(id, x) |> dplyr::pull(x)))[[2]]
 
-  # Rearrange data
+  # Rearrange data (a wide format is needed to compute the differences)
   data2 <-
     data |>
     tidyr::pivot_wider(names_from = .data[[x]], values_from = .data[[y]]) |>
@@ -267,7 +277,7 @@ p3 <-
       y = ifelse(diff_sign == "positive", ci_upper, ci_lower),
       label = round(difference, 2),
       fill = diff_sign,
-      alpha = alpha,
+      alpha = alpha
       ),
       direction = "y",
       nudge_y = ifelse(sf$diff_sign == "positive", nudge_y, -nudge_y),
@@ -284,10 +294,57 @@ p3 <-
     theme(legend.position = "none")
 
 
-# Build figure
-p <- (p1) / (p2 | p5) / (p3)
+# Make a plot tracking the shit of the quantiles
 
-# Return figure
-p
+  # Arrange shift function information
+  table_sf <-
+    sf |>
+    tidyr::pivot_longer(cols = c(level2, level1), names_to = "MONTH", values_to = "vals")
+p4 <-
+  ggplot(data = data, aes(x = .data[[x]], y = .data[[y]])) +
+  ggbeeswarm::geom_quasirandom(shape = 21, size = 4, color = "grey10", fill = "grey90", alpha = 0.3) +
+  geom_segment(data = table_sf, aes(
+    x = stage(start = MONTH, after_scale(x-0.2)),
+    xend = stage(start = MONTH, after_scale(x+0.2)),
+    y = vals,
+    yend = vals
+    ),
+    linewidth = c(rep(0.4, 8), rep(1.2, 2), rep(0.4, 8))
+    ) +
+  geom_line(data = table_sf,
+            aes(
+              x = ifelse(MONTH == level1, 1.2, 1.8),
+              y = vals,
+              group = q,
+              color = diff_sign
+              ),
+            linewidth = c(rep(0.6, 8), rep(1.2, 2), rep(0.6, 8))
+            ) +
+  geom_label(data = sf |>
+               dplyr::mutate(pos_label = .data[[names(sf)[2]]] + (.data[[names(sf)[2]]]-.data[[names(sf)[3]]])/2) |>
+               dplyr::filter(q == 0.1 | q == 0.9),
+             aes(x = 1.5,
+                 y = pos_label,
+                 label = round(difference, 2),
+                 fill = diff_sign,
+                 alpha = alpha),
+  color = "white", fontface = "bold", size = 4) +
+  scale_color_manual(values = c("grey60", "#0089C6")) +
+  scale_fill_manual(values = c("grey60", "#0089C6")) +
+  labs(
+    fill = NULL,
+    title = "Quantile shift",
+    x = labs_4x,
+    y = labs_4y
+  ) +
+  theme(legend.position = "none")
+
+
+# Build figure
+p <- (p1 | p4) / (p2 | p5) / (p3)
+
+# Return a list with the figure and the shift function information
+objects <- list(p = p, sf = sf)
+return(objects)
 
 }

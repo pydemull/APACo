@@ -121,7 +121,7 @@ DB_6MWT <-
     x = "MONTH",
     y = "DIST_M",
     rain_side = "f1x1",
-    nudge_y = 3,
+    nudge_y = 2,
     color_fill = "#0089C6",
     color_stat = "black",
     labs_1x = "Months post-program",
@@ -130,13 +130,13 @@ DB_6MWT <-
     labs_2y = "Month 12 - Month 0 (m)",
     labs_3x = "Month 0 (m)",
     labs_3y = "Month 12 (m)",
-    labs_4x = NULL,
-    labs_4y = NULL,
-    labs_5x = "Quantiles of 6-min walking test distance (m) at Month 0",
+    labs_4x = "Months post-program",
+    labs_4y = "6-min walking test distance (m)",
+    labs_5x = "Quantiles of 6-min walking test distance at Month 0 (m)",
     labs_5y = "Quantile Month 12 - Quantile Month 0 (m)",
     labs_6x = NULL,
     labs_6y = NULL
-  )
+  )$p
 
 
   ## Visualize pairwise changes using a raincloud plot
