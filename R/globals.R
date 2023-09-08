@@ -1,0 +1,15 @@
+utils::globalVariables(c(
+  ":=",
+  "MONTH",
+  "SUM",
+  "as.formula",
+  "ci.low",
+  "ci.up",
+  "ci_lower",
+  "ci_upper",
+  "diff_sign",
+  "difference",
+  "pos_label",
+  "quantile",
+  "vals"
+  ))
