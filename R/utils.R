@@ -399,8 +399,8 @@ analyse_change <- function(data,
       alpha = dplyr::case_when(
         q == 0.5           ~ 1,
         q %in% c(0.4, 0.6) ~ 0.9,
-        q > 0.2 & q < 0.4  ~ 0.8, # using 0.3 does not work for unclear reasons
-        q > 0.6 & q < 0.8  ~ 0.8, # using 0.7 does not work for unclear reasons
+        q > 0.2 & q < 0.4  ~ 0.8, # using q == 0.3 does not work for unclear reasons
+        q > 0.6 & q < 0.8  ~ 0.8, # using q == 0.7 does not work for unclear reasons
         q %in% c(0.2, 0.8) ~ 0.7,
         q %in% c(0.1, 0.9) ~ 0.6
       )
@@ -445,7 +445,22 @@ analyse_change <- function(data,
       force = 0.2,
       nudge_y = ifelse(sf$diff_sign == "positive", nudge_y, -nudge_y),
       fontface = "bold",
-      size = 6
+      size = 6,
+      seed = 123
+    ) +
+    ggrepel::geom_label_repel(
+      aes(
+        y = ifelse(diff_sign == "positive", ci_upper, ci_lower),
+        label = round(difference, 2),
+      ),
+      fill = NA,
+      color = "white",
+      direction = "y",
+      force = 0.2,
+      nudge_y = ifelse(sf$diff_sign == "positive", nudge_y, -nudge_y),
+      fontface = "bold",
+      size = 6,
+      seed = 123
     ) +
     scale_fill_manual(values = c("grey60", color_fill)) +
     scale_color_manual(values = c("grey60", color_fill)) +
