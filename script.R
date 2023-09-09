@@ -250,7 +250,7 @@ p_IPAQ_all
 
 ## Export the plot
 ragg::agg_tiff(
-  "out/p_IPAQ_all",
+  "out/p_IPAQ_all.tiff",
   scaling = 0.5,
   height = 10,
   width = 10,
