@@ -399,8 +399,8 @@ analyse_change <- function(data,
       alpha = dplyr::case_when(
         q == 0.5           ~ 5,
         q %in% c(0.4, 0.6) ~ 4,
-        q > 0.2 & q < 0.4  ~ 3,
-        q > 0.6 & q < 0.8  ~ 3,
+        q > 0.2 & q < 0.4  ~ 3, # using 0.3 does not work for unclear reasons
+        q > 0.6 & q < 0.8  ~ 3, # using 0.7 does not work for unclear reasons
         q %in% c(0.2, 0.8) ~ 2,
         q %in% c(0.1, 0.9) ~ 1
       )
