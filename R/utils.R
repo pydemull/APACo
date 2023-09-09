@@ -397,12 +397,12 @@ analyse_change <- function(data,
     dplyr::mutate(
       diff_sign = ifelse(difference >= 0, "positive", "negative"),
       alpha = dplyr::case_when(
-        q == 0.5           ~ 5,
-        q %in% c(0.4, 0.6) ~ 4,
-        q > 0.2 & q < 0.4  ~ 3, # using 0.3 does not work for unclear reasons
-        q > 0.6 & q < 0.8  ~ 3, # using 0.7 does not work for unclear reasons
-        q %in% c(0.2, 0.8) ~ 2,
-        q %in% c(0.1, 0.9) ~ 1
+        q == 0.5           ~ 1,
+        q %in% c(0.4, 0.6) ~ 0.9,
+        q > 0.2 & q < 0.4  ~ 0.8, # using 0.3 does not work for unclear reasons
+        q > 0.6 & q < 0.8  ~ 0.8, # using 0.7 does not work for unclear reasons
+        q %in% c(0.2, 0.8) ~ 0.7,
+        q %in% c(0.1, 0.9) ~ 0.6
       )
     )
   ##  Make plot
@@ -430,11 +430,9 @@ analyse_change <- function(data,
       shape = 21,
       size = 6
     ) +
-    geom_point(
-      aes(y = difference, fill = diff_sign, alpha = alpha),
-      shape = 21,
-      size = 6
-    ) +
+    geom_point(aes(y = difference, fill = diff_sign, alpha = alpha),
+               shape = 21,
+               size = 6) +
     ggrepel::geom_label_repel(
       aes(
         y = ifelse(diff_sign == "positive", ci_upper, ci_lower),
@@ -442,24 +440,21 @@ analyse_change <- function(data,
         fill = diff_sign,
         alpha = alpha
       ),
+      color = "white",
       direction = "y",
       force = 0.2,
-      nudge_y = ifelse(sf$diff_sign == "positive", nudge_y,-nudge_y),
-      color = "white",
+      nudge_y = ifelse(sf$diff_sign == "positive", nudge_y, -nudge_y),
       fontface = "bold",
       size = 6
     ) +
     scale_fill_manual(values = c("grey60", color_fill)) +
     scale_color_manual(values = c("grey60", color_fill)) +
-    scale_alpha(range = c(0.6, 1)) +
-    labs(
-      fill = NULL,
-      title = "Shift function",
-      x = labs_5x,
-      y = labs_5y
-    ) +
+    scale_alpha(range = c(0.5, 1)) +
+    labs(fill = NULL,
+         title = "Shift function",
+         x = labs_5x,
+         y = labs_5y) +
     theme(legend.position = "none")
-
 
   # Make a plot tracking the shift of the quantiles while keeping the raw data
 
@@ -498,7 +493,8 @@ analyse_change <- function(data,
         x = ifelse(group == level1, 1.2, 1.8),
         y = vals,
         group = q,
-        color = diff_sign
+        color = diff_sign,
+        alpha = alpha
       ),
       linewidth = c(rep(0.6, 8), rep(1.2, 2), rep(0.6, 8))
     ) +
@@ -520,6 +516,7 @@ analyse_change <- function(data,
     ) +
     scale_color_manual(values = c("grey60", color_fill)) +
     scale_fill_manual(values = c("grey60", color_fill)) +
+    scale_alpha(range = c(0.5, 1)) +
     labs(
       fill = NULL,
       title = "Change in the deciles",
