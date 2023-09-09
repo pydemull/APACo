@@ -16,7 +16,7 @@ BARRIERS <- readr::read_csv2("data/BARRIERS.csv")
 # ------------------------
 INCLUSION_cleaned <-
   INCLUSION |>
-  dplyr::mutate(dplyr::across(c(angioplasty, bypass), as.factor),
+  dplyr::mutate(dplyr::across(c(sex, angioplasty, bypass), as.factor),
                 BMI = weight / ((height / 100) ^ 2))
 
 
