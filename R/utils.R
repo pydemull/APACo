@@ -112,7 +112,7 @@ view_rainclouds <- function(data,
       line.args = rlang::list2(
         alpha = 0.2,
         color = color_fill,
-        size = 1
+        linewidth = 1
       ),
       line.args.pos = rlang::list2(position = position_jitter(
         width = .04,
@@ -265,7 +265,7 @@ analyse_change <- function(data,
       line.args = rlang::list2(
         alpha = 0.2,
         color = color_fill,
-        size = 1
+        linewidth = 1
       ),
       line.args.pos = rlang::list2(position = position_jitter(
         width = .04,
@@ -484,7 +484,10 @@ analyse_change <- function(data,
 
   ## Make plot
   p4 <-
-    ggplot(data = data, aes(x = .data[[x]], y = .data[[y]])) +
+    ggplot(data = data |>
+             dplyr::mutate(MONTH = forcats::fct_relevel(MONTH, level2, level1)),
+           aes(x = .data[[x]],
+               y = .data[[y]])) +
     ggbeeswarm::geom_quasirandom(
       shape = 21,
       size = 4,
@@ -505,7 +508,7 @@ analyse_change <- function(data,
     geom_line(
       data = table_sf,
       aes(
-        x = ifelse(group == level1, 1.2, 1.8),
+        x = ifelse(group == level2, 1.2, 1.8),
         y = vals,
         group = q,
         color = diff_sign,
@@ -532,12 +535,10 @@ analyse_change <- function(data,
     scale_color_manual(values = c("grey60", color_fill)) +
     scale_fill_manual(values = c("grey60", color_fill)) +
     scale_alpha(range = c(0.5, 1)) +
-    labs(
-      fill = NULL,
-      title = "Change in the deciles",
-      x = labs_4x,
-      y = labs_4y
-    ) +
+    labs(fill = NULL,
+         title = "Change in the deciles",
+         x = labs_4x,
+         y = labs_4y) +
     theme(legend.position = "none") +
     coord_flip()
 
