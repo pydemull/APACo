@@ -1,7 +1,5 @@
 ---
-title: "SM3. Data relating to all the 6MWT distances, IPAQ-SF scores, and EMAPS scores measured during the APA & Co study"
-author: "Pierre-Yves de Müllenheim"
-date: "`r Sys.Date()`"
+title: "SM3. Figures relating to the change in EMAPS scores bewteen 0 and 12 months"
 output: 
   html_document:
     theme: cosmo
@@ -12,27 +10,7 @@ output:
     df_print: paged
 toc-title: "Table of content"
 params:
-  p_6MWT_all: NA
-  p_IPAQ_all: NA
-  p_emaps_all: NA
-  all_desc_stat: NA
-  table_sf_6wt: NA
-  table_daf_6wt: NA
-  table_sf_ipaq: NA
-  table_daf_ipaq: NA
-  table_sf_mi: NA
-  table_daf_mi: NA
-  table_sf_reg_inte: NA
-  table_daf_reg_inte: NA
-  table_sf_reg_iden: NA
-  table_daf_reg_iden: NA
-  table_sf_reg_intro: NA
-  table_daf_reg_intro: NA
-  table_sf_reg_ext: NA
-  table_daf_reg_ext: NA
-  table_sf_amov: NA
-  table_daf_amov: NA
-
+  change_emaps: NA
 ---
 ```{css, echo=FALSE}
 .title {
@@ -71,50 +49,25 @@ pre code {
 knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message = FALSE)
 ```
 
-# Figures
-## Six-minute walking test
-```{r}
-p_6MWT_all
+```{r, results = "asis"}
+res <-
+  purrr::map(change_emaps, function(x) {
+  
+  knitr::knit_child(text = c(
+                    
+                    "\n",
+                    "# `r x$variable`",
+                    "\n",
+                    "```{r, echo = FALSE, fig.width = 20, fig.height = 20, dpi = 400}",
+                    "print(x$p)",
+                    "```"
+  ),
+  envir = environment(),
+  quiet  = TRUE
+  )
+})
+
+cat(unlist(res), sep = "\n")
+
 ```
-
-\newpage
-
-## IPAQ-SF
-```{r}
-p_IPAQ_all
-```
-
-\newpage
-
-## EMAPS
-```{r}
-p_emaps_all
-```
-
-\newpage
-
-# Table
-```{r}
-reactable::reactable(
-  all_desc_stat,
-  columns = list(Variable = reactable::colDef(
-    style = reactable::JS(
-      "function(rowInfo, colInfo, state) {
-        var firstSorted = state.sorted[0]
-        // Merge cells if unsorted or sorting by Variable
-        if (!firstSorted || firstSorted.id === 'Variable') {
-          var prevRow = state.pageRows[rowInfo.viewIndex - 1]
-          if (prevRow && rowInfo.row['Variable'] === prevRow['Variable']) {
-            return { visibility: 'hidden' }
-          }
-        }
-      }"
-    )
-  )),
-  outlined = TRUE,
-  striped = TRUE,
-  defaultPageSize = 12
-)
-```
-
 

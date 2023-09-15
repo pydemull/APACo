@@ -1,0 +1,151 @@
+---
+title: "SM4. Data relating to the shift and difference asymmetry functions to describe the change in 6MWT, IPAQ-SF and EMAPS scores during the APA & Co study"
+output: 
+  html_document:
+    theme: cosmo
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+    number_sections: yes
+    df_print: paged
+toc-title: "Table of content"
+params:
+  change_6MWT: NA
+  change_IPAQ: NA
+  change_emaps: NA
+---
+```{css, echo=FALSE}
+.title {
+  font-weight: bold;
+}
+
+
+h1 {
+  font-size: 25px;
+  font-weight: bold;
+}
+h2 {
+  font-size: 23px;
+  font-weight: bold;
+}
+h3 {
+  font-size: 21px;
+}
+p.caption {
+  color: #777;
+  margin-top: 10px;
+}
+p code {
+  white-space: inherit;
+}
+pre {
+  word-break: normal;
+  word-wrap: normal;
+}
+pre code {
+  white-space: inherit;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message = FALSE)
+```
+
+# Six-minute walking test
+## Shift function
+```{r}
+change_6MWT$sf
+```
+
+## Difference asymetry function
+```{r}
+change_6MWT$daf
+```
+
+
+# IPAQ-SF MET-min / week
+## Shift function
+```{r}
+change_IPAQ$sf
+```
+
+## Difference asymetry function
+```{r}
+change_IPAQ$daf
+```
+
+
+# EMAPS | Intrinsic motivation
+## Shift function
+```{r}
+change_emaps[[1]][[2]]$sf
+```
+
+## Difference asymetry function
+```{r}
+change_emaps[[1]][[2]]$daf
+```
+
+
+# EMAPS | Integrated regulation
+## Shift function
+```{r}
+change_emaps[[2]][[2]]$sf
+```
+
+## Difference asymetry function
+```{r}
+change_emaps[[2]][[2]]$daf
+```
+
+
+# EMAPS | Identified regulation
+## Shift function
+```{r}
+change_emaps[[3]][[2]]$sf
+```
+
+## Difference asymetry function
+```{r}
+change_emaps[[3]][[2]]$daf
+```
+
+
+# EMAPS | Introjected regulation
+## Shift function
+```{r}
+change_emaps[[4]][[2]]$sf
+```
+
+## Difference asymetry function
+```{r}
+change_emaps[[4]][[2]]$daf
+```
+
+
+# EMAPS | External regulation
+## Shift function
+```{r}
+change_emaps[[5]][[2]]$sf
+```
+
+
+## Difference asymetry function
+```{r}
+change_emaps[[5]][[2]]$daf
+```
+
+
+# EMAPS | Amotivation
+## Shift function
+```{r}
+change_emaps[[6]][[2]]$sf
+```
+
+## Difference asymetry function
+```{r}
+change_emaps[[6]][[2]]$daf
+```
+
+
+

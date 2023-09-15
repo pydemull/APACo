@@ -1,0 +1,101 @@
+---
+title: "SM3. Data relating to all the 6MWT distances, IPAQ-SF scores, and EMAPS scores"
+output: 
+  html_document:
+    theme: cosmo
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+    number_sections: yes
+    df_print: paged
+toc-title: "Table of content"
+params:
+  p_6MWT_all: NA
+  p_IPAQ_all: NA
+  p_emaps_all: NA
+  all_desc_stat: NA
+---
+```{css, echo=FALSE}
+.title {
+  font-weight: bold;
+}
+
+
+h1 {
+  font-size: 25px;
+  font-weight: bold;
+}
+h2 {
+  font-size: 23px;
+  font-weight: bold;
+}
+h3 {
+  font-size: 21px;
+}
+p.caption {
+  color: #777;
+  margin-top: 10px;
+}
+p code {
+  white-space: inherit;
+}
+pre {
+  word-break: normal;
+  word-wrap: normal;
+}
+pre code {
+  white-space: inherit;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message = FALSE)
+```
+
+# Figures
+## Six-minute walking test
+```{r}
+p_6MWT_all
+```
+
+\newpage
+
+## IPAQ-SF
+```{r}
+p_IPAQ_all
+```
+
+\newpage
+
+## EMAPS
+```{r}
+p_emaps_all
+```
+
+\newpage
+
+# Table
+```{r}
+reactable::reactable(
+  all_desc_stat,
+  columns = list(Variable = reactable::colDef(
+    style = reactable::JS(
+      "function(rowInfo, colInfo, state) {
+        var firstSorted = state.sorted[0]
+        // Merge cells if unsorted or sorting by Variable
+        if (!firstSorted || firstSorted.id === 'Variable') {
+          var prevRow = state.pageRows[rowInfo.viewIndex - 1]
+          if (prevRow && rowInfo.row['Variable'] === prevRow['Variable']) {
+            return { visibility: 'hidden' }
+          }
+        }
+      }"
+    )
+  )),
+  outlined = TRUE,
+  striped = TRUE,
+  defaultPageSize = 12
+)
+```
+
+

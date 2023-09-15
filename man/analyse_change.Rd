@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{analyse_change}
 \alias{analyse_change}
-\title{Build a complex figure analysing the change in the variable of interest}
+\title{Get a set of figures and tables for analysing the change in the variable of interest}
 \usage{
 analyse_change(
   data,
@@ -75,5 +75,5 @@ and for a 2-by-2 use ("f2x2").}
 A ggplot object.
 }
 \description{
-Build a complex figure analysing the change in the variable of interest
+Get a set of figures and tables for analysing the change in the variable of interest
 }
