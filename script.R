@@ -77,36 +77,6 @@ DB_6MWT <-
     )
   )
 
-# Visualize data from all the participants at the three times of measurement
-
-## Make the plot
-p_6MWT_all <-
-  view_rainclouds(
-    data = DB_6MWT,
-    id = "patient",
-    x = "MONTH",
-    y = "DIST_M",
-    color_fill = "#0089C6",
-    color_stat = "black",
-    labs_x = "Months post-program",
-    labs_y = "6-min walking test distance (m)"
-  )
-
-## View the plot
-p_6MWT_all
-
-## Export the plot
-ragg::agg_tiff(
-  "out/p_6MWT_all.tiff",
-  scaling = 0.5,
-  height = 10,
-  width = 10,
-  unit = "cm",
-  res = 400
-)
-p_6MWT_all
-dev.off()
-
 # Perform analyses relating to the change between 0 and 12 months
 
 ## Keep the rows for months 0 and 12, and keep the participants with data at both 0 and 12 months
@@ -230,36 +200,6 @@ DB_IPAQ <-
     )
   )
 
-# Visualize data from all the participants at the three times of measurement
-
-## Make the plot
-p_IPAQ_all <-
-  view_rainclouds(
-    data = DB_IPAQ,
-    id = "patient",
-    x = "MONTH",
-    y = "MET_MIN_WK",
-    color_fill = "#BFD61F",
-    color_stat = "black",
-    labs_x = "Months post-program",
-    labs_y = "MET-min/week"
-  )
-
-## View the plot
-p_IPAQ_all
-
-## Export the plot
-ragg::agg_tiff(
-  "out/p_IPAQ_all.tiff",
-  scaling = 0.5,
-  height = 10,
-  width = 10,
-  unit = "cm",
-  res = 400
-)
-p_IPAQ_all
-dev.off()
-
 # Perform analyses relating to the change between 6 and 12 months
 
 ## Keep the rows for months 6 and 12, and keep the participants with data at both 6 and 12 months
@@ -349,114 +289,6 @@ DB_EMAPS <-
     "Amotivation"             = (AP_q2  %+% AP_q5  %+%  AP_q8)  / 3
   ) |>
   dplyr::select(patient, MONTH, "Intrinsic motivation":"Amotivation")
-
-# Make a figure with all the participants and measurements
-
-## Make the plot
-p_emaps_all <-
-  DB_EMAPS |>
-  tidyr::pivot_longer(
-    cols = -c(patient, MONTH),
-    names_to = "type_motiv",
-    values_to = "val"
-  ) |>
-  dplyr::mutate(across(type_motiv, \(x) factor(
-    x,
-    levels = c(
-      "Intrinsic motivation",
-      "Integrated regulation",
-      "Identified regulation",
-      "Introjected regulation",
-      "External regulation",
-      "Amotivation"
-    )
-  ))) |>
-  ggplot(aes(x = MONTH, y = val, fill = type_motiv)) +
-  ggrain::geom_rain(
-    id.long.var = "patient",
-    cov = "type_motiv",
-    point.args = rlang::list2(alpha = 0.3, size = 3),
-    line.args = rlang::list2(alpha = 0, linewidth = 0),
-    point.args.pos = rlang::list2(position = position_jitter(
-      width = .04,
-      height = 0,
-      seed = 42
-    ))
-  ) +
-  geom_line(
-    aes(group = patient, color = type_motiv),
-    alpha = 0.2,
-    position = position_jitter(
-      width = .04,
-      height = 0,
-      seed = 42
-    )
-  ) +
-  stat_summary(
-    aes(group = 1),
-    fun = "mean",
-    geom = "line",
-    size = 0.5,
-    color = "black"
-  ) +
-  stat_summary(
-    aes(group = MONTH),
-    fun = "mean",
-    geom = "point",
-    size = 2,
-    color = "black"
-  ) +
-  stat_summary(
-    aes(group = MONTH),
-    fun.data = "mean_sdl",
-    geom = "errorbar",
-    fun.args = list(mult = 1),
-    width = 0.05,
-    linewidth = 0.5,
-    color = "black"
-  ) +
-  scale_y_continuous(breaks = seq(1, 7, 1)) +
-  scale_fill_manual(values = c(
-    "#C3D69B",
-    "#C3D69B",
-    "#C3D69B",
-    "grey50",
-    "#FAC090",
-    "#E46C0A"
-  )) +
-  scale_color_manual(values = c(
-    "#C3D69B",
-    "#C3D69B",
-    "#C3D69B",
-    "grey50",
-    "#FAC090",
-    "#E46C0A"
-  )) +
-  labs(x = "Months post-program",
-       y = "Score") +
-  theme(
-    legend.position = "none",
-    panel.grid = element_blank(),
-    axis.title = element_text(size = 15),
-    axis.text = element_text(size = 15),
-    strip.text.x = element_text(size = 15)
-  ) +
-  facet_wrap(. ~ type_motiv)
-
-## View the plot
-p_emaps_all
-
-## Export the plot
-ragg::agg_tiff(
-  "out/p_emaps_all.tiff",
-  scaling = 0.7,
-  height = 15,
-  width = 25,
-  unit = "cm",
-  res = 400
-)
-p_emaps_all
-dev.off()
 
 # Perform analyses relating to the change  between 0 and 12 months
 
@@ -576,728 +408,257 @@ purrr::walk(change_emaps, function(x) {
 })
 
 
-# ------------------------------------------------------------------------------------------------
-# Mean (SD), median (IQR), and dz for the comparisons of the time points (supplementary materials) ----
-# ------------------------------------------------------------------------------------------------
-
-# 6MWT distance
-
-## 6 vs 0 months
-
-### Keep the rows for the months 0 and 6, and keep the participants with data at both 0 and 6 months
-DB_6MWT_6_0 <-
-  DB_6MWT |>
-  filter(MONTH != "12") |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "6", "0"))
-
-### Get descriptive statistics
-describeBy(DB_6MWT_6_0$DIST_M, DB_6MWT_6_0$MONTH, quant = c(0.25, 0.75))
-
-### Get dz
-cohens_d(DIST_M ~ MONTH,
-         data = DB_6MWT_6_0,
-         paired = TRUE,
-         pooled_sd = TRUE)
-
-## 12 vs 6 months
-
-### Keep the rows for the months 6 and 12, and keep the participants with data at both 6 and 12 months
-DB_6MWT_12_6 <-
-  DB_6MWT |>
-  filter(MONTH != "0") |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "12", "6"))
-
-### Get descriptive statistics
-describeBy(DB_6MWT_12_6$DIST_M, DB_6MWT_12_6$MONTH, quant = c(0.25, 0.75))
-
-### Get dz
-cohens_d(DIST_M ~ MONTH,
-         data = DB_6MWT_12_6,
-         paired = TRUE,
-         pooled_sd = TRUE)
-
-## 12 vs 0 months
-
-### Keep the rows for the months 0 and 12, and keep the participants with data at both 0 and 12 months
-DB_6MWT_12_0 <-
-  DB_6MWT |>
-  filter(MONTH != "6") |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "12", "0"))
-
-### Get descriptive statistics
-describeBy(DB_6MWT_12_0$DIST_M, DB_6MWT_12_0$MONTH, quant = c(0.25, 0.75))
-
-### Get dz
-cohens_d(DIST_M ~ MONTH,
-         data = DB_6MWT_12_0,
-         paired = TRUE,
-         pooled_sd = TRUE)
-
-# IPAQ MET-min/week
-
-## 6 vs 0 months
-
-### Keep the rows for the months 0 and 6, and keep the participants with data at both 0 and 6 months
-DB_IPAQ_6_0 <-
-  DB_IPAQ |>
-  filter(MONTH != "12") |>
-  select(patient, MONTH, MET_MIN_WK) |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "6", "0"))
-
-### Get descriptive statistics
-describeBy(DB_IPAQ_6_0$MET_MIN_WK, DB_IPAQ_6_0$MONTH, quant = c(0.25, 0.75))
-
-### Get dz
-cohens_d(
-  MET_MIN_WK ~ MONTH,
-  data = DB_IPAQ_6_0,
-  paired = TRUE,
-  pooled_sd = TRUE
+# --------------
+# Barriers to PA ----
+# --------------
+# Make the figure
+p_bar <-
+  BARRIERS |>
+  select(patient:isolement_faible_RS) |>
+  pivot_longer(cols = c(-patient),
+               names_to = "var",
+               values_to = "rep") |>
+  mutate(
+    rep  = as.factor(rep),
+    var = fct_recode(
+      var,
+      "Unfavourable weather" = "meteo_defavorable",
+      "Lack of time" = "manque_temps",
+      "Heavy effort / too tired" = "effort_import_fatig",
+      "Fear of injury / pain" = "crainte_blessures_douleurs",
+      "Lack of interest" = "manque_interet",
+      "Difficulty to move" = "deplacements_diff",
+      "Too old" = "trop_vieux",
+      "Social isolation / weak social network" = "isolement_faible_RS",
+      "Too costly" = "cout_trop_eleve"
+    )
+  ) |>
+  count(var, rep) |>
+  group_by(var) |>
+  mutate(perc = round(n / sum(n) * 100, 1),
+         magnitude = ifelse(perc > 15, "high", "low"),
+  ) |>
+  filter(rep == 1) |>
+  ggplot(aes(
+    x = fct_reorder(var, n),
+    y = n,
+    color = magnitude
+  )) +
+  geom_segment(aes(
+    x = fct_reorder(var, n),
+    y = 0,
+    xend = fct_reorder(var, n),
+    yend = n
+  ),
+  linewidth  = 1) +
+  geom_point(
+    shape = 21,
+    stroke = 2,
+    fill = "grey90",
+    size = 4
+  ) +
+  geom_text(
+    aes(label = paste0(n, " (", perc, "%)")),
+    hjust = 0,
+    nudge_y = 0.75,
+    fontface = "bold",
+    size = 7
+  ) +
+  labs(y = NULL, x = NULL) +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_color_manual(values = c("grey30", "grey60")) +
+  coord_flip(ylim = c(0, 36)) +
+  theme_bw() +
+  theme(
+    panel.grid = element_blank(),
+    axis.title = element_text(size = 20),
+    axis.text = element_text(size = 20),
+    legend.position = "none",
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank()
+  )
+# View the figure
+p_bar
+# Export the figure
+agg_tiff(
+  "out/p_barriers.tiff",
+  scaling = 0.3,
+  height = 5,
+  width = 8,
+  unit = "cm",
+  res = 400
 )
-
-## 12 vs 6 months
-
-### Keep the rows for the months 6 and 12, and keep the participants with data at both 6 and 12 months
-DB_IPAQ_12_6 <-
-  DB_IPAQ |>
-  filter(MONTH != "0") |>
-  select(patient, MONTH, MET_MIN_WK) |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "12", "6"))
-
-### Get descriptive statistics
-describeBy(DB_IPAQ_12_6$MET_MIN_WK,
-           DB_IPAQ_12_6$MONTH,
-           quant = c(0.25, 0.75))
-
-### Get dz
-cohens_d(
-  MET_MIN_WK ~ MONTH,
-  data = DB_IPAQ_12_6,
-  paired = TRUE,
-  pooled_sd = TRUE
-)
-
-## 12 vs 0 months
-
-### Keep the rows for the months 0 and 12, and keep the participants with data at both 0 and 12 months
-DB_IPAQ_12_0 <-
-  DB_IPAQ |>
-  filter(MONTH != "6") |>
-  select(patient, MONTH, MET_MIN_WK) |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "12", "0"))
-
-### Get descriptive statistics
-describeBy(DB_IPAQ_12_0$MET_MIN_WK,
-           DB_IPAQ_12_0$MONTH,
-           quant = c(0.25, 0.75))
-
-### Get dz
-cohens_d(
-  MET_MIN_WK ~ MONTH,
-  data = DB_IPAQ_12_0,
-  paired = TRUE,
-  pooled_sd = TRUE
-)
+p_bar
+dev.off()
 
 
-# EMAPS - Intrinsic motivation
+# -----------------------------------------------------------------------------
+# Building supplemental materials SM3. Data relating to all the 6MWT distances, ----
+# IPAQ-SF scores, and EMAPS scores measured during the study
+# -----------------------------------------------------------------------------
 
-## 6 vs 0 months
+# Figures
 
-### Keep the rows for the months 0 and 6, and keep the participants with data at both 0 and 6 months
-DB_EMAPS_6_0_IM <-
+## 6MWT distance
+p_6MWT_all <-
+  view_rainclouds(
+    data = DB_6MWT,
+    id = "patient",
+    x = "MONTH",
+    y = "DIST_M",
+    color_fill = "#0089C6",
+    color_stat = "black",
+    labs_x = "Months post-program",
+    labs_y = "6-min walking test distance (m)"
+  )
+
+## IPAQ MET-min/week
+p_IPAQ_all <-
+  view_rainclouds(
+    data = DB_IPAQ,
+    id = "patient",
+    x = "MONTH",
+    y = "MET_MIN_WK",
+    color_fill = "#BFD61F",
+    color_stat = "black",
+    labs_x = "Months post-program",
+    labs_y = "MET-min/week"
+  )
+
+##  EMAPS
+p_emaps_all <-
   DB_EMAPS |>
-  filter(MONTH != "12") |>
-  select(patient, MONTH, `Intrinsic motivation`) |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "6", "0"))
-
-### Get descriptive statistics
-describeBy(DB_EMAPS_6_0_IM$`Intrinsic motivation`,
-           DB_EMAPS_6_0_IM$MONTH,
-           quant = c(0.25, 0.75))
-
-### Get dz
-cohens_d(
-  `Intrinsic motivation` ~ MONTH,
-  data = DB_EMAPS_6_0_IM,
-  paired = TRUE,
-  pooled_sd = TRUE
-)
-
-## 12 vs 6 months
-
-### Keep the rows for months 6 and 12, and keep the participants with data at both 6 and 12 months
-DB_EMAPS_12_6_IM <-
-  DB_EMAPS |>
-  filter(MONTH != "0") |>
-  select(patient, MONTH, `Intrinsic motivation`) |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "12", "6"))
-
-### Get descriptive statistics
-describeBy(
-  DB_EMAPS_12_6_IM$`Intrinsic motivation`,
-  DB_EMAPS_12_6_IM$MONTH,
-  quant = c(0.25, 0.75)
-)
-
-### Get dz
-cohens_d(
-  `Intrinsic motivation` ~ MONTH,
-  data = DB_EMAPS_12_6_IM,
-  paired = TRUE,
-  pooled_sd = TRUE
-)
-
-## 12 vs 0 months
-
-### Keep the rows for the months 0 and 12, and keep the participants with data at both 0 and 12 months
-DB_EMAPS_12_0_IM <-
-  DB_EMAPS |>
-  filter(MONTH != "6") |>
-  select(patient, MONTH, `Intrinsic motivation`) |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "12", "0"))
-
-### Get descriptive statistics
-describeBy(
-  DB_EMAPS_12_0_IM$`Intrinsic motivation`,
-  DB_EMAPS_12_0_IM$MONTH,
-  quant = c(0.25, 0.75)
-)
-
-### Get dz
-cohens_d(
-  `Intrinsic motivation` ~ MONTH,
-  data = DB_EMAPS_12_0_IM,
-  paired = TRUE,
-  pooled_sd = TRUE
-)
-
-# EMAPS - Integrated regulation
-
-## 6 vs 0 months
-
-### Keep the rows for the months 0 and 6, and keep the participants with data at both 0 and 6 months
-DB_EMAPS_6_0_INTEG <-
-  DB_EMAPS |>
-  filter(MONTH != "12") |>
-  select(patient, MONTH, `Integrated regulation`) |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "6", "0"))
-
-### Get descriptive statistics
-describeBy(
-  DB_EMAPS_6_0_INTEG$`Integrated regulation`,
-  DB_EMAPS_6_0_INTEG$MONTH,
-  quant = c(0.25, 0.75)
-)
-
-### Get dz
-cohens_d(
-  `Integrated regulation` ~ MONTH,
-  data = DB_EMAPS_6_0_INTEG,
-  paired = TRUE,
-  pooled_sd = TRUE
-)
-
-## 12 vs 6 months
-
-### Keep the rows for the months 6 and 12, and keep the participants with data at both 6 and 12 months
-DB_EMAPS_12_6_INTEG <-
-  DB_EMAPS |>
-  filter(MONTH != "0") |>
-  select(patient, MONTH, `Integrated regulation`) |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "12", "6"))
-
-### Get descriptive statistics
-describeBy(
-  DB_EMAPS_12_6_INTEG$`Integrated regulation`,
-  DB_EMAPS_12_6_INTEG$MONTH,
-  quant = c(0.25, 0.75)
-)
-
-### Get dz
-cohens_d(
-  `Integrated regulation` ~ MONTH,
-  data = DB_EMAPS_12_6_INTEG,
-  paired = TRUE,
-  pooled_sd = TRUE
-)
-
-## 12 vs 0 months
-
-### Keep the rows for the months 0 and 12, and keep the participants with data at both 0 and 12 months
-DB_EMAPS_12_0_INTEG <-
-  DB_EMAPS |>
-  filter(MONTH != "6") |>
-  select(patient, MONTH, `Integrated regulation`) |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "12", "0"))
-
-### Get descriptive statistics
-describeBy(
-  DB_EMAPS_12_0_INTEG$`Integrated regulation`,
-  DB_EMAPS_12_0_INTEG$MONTH,
-  quant = c(0.25, 0.75)
-)
-
-### Get dz
-cohens_d(
-  `Integrated regulation` ~ MONTH,
-  data = DB_EMAPS_12_0_INTEG,
-  paired = TRUE,
-  pooled_sd = TRUE
-)
-
-# EMAPS - Identified regulation
-
-## 6 vs 0 months
-
-### Keep the rows for the months 0 and 6, and keep the participants with data at both 0 and 6 months
-DB_EMAPS_6_0_IDEN <-
-  DB_EMAPS |>
-  filter(MONTH != "12") |>
-  select(patient, MONTH, `Identified regulation`) |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "6", "0"))
-
-### Get descriptive statistics
-describeBy(
-  DB_EMAPS_6_0_IDEN$`Identified regulation`,
-  DB_EMAPS_6_0_IDEN$MONTH,
-  quant = c(0.25, 0.75)
-)
-
-### Get dz
-cohens_d(
-  `Identified regulation` ~ MONTH,
-  data = DB_EMAPS_6_0_IDEN,
-  paired = TRUE,
-  pooled_sd = TRUE
-)
-
-## 12 vs 6 months
-
-### Keep the rows for the months 6 and 12, and keep the participants with data at both 6 and 12 months
-DB_EMAPS_12_6_IDEN <-
-  DB_EMAPS |>
-  filter(MONTH != "0") |>
-  select(patient, MONTH, `Identified regulation`) |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "12", "6"))
-
-### Get descriptive statistics
-describeBy(
-  DB_EMAPS_12_6_IDEN$`Identified regulation`,
-  DB_EMAPS_12_6_IDEN$MONTH,
-  quant = c(0.25, 0.75)
-)
-
-### Get dz
-cohens_d(
-  `Identified regulation` ~ MONTH,
-  data = DB_EMAPS_12_6_IDEN,
-  paired = TRUE,
-  pooled_sd = TRUE
-)
-
-## 12 vs 0 months
-
-### Keep the rows for the months 0 and 12, and keep the participants with data at both 0 and 12 months
-DB_EMAPS_12_0_IDEN <-
-  DB_EMAPS |>
-  filter(MONTH != "6") |>
-  select(patient, MONTH, `Identified regulation`) |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "12", "0"))
-
-### Get descriptive statistics
-describeBy(
-  DB_EMAPS_12_0_IDEN$`Identified regulation`,
-  DB_EMAPS_12_0_IDEN$MONTH,
-  quant = c(0.25, 0.75)
-)
-
-### Get dz
-cohens_d(
-  `Identified regulation` ~ MONTH,
-  data = DB_EMAPS_12_0_IDEN,
-  paired = TRUE,
-  pooled_sd = TRUE
-)
-
-# EMAPS - Introjected regulation
-
-## 6 vs 0 months
-
-### Keep the rows for the months 0 and 6, and keep the participants with data at both 0 and 6 months
-DB_EMAPS_6_0_INTRO <-
-  DB_EMAPS |>
-  filter(MONTH != "12") |>
-  select(patient, MONTH, `Introjected regulation`) |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "6", "0"))
-
-### Get descriptive statistics
-describeBy(
-  DB_EMAPS_6_0_INTRO$`Introjected regulation`,
-  DB_EMAPS_6_0_INTRO$MONTH,
-  quant = c(0.25, 0.75)
-)
-
-### Get dz
-cohens_d(
-  `Introjected regulation` ~ MONTH,
-  data = DB_EMAPS_6_0_INTRO,
-  paired = TRUE,
-  pooled_sd = TRUE
-)
-
-## 12 vs 6 months
-
-### Keep the rows for the months 6 and 12, and keep the participants with data at both 6 and 12 months
-DB_EMAPS_12_6_INTRO <-
-  DB_EMAPS |>
-  filter(MONTH != "0") |>
-  select(patient, MONTH, `Introjected regulation`) |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "12", "6"))
-
-### Get descriptive statistics
-describeBy(
-  DB_EMAPS_12_6_INTRO$`Introjected regulation`,
-  DB_EMAPS_12_6_INTRO$MONTH,
-  quant = c(0.25, 0.75)
-)
-
-### Get dz
-cohens_d(
-  `Introjected regulation` ~ MONTH,
-  data = DB_EMAPS_12_6_INTRO,
-  paired = TRUE,
-  pooled_sd = TRUE
-)
-
-## 12 vs 0 months
-
-### Keep the rows for the months 0 and 12, and keep the participants with data at both 0 and 12 months
-DB_EMAPS_12_0_INTRO <-
-  DB_EMAPS |>
-  filter(MONTH != "6") |>
-  select(patient, MONTH, `Introjected regulation`) |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "12", "0"))
-
-### Get descriptive statistics
-describeBy(
-  DB_EMAPS_12_0_INTRO$`Introjected regulation`,
-  DB_EMAPS_12_0_INTRO$MONTH,
-  quant = c(0.25, 0.75)
-)
-
-### Get dz
-cohens_d(
-  `Introjected regulation` ~ MONTH,
-  data = DB_EMAPS_12_0_INTRO,
-  paired = TRUE,
-  pooled_sd = TRUE
-)
-
-# EMAPS - External regulation
-
-## 6 vs 0 months
-
-### Keep the rows for the months 0 and 6, and keep the participants with data at both 0 and 6 months
-DB_EMAPS_6_0_EXT <-
-  DB_EMAPS |>
-  filter(MONTH != "12") |>
-  select(patient, MONTH, `External regulation`) |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "6", "0"))
-
-### Get descriptive statistics
-describeBy(DB_EMAPS_6_0_EXT$`External regulation`,
-           DB_EMAPS_6_0_EXT$MONTH,
-           quant = c(0.25, 0.75))
-
-### Get dz
-cohens_d(
-  `External regulation` ~ MONTH,
-  data = DB_EMAPS_6_0_EXT,
-  paired = TRUE,
-  pooled_sd = TRUE
-)
-
-## 12 vs 6 months
-
-### Keep the rows for the months 6 and 12, and keep the participants with data at both 6 and 12 months
-DB_EMAPS_12_6_EXT <-
-  DB_EMAPS |>
-  filter(MONTH != "0") |>
-  select(patient, MONTH, `External regulation`) |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "12", "6"))
-
-### Get descriptive statistics
-describeBy(
-  DB_EMAPS_12_6_EXT$`External regulation`,
-  DB_EMAPS_12_6_EXT$MONTH,
-  quant = c(0.25, 0.75)
-)
-
-### Get dz
-cohens_d(
-  `External regulation` ~ MONTH,
-  data = DB_EMAPS_12_6_EXT,
-  paired = TRUE,
-  pooled_sd = TRUE
-)
-
-## 12 vs 0 months
-
-### Keep the rows for the months 0 and 12, and keep the participants with data at both 0 and 12 months
-DB_EMAPS_12_0_EXT <-
-  DB_EMAPS |>
-  filter(MONTH != "6") |>
-  select(patient, MONTH, `External regulation`) |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "12", "0"))
-
-### Get descriptive statistics
-describeBy(
-  DB_EMAPS_12_0_EXT$`External regulation`,
-  DB_EMAPS_12_0_EXT$MONTH,
-  quant = c(0.25, 0.75)
-)
-
-### Get dz
-cohens_d(
-  `External regulation` ~ MONTH,
-  data = DB_EMAPS_12_0_EXT,
-  paired = TRUE,
-  pooled_sd = TRUE
-)
-
-# EMAPS - Amotivation
-
-## 6 vs 0 months
-
-### Keep the rows for months 0 and 6, and keep the participants with data at both 0 and 6 months
-DB_EMAPS_6_0_AM <-
-  DB_EMAPS |>
-  filter(MONTH != "12") |>
-  select(patient, MONTH, `Amotivation`) |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "6", "0"))
-
-### Get descriptive statistics
-describeBy(DB_EMAPS_6_0_AM$`Amotivation`,
-           DB_EMAPS_6_0_AM$MONTH,
-           quant = c(0.25, 0.75))
-
-### Get dz
-cohens_d(
-  `Amotivation` ~ MONTH,
-  data = DB_EMAPS_6_0_AM,
-  paired = TRUE,
-  pooled_sd = TRUE
-)
-
-## 12 vs 6 months
-
-### Keep the rows for the months 6 and 12, and keep the participants with data at both 6 and 12 months
-DB_EMAPS_12_6_AM <-
-  DB_EMAPS |>
-  filter(MONTH != "0") |>
-  select(patient, MONTH, `Amotivation`) |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "12", "6"))
-
-### Get descriptive statistics
-describeBy(DB_EMAPS_12_6_AM$`Amotivation`,
-           DB_EMAPS_12_6_AM$MONTH,
-           quant = c(0.25, 0.75))
-
-### Get dz
-cohens_d(
-  `Amotivation` ~ MONTH,
-  data = DB_EMAPS_12_6_AM,
-  paired = TRUE,
-  pooled_sd = TRUE
-)
-
-## 12 vs 0 months
-
-### Keep the rows for the months 0 and 12, and keep the participants with data at both 0 and 12 months
-DB_EMAPS_12_0_AM <-
-  DB_EMAPS |>
-  filter(MONTH != "6") |>
-  select(patient, MONTH, `Amotivation`) |>
-  drop_na() |>
-  group_by(patient) |>
-  nest() |>
-  mutate(n_visits = map_dbl(data, ~ nrow(.x))) |>
-  filter(n_visits == 2) |>
-  ungroup() |>
-  unnest(data) |>
-  mutate(MONTH = fct_relevel(MONTH, "12", "0"))
-
-### Get descriptive statistics
-describeBy(DB_EMAPS_12_0_AM$`Amotivation`,
-           DB_EMAPS_12_0_AM$MONTH,
-           quant = c(0.25, 0.75))
-
-### Get dz
-cohens_d(
-  `Amotivation` ~ MONTH,
-  data = DB_EMAPS_12_0_AM,
-  paired = TRUE,
-  pooled_sd = TRUE
+  tidyr::pivot_longer(
+    cols = -c(patient, MONTH),
+    names_to = "type_motiv",
+    values_to = "val"
+  ) |>
+  dplyr::mutate(across(type_motiv, \(x) factor(
+    x,
+    levels = c(
+      "Intrinsic motivation",
+      "Integrated regulation",
+      "Identified regulation",
+      "Introjected regulation",
+      "External regulation",
+      "Amotivation"
+    )
+  ))) |>
+  ggplot(aes(x = MONTH, y = val, fill = type_motiv)) +
+  ggrain::geom_rain(
+    id.long.var = "patient",
+    cov = "type_motiv",
+    point.args = rlang::list2(alpha = 0.3, size = 3),
+    line.args = rlang::list2(alpha = 0, linewidth = 0),
+    point.args.pos = rlang::list2(position = position_jitter(
+      width = .04,
+      height = 0,
+      seed = 42
+    ))
+  ) +
+  geom_line(
+    aes(group = patient, color = type_motiv),
+    alpha = 0.2,
+    position = position_jitter(
+      width = .04,
+      height = 0,
+      seed = 42
+    )
+  ) +
+  stat_summary(
+    aes(group = 1),
+    fun = "mean",
+    geom = "line",
+    size = 0.5,
+    color = "black"
+  ) +
+  stat_summary(
+    aes(group = MONTH),
+    fun = "mean",
+    geom = "point",
+    size = 2,
+    color = "black"
+  ) +
+  stat_summary(
+    aes(group = MONTH),
+    fun.data = "mean_sdl",
+    geom = "errorbar",
+    fun.args = list(mult = 1),
+    width = 0.05,
+    linewidth = 0.5,
+    color = "black"
+  ) +
+  scale_y_continuous(breaks = seq(1, 7, 1)) +
+  scale_fill_manual(values = c(
+    "#C3D69B",
+    "#C3D69B",
+    "#C3D69B",
+    "grey50",
+    "#FAC090",
+    "#E46C0A"
+  )) +
+  scale_color_manual(values = c(
+    "#C3D69B",
+    "#C3D69B",
+    "#C3D69B",
+    "grey50",
+    "#FAC090",
+    "#E46C0A"
+  )) +
+  labs(x = "Months post-program",
+       y = "Score") +
+  theme(
+    legend.position = "none",
+    panel.grid = element_blank(),
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 12),
+    strip.text.x = element_text(size = 12)
+  ) +
+  facet_wrap(. ~ type_motiv)
+
+# Table
+
+all_desc_stat <-
+DB_6MWT |>
+  dplyr::left_join(DB_IPAQ |> dplyr::select(c(patient, MONTH, MET_MIN_WK)), by = c("patient", "MONTH")) |>
+  dplyr::left_join(DB_EMAPS, by = c("patient", "MONTH")) |>
+  dplyr::group_by(MONTH) |>
+  dplyr::summarise(dplyr::across(
+    DIST_M:Amotivation,
+    list(
+      PARAM_n = ~ sum(!is.na(.x)),
+      PARAM_mean = ~ mean(.x, na.rm = TRUE),
+      PARAM_sd = ~ sd(.x, na.rm = TRUE),
+      PARAM_median = ~ median(.x, na.rm = TRUE),
+      PARAM_Q1 =  ~ quantile(., probs = 0.25, na.rm = TRUE),
+      PARAM_Q3 =  ~ quantile(., probs = 0.75, na.rm = TRUE)
+    )
+  )) |>
+
+  tidyr::pivot_longer(
+    cols = c(-MONTH),
+    names_to = c("Variable", ".value"),
+    names_sep = "_PARAM_",
+  ) |>
+  tidyr::pivot_longer(cols = n:Q3,
+                      names_to = "Parameter",
+                      values_to = "stat") |>
+  tidyr::pivot_wider(names_from = MONTH, values_from = stat) |>
+  dplyr::rename("MONTH 0" = "0",
+                "MONTH 6" = "6",
+                "MONTH 12" = "12") |>
+  dplyr::mutate(
+    Variable = forcats::fct_recode(Variable, "6WT distance (m)" = "DIST_M", "IPAQ-SF (MET-min) / week" = "MET_MIN_WK"),
+    dplyr::across(`MONTH 0`:`MONTH 12`, ~ round(.x, 2)))
+
+
+# Generate materials
+rmarkdown::render(
+  "./inst/templates/SM3.Rmd",
+  params = list(
+    p_6MWT_all = p_6MWT_all,
+    p_IPAQ_all = p_IPAQ_all,
+    p_emaps_all = p_emaps_all,
+    all_desc_stat = all_desc_stat
+  )
 )
