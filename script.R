@@ -1,4 +1,7 @@
-
+# Welcome to the script allowing to reproduce analyses performed in the paper entitled
+# 'Change in exercise capacity, physical activity, and motivation for physical activity
+# at 12 months after a cardiac rehabilitation program in coronary heart disease patients:
+# a prospective, monocentric, and observational study'
 
 # -----------
 # Import data ----
@@ -19,7 +22,9 @@ INCLUSION_cleaned <-
   dplyr::mutate(dplyr::across(c(sex, angioplasty, bypass), as.factor),
                 BMI = weight / ((height / 100) ^ 2))
 
-
+BARRIERS_cleaned <-
+  BARRIERS |>
+  dplyr::mutate(across(patient:autres, as.factor))
 # ------------------------------------------------------------
 # Describe participants characteristics at the inclusion stage ----
 # ------------------------------------------------------------
@@ -92,7 +97,7 @@ DB_6MWT_0_12 <-
   dplyr::ungroup() |>
   tidyr::unnest(data)
 
-## Test the change in central tendency
+## Test the change in central tendency as initially planned in the project
 t.test(
   formula = DIST_M ~ MONTH,
   data = DB_6MWT_0_12,
@@ -113,14 +118,14 @@ change_6MWT <-
     color_fill = "#0089C6",
     color_stat = "black",
     labs_1x = "Months post-program",
-    labs_1y = "6WT distance (m)",
+    labs_1y = "6MWT distance (m)",
     labs_2x = "",
-    labs_2y = "6WT distance [Month 12 - Month 0] (m)",
-    labs_3x = "6WT distance at Month 0 (m)",
-    labs_3y = "6WT distance at Month 12 (m)",
+    labs_2y = "6MWT distance [Month 12 - Month 0] (m)",
+    labs_3x = "6MWT distance at Month 0 (m)",
+    labs_3y = "6MWT distance at Month 12 (m)",
     labs_4x = "Months post-program",
-    labs_4y = "6WT distance (m)",
-    labs_5x = "Deciles of 6WT distance at Month 0 (m)",
+    labs_4y = "6MWT distance (m)",
+    labs_5x = "Deciles of 6MWT distance at Month 0 (m)",
     labs_5y = "Decile Month 12 - Decile Month 0 (m)",
     labs_6x = "Quantiles",
     labs_6y = "Quantile sum = q + 1−q"
@@ -136,7 +141,7 @@ change_6MWT
 
 ## Export the figure
 ragg::agg_tiff(
-  "out/p_6MWT_change.tiff",
+  "../../fig1.tiff",
   scaling = 0.4,
   height = 16,
   width = 16,
@@ -251,10 +256,10 @@ change_IPAQ
 
 ## Export the figure
 ragg::agg_tiff(
-  "out/p_IPAQ_change.tiff",
-  scaling = 0.4,
+  "../../fig2.tiff",
+  scaling = 0.41,
   height = 16,
-  width = 20,
+  width = 16,
   unit = "cm",
   res = 400
 )
@@ -392,16 +397,21 @@ change_emaps
 # --------------
 # Barriers to PA ----
 # --------------
+
+# Analyse answsers
+skimr::skim(BARRIERS_cleaned)
+
+
 # Make the figure
 p_bar <-
-  BARRIERS |>
-  select(patient:isolement_faible_RS) |>
-  pivot_longer(cols = c(-patient),
-               names_to = "var",
-               values_to = "rep") |>
-  mutate(
+  BARRIERS_cleaned |>
+  dplyr::select(patient:isolement_faible_RS) |>
+  tidyr::pivot_longer(cols = c(-patient),
+                      names_to = "var",
+                      values_to = "rep") |>
+  dplyr::mutate(
     rep  = as.factor(rep),
-    var = fct_recode(
+    var = forcats::fct_recode(
       var,
       "Unfavourable weather" = "meteo_defavorable",
       "Lack of time" = "manque_temps",
@@ -414,41 +424,79 @@ p_bar <-
       "Too costly" = "cout_trop_eleve"
     )
   ) |>
-  count(var, rep) |>
-  group_by(var) |>
-  mutate(perc = round(n / sum(n) * 100, 1),
-         magnitude = ifelse(perc > 15, "high", "low"),
+  dplyr::count(var, rep) |>
+  dplyr::filter(rep == 1) |>
+  dplyr::mutate(
+    n_tot = 77,
+    prop_estimate = purrr::map2_dbl(n, n_tot, function(n, n_tot) {
+      ((
+        binom.test(n, n_tot, 0.5, alternative = "two.sided", conf.level = 0.95)
+      )$estimate[[1]]) * 100
+    }),
+    prop_ci_low = purrr::map2_dbl(n, n_tot, function(n, n_tot) {
+      ((
+        binom.test(n, n_tot, 0.5, alternative = "two.sided", conf.level = 0.95)
+      )$conf.int[[1]]) * 100
+    }),
+    prop_ci_up = purrr::map2_dbl(n, n_tot, function(n, n_tot) {
+      ((
+        binom.test(n, n_tot, 0.5, alternative = "two.sided", conf.level = 0.95)
+      )$conf.int[[2]]) * 100
+    }),
+    magnitude = ifelse(prop_estimate > 15, "high", "low")
   ) |>
-  filter(rep == 1) |>
   ggplot(aes(
-    x = fct_reorder(var, n),
+    x = forcats::fct_reorder(var, n),
     y = n,
     color = magnitude
   )) +
-  geom_segment(aes(
-    x = fct_reorder(var, n),
-    y = 0,
-    xend = fct_reorder(var, n),
-    yend = n
-  ),
-  linewidth  = 1) +
+  ggrepel::geom_text_repel(
+    aes(
+      label = paste0(
+        round(prop_estimate, 1),
+        "% [",
+        round(prop_ci_low, 1),
+        "%; ",
+        round(prop_ci_up, 1),
+        "%]"
+      )
+    ),
+    hjust = 0,
+    nudge_x = 0.3,
+    nudge_y = 1.5,
+    size = 7,
+    direction = "y",
+    force = 0.2
+  ) +
+  geom_segment(
+    aes(
+      x = forcats::fct_reorder(var, n),
+      y = 0,
+      xend = forcats::fct_reorder(var, n),
+      yend = 60
+    ),
+    linewidth  = 0.5,
+    color = "grey80"
+  ) +
+  geom_errorbar(
+    aes(
+      x = forcats::fct_reorder(var, n),
+      ymin = prop_ci_low,
+      ymax = prop_ci_up
+    ),
+    width = 0.2,
+    linewidth = 1
+  ) +
   geom_point(
     shape = 21,
     stroke = 2,
     fill = "grey90",
     size = 4
   ) +
-  geom_text(
-    aes(label = paste0(n, " (", perc, "%)")),
-    hjust = 0,
-    nudge_y = 0.75,
-    fontface = "bold",
-    size = 7
-  ) +
   labs(y = NULL, x = NULL) +
   scale_y_continuous(expand = c(0, 0)) +
   scale_color_manual(values = c("grey30", "grey60")) +
-  coord_flip(ylim = c(0, 36)) +
+  coord_flip(ylim = c(0, 60)) +
   theme_bw() +
   theme(
     panel.grid = element_blank(),
@@ -458,14 +506,16 @@ p_bar <-
     axis.ticks.x = element_blank(),
     axis.text.x = element_blank()
   )
+
 # View the figure
 p_bar
+
 # Export the figure
-agg_tiff(
-  "out/p_barriers.tiff",
+ragg::agg_tiff(
+  "../../fig3.tiff",
   scaling = 0.3,
   height = 5,
-  width = 8,
+  width = 10,
   unit = "cm",
   res = 400
 )
