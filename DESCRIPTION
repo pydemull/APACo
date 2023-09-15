@@ -21,6 +21,7 @@ Imports:
     purrr,
     questionr,
     ragg,
+    reactable,
     readr,
     rlang,
     rogme (>= 0.2.1),

@@ -2,6 +2,5 @@
 
 export(analyse_change)
 export(analyse_distribution)
-export(do_t_tost)
 export(view_rainclouds)
 import(ggplot2)
