@@ -159,8 +159,8 @@ view_rainclouds <- function(data,
 }
 
 
-#===============================================================================
-#' Build a complex figure analysing the change in the variable of interest
+#=====================================================================================
+#' Get a set of figures and tables for analysing the change in the variable of interest
 #'
 #' @param data A dataframe.
 #' @param id A character value to indicate the name of the variable designating the
@@ -399,8 +399,12 @@ analyse_change <- function(data,
       alpha = dplyr::case_when(
         q == 0.5           ~ 1,
         q %in% c(0.4, 0.6) ~ 0.9,
-        q > 0.2 & q < 0.4  ~ 0.8, # using q == 0.3 does not work for unclear reasons
-        q > 0.6 & q < 0.8  ~ 0.8, # using q == 0.7 does not work for unclear reasons
+        q > 0.2 &
+          q < 0.4  ~ 0.8,
+        # using q == 0.3 does not work for unclear reasons
+        q > 0.6 &
+          q < 0.8  ~ 0.8,
+        # using q == 0.7 does not work for unclear reasons
         q %in% c(0.2, 0.8) ~ 0.7,
         q %in% c(0.1, 0.9) ~ 0.6
       )
@@ -430,9 +434,11 @@ analyse_change <- function(data,
       shape = 21,
       size = 6
     ) +
-    geom_point(aes(y = difference, fill = diff_sign, alpha = alpha),
-               shape = 21,
-               size = 6) +
+    geom_point(
+      aes(y = difference, fill = diff_sign, alpha = alpha),
+      shape = 21,
+      size = 6
+    ) +
     ggrepel::geom_label_repel(
       aes(
         y = ifelse(diff_sign == "positive", ci_upper, ci_lower),
@@ -443,7 +449,7 @@ analyse_change <- function(data,
       color = "white",
       direction = "y",
       force = 0.2,
-      nudge_y = ifelse(sf$diff_sign == "positive", nudge_y, -nudge_y),
+      nudge_y = ifelse(sf$diff_sign == "positive", nudge_y,-nudge_y),
       fontface = "bold",
       size = 6,
       seed = 123
@@ -457,7 +463,7 @@ analyse_change <- function(data,
       color = "white",
       direction = "y",
       force = 0.2,
-      nudge_y = ifelse(sf$diff_sign == "positive", nudge_y, -nudge_y),
+      nudge_y = ifelse(sf$diff_sign == "positive", nudge_y,-nudge_y),
       fontface = "bold",
       size = 6,
       seed = 123
@@ -465,10 +471,12 @@ analyse_change <- function(data,
     scale_fill_manual(values = c("grey60", color_fill)) +
     scale_color_manual(values = c("grey60", color_fill)) +
     scale_alpha(range = c(0.5, 1)) +
-    labs(fill = NULL,
-         title = "Shift function",
-         x = labs_5x,
-         y = labs_5y) +
+    labs(
+      fill = NULL,
+      title = "Shift function",
+      x = labs_5x,
+      y = labs_5y
+    ) +
     theme(legend.position = "none")
 
   # Make a plot tracking the shift of the quantiles while keeping the raw data
@@ -535,10 +543,12 @@ analyse_change <- function(data,
     scale_color_manual(values = c("grey60", color_fill)) +
     scale_fill_manual(values = c("grey60", color_fill)) +
     scale_alpha(range = c(0.5, 1)) +
-    labs(fill = NULL,
-         title = "Change in the deciles",
-         x = labs_4x,
-         y = labs_4y) +
+    labs(
+      fill = NULL,
+      title = "Change in the deciles",
+      x = labs_4x,
+      y = labs_4y
+    ) +
     theme(legend.position = "none") +
     coord_flip()
 
@@ -598,11 +608,14 @@ analyse_change <- function(data,
       plot.tag = element_text(size = 20)
     )
 
-  # Return a list with the figure and the shift function information
+  # Return a list with the figures and the shift/difference asymetry functions information
   objects <-
-    list(p = p,
-         sf = sf |> dplyr::select(-c(diff_sign, alpha)),
-         daf = daf[[1]])
+    list(
+      variable = labs_1y,
+      p = p,
+      sf = sf |> dplyr::select(-c(diff_sign, alpha)),
+      daf = daf[[1]]
+    )
   return(objects)
 
 }
