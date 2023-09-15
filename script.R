@@ -376,7 +376,7 @@ change_emaps <-
     labs_6y = "Quantile sum = q + 1−q"
   )
 
-  list("Motivational construct analysed" = x_lab, list_emaps)
+  return(list_emaps)
 
 })
 
@@ -387,25 +387,6 @@ change_emaps <-
 ### the difference asymetry function.
 ### You may want to export the figure to have a proper view.
 change_emaps
-
-# Export figures
-purrr::walk(change_emaps, function(x) {
-  file_name <- x[[1]]
-  plot <- x[[2]]$p
-
-  ggsave(
-    paste0("out/", file_name, ".tiff"),
-    plot,
-    device = ragg::agg_png,
-    scaling = 0.4,
-    height = 16,
-    width = 20,
-    unit = "cm",
-    res = 400
-
-  )
-
-})
 
 
 # --------------
@@ -491,10 +472,20 @@ agg_tiff(
 p_bar
 dev.off()
 
+# --------------------------------------------------------------------------------
+# Build supplemental materials SM3. Figures relating to the change in EMAPS scores ----
+# bewteen 0 and 12 months
+# --------------------------------------------------------------------------------
+rmarkdown::render(
+  "./inst/templates/SM3.Rmd",
+  params = list(
+    change_emaps = change_emaps
+  )
+)
 
 # -----------------------------------------------------------------------------
-# Building supplemental materials SM3. Data relating to all the 6MWT distances, ----
-# IPAQ-SF scores, and EMAPS scores measured during the study
+# Build supplemental materials SM4. Data relating to all the 6MWT distances, ----
+# IPAQ-SF scores, and EMAPS scores
 # -----------------------------------------------------------------------------
 
 # Figures
@@ -648,7 +639,7 @@ DB_6MWT |>
                 "MONTH 6" = "6",
                 "MONTH 12" = "12") |>
   dplyr::mutate(
-    Variable = forcats::fct_recode(Variable, "6WT distance (m)" = "DIST_M", "IPAQ-SF (MET-min) / week" = "MET_MIN_WK"),
+    Variable = forcats::fct_recode(Variable, "6MWT distance (m)" = "DIST_M", "IPAQ-SF (MET-min) / week" = "MET_MIN_WK"),
     dplyr::across(`MONTH 0`:`MONTH 12`, ~ round(.x, 2)))
 
 
@@ -662,3 +653,19 @@ rmarkdown::render(
     all_desc_stat = all_desc_stat
   )
 )
+
+
+# -----------------------------------------------------------------------------
+# Building supplemental materials SM5. Data relating to the shift and difference ----
+# asymmetry functions to describe the change in 6MWT, IPAQ-SF and EMAPS scores
+# -----------------------------------------------------------------------------
+rmarkdown::render(
+  "./inst/templates/SM4.Rmd",
+  params = list(
+    change_6MWT = change_6MWT,
+    change_IPAQ = change_IPAQ,
+    change_emaps = change_emaps
+  )
+)
+
+
