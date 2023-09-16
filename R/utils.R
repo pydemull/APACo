@@ -379,6 +379,7 @@ analyse_change <- function(data,
   ### Note from G. Rousselet : "The confidence intervals are not corrected for multiple
   ### comparisons, the p values are." (`rogme::shiftdhd_pbci` documentation)
 
+  set.seed(123)
   sf <- rogme::shiftdhd_pbci(
     # The levels of the factor variable x have to be rearranged to have the expected sign when computing the
     # difference between the quantiles of the two marginal distributions considered
@@ -390,6 +391,7 @@ analyse_change <- function(data,
     formula = as.formula(paste(y, x, sep = "~")),
     nboot = 200
   )
+  set.seed(NULL)
 
   ##  Update the shift function table to allow its future use in a graphic with customized colors
   sf <-
@@ -409,6 +411,10 @@ analyse_change <- function(data,
         q %in% c(0.1, 0.9) ~ 0.6
       )
     )
+
+  ## Add p-values adjusted using the Benjamini-Hochberg's False Discovery Rate method
+  sf$adj_p_value_bh <- p.adjust(sf$p_value, method = "BH")
+
   ##  Make plot
   p5 <-
     ggplot(data = sf, aes(x = .data[[names(sf)[3]]])) + # level1 is used for the X axis
@@ -556,19 +562,24 @@ analyse_change <- function(data,
   # Make a plot showing difference asymetry function
 
   ## Compute difference asymetry function
+  set.seed(123)
   daf <-
-    rogme::asymdhd(
+    (rogme::asymdhd(
       data |>
         tidyr::pivot_wider(names_from = .data[[x]], values_from = .data[[y]]) |>
         dplyr::mutate(diff = .data[[level2]] - .data[[level1]],
                       gr = as.factor("group1")),
       formula = diff ~ gr,
       nboot = 200
-    )
+    ))[[1]]
+  set.seed(NULL)
+
+  ## Add p-values adjusted using the Benjamini-Hochberg's False Discovery Rate method
+  daf$adj_p_value_bh <- p.adjust(daf$p.value, method = "BH")
 
   ## Make plot
   p6 <-
-    ggplot(daf[[1]], aes(x = quantile, y = SUM)) +
+    ggplot(daf, aes(x = quantile, y = SUM)) +
     geom_errorbar(aes(ymin = ci.low, ymax =  ci.up),  width = 0) +
     geom_line(aes(group = 1),
               color = "grey80",
@@ -613,8 +624,8 @@ analyse_change <- function(data,
     list(
       variable = labs_1y,
       p = p,
-      sf = sf |> dplyr::select(-c(diff_sign, alpha)),
-      daf = daf[[1]]
+      sf = sf |> dplyr::select(-c(diff_sign, alpha, adj_p_value)),
+      daf = daf |> dplyr::select(-p_crit)
     )
   return(objects)
 
