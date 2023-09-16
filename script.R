@@ -324,19 +324,19 @@ change_emaps <-
   purrr::map(names(DB_EMAPS_0_12_renamed)[3:8], function(x) {
   if (x == "INTRINSIC") {
     x_lab = "Intrinsic motivation"
-    color_fill <- "#C3D69B"
+    color_fill <- "chartreuse4"
   }
 
   if (x == "INTEGRATED")
   {
     x_lab = "Integrated motivation"
-    color_fill <- "#C3D69B"
+    color_fill <- "chartreuse4"
   }
 
   if (x == "IDENTIFIED")
   {
     x_lab = "Identified motivation"
-    color_fill <- "#C3D69B"
+    color_fill <- "chartreuse4"
   }
   if (x == "INTROJECTED")
   {
@@ -398,7 +398,7 @@ change_emaps
 # Barriers to PA ----
 # --------------
 
-# Analyse answsers
+# Analyse answers
 skimr::skim(BARRIERS_cleaned)
 
 
@@ -522,21 +522,24 @@ ragg::agg_tiff(
 p_bar
 dev.off()
 
+
 # --------------------------------------------------------------------------------
 # Build supplemental materials SM3. Figures relating to the change in EMAPS scores ----
-# bewteen 0 and 12 months
+# between 0 and 12 months (N = 76)
 # --------------------------------------------------------------------------------
 rmarkdown::render(
-  "./inst/templates/SM3.Rmd",
+  input = "./inst/templates/SM3.Rmd",
+  output_file = "../../../../SM3.html",
   params = list(
     change_emaps = change_emaps
   )
 )
 
-# -----------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------
 # Build supplemental materials SM4. Data relating to all the 6MWT distances, ----
-# IPAQ-SF scores, and EMAPS scores
-# -----------------------------------------------------------------------------
+# IPAQ-SF scores, and EMAPS scores measured during the study
+# -------------------------------------------------------------------------
 
 # Figures
 
@@ -631,17 +634,17 @@ p_emaps_all <-
   ) +
   scale_y_continuous(breaks = seq(1, 7, 1)) +
   scale_fill_manual(values = c(
-    "#C3D69B",
-    "#C3D69B",
-    "#C3D69B",
+    "chartreuse4",
+    "chartreuse4",
+    "chartreuse4",
     "grey50",
     "#FAC090",
     "#E46C0A"
   )) +
   scale_color_manual(values = c(
-    "#C3D69B",
-    "#C3D69B",
-    "#C3D69B",
+    "chartreuse4",
+    "chartreuse4",
+    "chartreuse4",
     "grey50",
     "#FAC090",
     "#E46C0A"
@@ -695,7 +698,8 @@ DB_6MWT |>
 
 # Generate materials
 rmarkdown::render(
-  "./inst/templates/SM3.Rmd",
+  input = "./inst/templates/SM4.Rmd",
+  output_file = "../../../../SM4.html",
   params = list(
     p_6MWT_all = p_6MWT_all,
     p_IPAQ_all = p_IPAQ_all,
@@ -705,12 +709,13 @@ rmarkdown::render(
 )
 
 
-# -----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Building supplemental materials SM5. Data relating to the shift and difference ----
 # asymmetry functions to describe the change in 6MWT, IPAQ-SF and EMAPS scores
-# -----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 rmarkdown::render(
-  "./inst/templates/SM4.Rmd",
+  input = "./inst/templates/SM5.Rmd",
+  output_file = "../../../../SM5.html",
   params = list(
     change_6MWT = change_6MWT,
     change_IPAQ = change_IPAQ,
