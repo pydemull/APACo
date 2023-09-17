@@ -51,100 +51,69 @@ pre code {
 knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message = FALSE)
 ```
 
-# Six-minute walking test
-## Shift function
-```{r}
-change_6MWT$sf
+```{r, include=FALSE}
+list_titles <- list(
+  "Six-minute walking test",
+  "IPAQ-SF MET-min / week",
+  "EMAPS | Intrinsic motivation",
+  "EMAPS | Integrated regulation",
+  "EMAPS | Identified regulation",
+  "EMAPS | Introjected regulation",
+  "EMAPS | External regulation",
+  "EMAPS | Amotivation"
+)
+  
+list_tables <- list(
+  change_6MWT,
+  change_IPAQ,
+  change_emaps[[1]],
+  change_emaps[[2]],
+  change_emaps[[3]],
+  change_emaps[[4]],
+  change_emaps[[5]],
+  change_emaps[[6]]
+)
+
+legend_sf <- "q = quantile; ci.low = lower bounds of the confidence intervals; ci.up = upper bounds of the confidence intervals; adj_p_value_bh = p value adjusted for multiple comparisons using the Benjamini-Hochberg False Discovery Rate method."
+
+legend_asym <- "Est_q = quantiles of differences; Est_1.minus.q = 1 - quantiles of differences; SUM = sum of quantiles; ci.low = lower bounds of the confidence intervals; ci.up = upper bounds of the confidence intervals; adj_p_value_bh = p value adjusted for multiple comparisons using the Benjamini-Hochberg False Discovery Rate method." 
+  
 ```
 
-## Difference asymetry function
-```{r}
-change_6MWT$daf
+```{r, results = "asis"}
+res <-
+  purrr::map2(list_titles, list_tables, function(x, y) {
+  
+  knitr::knit_child(text = c(
+                    
+                    "\n",
+                    "# `r x`",
+                    "\n",
+                    "## Shift function",
+                    "\n",
+                    "```{r, echo = FALSE}",
+                    "y$sf",
+                    "```",
+                    "```{r, results='asis'}",
+                    "cat(legend_sf)",
+                    "```",
+                    "\n",
+                    "## Difference asymmetry function",
+                    "\n",
+                    "```{r, echo = FALSE}",
+                    "y$daf",
+                    "```",
+                    "```{r, results='asis'}",
+                    "cat(legend_asym)",
+                    "```"
+  ),
+  envir = environment(),
+  quiet  = TRUE
+  )
+})
+
+cat(unlist(res), sep = "\n")
+
 ```
-
-
-# IPAQ-SF MET-min / week
-## Shift function
-```{r}
-change_IPAQ$sf
-```
-
-## Difference asymetry function
-```{r}
-change_IPAQ$daf
-```
-
-
-# EMAPS | Intrinsic motivation
-## Shift function
-```{r}
-change_emaps[[1]]$sf
-```
-
-## Difference asymetry function
-```{r}
-change_emaps[[1]]$daf
-```
-
-
-# EMAPS | Integrated regulation
-## Shift function
-```{r}
-change_emaps[[2]]$sf
-```
-
-## Difference asymetry function
-```{r}
-change_emaps[[2]]$daf
-```
-
-
-# EMAPS | Identified regulation
-## Shift function
-```{r}
-change_emaps[[3]]$sf
-```
-
-## Difference asymetry function
-```{r}
-change_emaps[[3]]$daf
-```
-
-
-# EMAPS | Introjected regulation
-## Shift function
-```{r}
-change_emaps[[4]]$sf
-```
-
-## Difference asymetry function
-```{r}
-change_emaps[[4]]$daf
-```
-
-
-# EMAPS | External regulation
-## Shift function
-```{r}
-change_emaps[[5]]$sf
-```
-
-## Difference asymetry function
-```{r}
-change_emaps[[5]]$daf
-```
-
-
-# EMAPS | Amotivation
-## Shift function
-```{r}
-change_emaps[[6]]$sf
-```
-
-## Difference asymetry function
-```{r}
-change_emaps[[6]]$daf
-```
-
 
 
