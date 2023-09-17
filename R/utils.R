@@ -12,7 +12,6 @@
 #' @export
 #' @import ggplot2
 
-
 analyse_distribution <- function(data,
                                  var) {
   # Raincloud plot
@@ -183,13 +182,13 @@ view_rainclouds <- function(data,
 #' @param labs_4y A character string to name the Y axis of the 4th graphic (quantile shifts).
 #' @param labs_5x A character string to name the X axis of the 5th graphic (shift function).
 #' @param labs_5y A character string to name the Y axis of the 5th graphic (shift function).
-#' @param labs_6x A character string to name the X axis of the 6th graphic (difference asymetry function).
-#' @param labs_6y A character string to name the Y axis of the 6th graphic (difference asymetry function).
+#' @param labs_6x A character string to name the X axis of the 6th graphic (difference asymmetry function).
+#' @param labs_6y A character string to name the Y axis of the 6th graphic (difference asymmetry function).
 #'
 #' @return A ggplot object.
 #' @export
 #' @import ggplot2
-#'
+#' @importFrom stats p.adjust
 
 analyse_change <- function(data,
                            id,
@@ -559,9 +558,9 @@ analyse_change <- function(data,
     coord_flip()
 
 
-  # Make a plot showing difference asymetry function
+  # Make a plot showing difference asymmetry function
 
-  ## Compute difference asymetry function
+  ## Compute difference asymmetry function
   set.seed(123)
   daf <-
     (rogme::asymdhd(
@@ -598,7 +597,7 @@ analyse_change <- function(data,
     scale_fill_gradient(low = "white", high = "grey35") +
     labs(
       fill = NULL,
-      title = "Difference asymetry function",
+      title = "Difference asymmetry function",
       x = labs_6x,
       y = labs_6y
     ) +
@@ -619,7 +618,7 @@ analyse_change <- function(data,
       plot.tag = element_text(size = 20)
     )
 
-  # Return a list with the figures and the shift/difference asymetry functions information
+  # Return a list with the figures and the shift/difference asymmetry functions information
   objects <-
     list(
       variable = labs_1y,
