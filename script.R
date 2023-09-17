@@ -523,21 +523,8 @@ p_bar
 dev.off()
 
 
-# --------------------------------------------------------------------------------
-# Build supplemental materials SM3. Figures relating to the change in EMAPS scores ----
-# between 0 and 12 months (N = 76)
-# --------------------------------------------------------------------------------
-rmarkdown::render(
-  input = "./inst/templates/SM3.Rmd",
-  output_file = "../../../../SM3.html",
-  params = list(
-    change_emaps = change_emaps
-  )
-)
-
-
 # -------------------------------------------------------------------------
-# Build supplemental materials SM4. Data relating to all the 6MWT distances, ----
+# Build supplemental materials SM3. Data relating to all the 6MWT distances, ----
 # IPAQ-SF scores, and EMAPS scores measured during the study
 # -------------------------------------------------------------------------
 
@@ -662,6 +649,7 @@ p_emaps_all <-
 
 # Table
 
+## Build table
 all_desc_stat <-
 DB_6MWT |>
   dplyr::left_join(DB_IPAQ |> dplyr::select(c(patient, MONTH, MET_MIN_WK)), by = c("patient", "MONTH")) |>
@@ -696,15 +684,52 @@ DB_6MWT |>
     dplyr::across(`MONTH 0`:`MONTH 12`, ~ round(.x, 2)))
 
 
+
+# Formating the table for .html format
+all_desc_stat_react <-
+  reactable::reactable(
+  all_desc_stat,
+  columns = list(Variable = reactable::colDef(
+    style = reactable::JS(
+      "function(rowInfo, colInfo, state) {
+        var firstSorted = state.sorted[0]
+        // Merge cells if unsorted or sorting by Variable
+        if (!firstSorted || firstSorted.id === 'Variable') {
+          var prevRow = state.pageRows[rowInfo.viewIndex - 1]
+          if (prevRow && rowInfo.row['Variable'] === prevRow['Variable']) {
+            return { visibility: 'hidden' }
+          }
+        }
+      }"
+    )
+  )),
+  outlined = TRUE,
+  striped = TRUE,
+  defaultPageSize = 12
+)
+
 # Generate materials
 rmarkdown::render(
-  input = "./inst/templates/SM4.Rmd",
-  output_file = "../../../../SM4.html",
+  input = "./inst/templates/SM3.Rmd",
+  output_file = "../../../../SM3.html",
   params = list(
     p_6MWT_all = p_6MWT_all,
     p_IPAQ_all = p_IPAQ_all,
     p_emaps_all = p_emaps_all,
-    all_desc_stat = all_desc_stat
+    all_desc_stat_react = all_desc_stat_react
+  )
+)
+
+
+# --------------------------------------------------------------------------------
+# Build supplemental materials SM4. Figures relating to the change in EMAPS scores ----
+# between 0 and 12 months (N = 76)
+# --------------------------------------------------------------------------------
+rmarkdown::render(
+  input = "./inst/templates/SM4.Rmd",
+  output_file = "../../../../SM4.html",
+  params = list(
+    change_emaps = change_emaps
   )
 )
 
@@ -713,6 +738,7 @@ rmarkdown::render(
 # Building supplemental materials SM5. Data relating to the shift and difference ----
 # asymmetry functions to describe the change in 6MWT, IPAQ-SF and EMAPS scores
 # ------------------------------------------------------------------------------
+
 rmarkdown::render(
   input = "./inst/templates/SM5.Rmd",
   output_file = "../../../../SM5.html",
