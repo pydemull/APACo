@@ -444,9 +444,14 @@ analyse_change <- function(data,
           fill = diff_sign,
           alpha = alpha),
       shape = 21,
-      size = 6,
+      size = 6
+    ) +
+    geom_point(
+      aes(y = difference),
+      shape = 1,
+      size = 5,
       color = ifelse(sf$adj_p_value_bh <= 0.05, "red", "black"),
-      stroke = ifelse(sf$adj_p_value_bh <= 0.05, 2, 0.8)
+      stroke = ifelse(sf$adj_p_value_bh <= 0.05, 2, 0)
     ) +
     ggrepel::geom_label_repel(
       aes(
