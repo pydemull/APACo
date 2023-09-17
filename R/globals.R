@@ -9,6 +9,9 @@ utils::globalVariables(c(
   "ci_upper",
   "diff_sign",
   "difference",
+  "group",
+  "adj_p_value",
+  "p_crit",
   "pos_label",
   "quantile",
   "vals"
