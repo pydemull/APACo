@@ -67,9 +67,9 @@ and for a 2-by-2 use ("f2x2").}
 
 \item{labs_5y}{A character string to name the Y axis of the 5th graphic (shift function).}
 
-\item{labs_6x}{A character string to name the X axis of the 6th graphic (difference asymetry function).}
+\item{labs_6x}{A character string to name the X axis of the 6th graphic (difference asymmetry function).}
 
-\item{labs_6y}{A character string to name the Y axis of the 6th graphic (difference asymetry function).}
+\item{labs_6y}{A character string to name the Y axis of the 6th graphic (difference asymmetry function).}
 }
 \value{
 A ggplot object.

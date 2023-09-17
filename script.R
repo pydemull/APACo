@@ -135,7 +135,7 @@ change_6MWT <-
 ### The `sf` object is a dataframe containing the information relating to
 ### the shift function.
 ### The `daf` object is a dataframe containing the information relating to
-### the difference asymetry function.
+### the difference asymmetry function.
 ### You may want to export the figure to have a proper view.
 change_6MWT
 
@@ -250,7 +250,7 @@ change_IPAQ <-
 ### The `sf` object is a dataframe containing the information relating to
 ### the shift function.
 ### The `daf` object is a dataframe containing the information relating to
-### the difference asymetry function.
+### the difference asymmetry function.
 ### You may want to export the figure to have a proper view.
 change_IPAQ
 
@@ -389,7 +389,7 @@ change_emaps <-
 ### The `sf` object is a dataframe containing the information relating to
 ### the shift function.
 ### The `daf` object is a dataframe containing the information relating to
-### the difference asymetry function.
+### the difference asymmetry function.
 ### You may want to export the figure to have a proper view.
 change_emaps
 
