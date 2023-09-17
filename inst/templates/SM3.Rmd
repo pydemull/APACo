@@ -1,5 +1,5 @@
 ---
-title: "SM3. Figures relating to the change in EMAPS scores between 0 and 12 months (N = 76)"
+title: "SM3. Data relating to all the 6MWT distances, IPAQ-SF scores, and EMAPS scores during the study"
 output: 
   html_document:
     theme: cosmo
@@ -10,7 +10,10 @@ output:
     df_print: paged
 toc-title: "Table of content"
 params:
-  change_emaps: NA
+  p_6MWT_all: NA
+  p_IPAQ_all: NA
+  p_emaps_all: NA
+  all_desc_stat_react: NA
 ---
 ```{css, echo=FALSE}
 .title {
@@ -49,25 +52,31 @@ pre code {
 knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message = FALSE)
 ```
 
-```{r, results = "asis"}
-res <-
-  purrr::map(change_emaps, function(x) {
-  
-  knitr::knit_child(text = c(
-                    
-                    "\n",
-                    "# `r x$variable`",
-                    "\n",
-                    "```{r, echo = FALSE, fig.width = 20, fig.height = 20, dpi = 250}",
-                    "print(x$p)",
-                    "```"
-  ),
-  envir = environment(),
-  quiet  = TRUE
-  )
-})
-
-cat(unlist(res), sep = "\n")
-
+# Figures
+## Six-minute walking test (6MWT)
+```{r}
+p_6MWT_all
 ```
+
+\newpage
+
+## IPAQ-SF
+```{r}
+p_IPAQ_all
+```
+
+\newpage
+
+## EMAPS
+```{r}
+p_emaps_all
+```
+
+\newpage
+
+# Descriptive statistics
+```{r}
+all_desc_stat_react
+```
+
 
