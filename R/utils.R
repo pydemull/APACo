@@ -440,9 +440,13 @@ analyse_change <- function(data,
       size = 6
     ) +
     geom_point(
-      aes(y = difference, fill = diff_sign, alpha = alpha),
+      aes(y = difference,
+          fill = diff_sign,
+          alpha = alpha),
       shape = 21,
-      size = 6
+      size = 6,
+      color = ifelse(sf$adj_p_value_bh <= 0.05, "red", "black"),
+      stroke = ifelse(sf$adj_p_value_bh <= 0.05, 2, 0.8)
     ) +
     ggrepel::geom_label_repel(
       aes(
@@ -592,7 +596,9 @@ analyse_change <- function(data,
                size = 6) +
     geom_point(aes(y = SUM, fill = quantile),
                shape = 21,
-               size = 6) +
+               size = 6,
+               color = ifelse(daf$adj_p_value_bh <= 0.05, "red", "black"),
+               stroke = ifelse(daf$adj_p_value_bh <= 0.05, 2, 0.8)) +
     scale_x_continuous(breaks = seq(0, 0.4, 0.05)) +
     scale_fill_gradient(low = "white", high = "grey35") +
     labs(
