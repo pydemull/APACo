@@ -1,5 +1,5 @@
 ---
-title: "SM3. Data relating to all the 6MWT distances, IPAQ-SF scores, and EMAPS scores during the study"
+title: "SM3. Data relating to all the 6MWT, IPAQ-SF, and EMAPS measured during the study"
 output: 
   html_document:
     theme: cosmo
