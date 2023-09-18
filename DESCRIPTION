@@ -17,6 +17,7 @@ Imports:
     ggplot2,
     ggrain,
     ggrepel,
+    Hmisc,
     patchwork,
     purrr,
     questionr,
@@ -32,3 +33,6 @@ Remotes:
 Depends: 
     R (>= 4.1.0)
 LazyData: true
+Suggests: 
+    devtools,
+    usethis

@@ -3,9 +3,10 @@
 # at 12 months after a cardiac rehabilitation program in coronary heart disease patients:
 # a prospective, monocentric, and observational study'
 
-# -----------
+# ----------
 # Load data ----
-# -----------
+# ----------
+
 data("INCLUSION")
 data("VISIT_6M")
 data("VISIT_12M")
@@ -13,54 +14,20 @@ data("IPAQ")
 data("EMAPS")
 data("BARRIERS")
 
+# Please use ?`DATASET_NAME` in the Console for information regarding the content of the dataset.
+
 
 # ------------------------
 # Configure the dataset(s) ----
 # ------------------------
+
+# Clean INCLUSION dataset
 INCLUSION_cleaned <-
   INCLUSION |>
   dplyr::mutate(dplyr::across(c(sex, angioplasty, bypass), as.factor),
                 BMI = weight / ((height / 100) ^ 2))
 
-BARRIERS_cleaned <-
-  BARRIERS |>
-  dplyr::mutate(across(patient:autres, as.factor))
-
-
-# ------------------------------------------------------------
-# Describe participants characteristics at the inclusion stage ----
-# ------------------------------------------------------------
-
-# Get an overview of the variables
-INCLUSION_cleaned |> skimr::skim()
-
-# Analyse sex
-questionr::freq(INCLUSION_cleaned$sex, digits = 2)
-
-# Analyse height
-analyse_distribution(data = INCLUSION_cleaned, var = "height")
-## => Comment: Height approximately follows a gaussian distribution.
-
-# Analyse weight
-analyse_distribution(data = INCLUSION_cleaned, var = "weight")
-## => Comment: Weight approximately follows a gaussian distribution.
-
-# Analyse BMI
-analyse_distribution(data = INCLUSION_cleaned, var = "BMI")
-## => Comment: BMI approximately follows a gaussian distribution.
-
-# Analyse % Angioplasty
-questionr::freq(INCLUSION_cleaned$angioplasty, digits = 2)
-
-# Analyse % Bypass
-questionr::freq(INCLUSION_cleaned$bypass, digits = 2)
-
-
-# ------------------------------------------------------
-# Analyse the change in six-minute walking test distance ----
-# ------------------------------------------------------
-
-# Combine the datasets and recode the variables
+# Create a dataset with all six-minute walking tests
 DB_6MWT <-
   INCLUSION_cleaned |>
   dplyr::left_join(VISIT_6M, by = "patient") |>
@@ -84,81 +51,7 @@ DB_6MWT <-
     )
   )
 
-# Perform analyses relating to the change between 0 and 12 months
-
-## Keep the rows for months 0 and 12, and keep the participants with data at both 0 and 12 months
-DB_6MWT_0_12 <-
-  DB_6MWT |>
-  dplyr::filter(MONTH != "6") |>
-  dplyr::mutate(MONTH = factor(MONTH, levels = c("0", "12"))) |>
-  tidyr::drop_na() |>
-  dplyr::group_by(patient) |>
-  tidyr::nest() |>
-  dplyr::mutate(n_visits = purrr::map_dbl(data, ~ nrow(.x))) |>
-  dplyr::filter(n_visits == 2) |>
-  dplyr::ungroup() |>
-  tidyr::unnest(data)
-
-## Test the change in central tendency as initially planned in the project
-t.test(
-  formula = DIST_M ~ MONTH,
-  data = DB_6MWT_0_12,
-  mu = 0,
-  paired = TRUE,
-  var.equal = FALSE
-)
-
-## Analyse the change in the distribution
-change_6MWT <-
-  analyse_change(
-    data = DB_6MWT_0_12,
-    id = "patient",
-    x = "MONTH",
-    y = "DIST_M",
-    rain_side = "f1x1",
-    nudge_y = 6,
-    color_fill = "#0089C6",
-    color_stat = "black",
-    labs_1x = "Months post-program",
-    labs_1y = "6MWT distance (m)",
-    labs_2x = "",
-    labs_2y = "6MWT distance [Month 12 - Month 0] (m)",
-    labs_3x = "6MWT distance at Month 0 (m)",
-    labs_3y = "6MWT distance at Month 12 (m)",
-    labs_4x = "Months post-program",
-    labs_4y = "6MWT distance (m)",
-    labs_5x = "Deciles of 6MWT distance at Month 0 (m)",
-    labs_5y = "Decile Month 12 - Decile Month 0 (m)",
-    labs_6x = "Quantiles",
-    labs_6y = "Quantile sum = q + 1−q"
-  )
-
-## View the results of the change analysis
-### The `sf` object is a dataframe containing the information relating to
-### the shift function.
-### The `daf` object is a dataframe containing the information relating to
-### the difference asymmetry function.
-### You may want to export the figure to have a proper view.
-change_6MWT
-
-## Export the figure
-ragg::agg_tiff(
-  "../../fig1.tiff",
-  scaling = 0.4,
-  height = 16,
-  width = 16,
-  unit = "cm",
-  res = 400
-)
-change_6MWT$p
-dev.off()
-
-
-# -------------------------------------------------------
-# Analyse the change in PA dose in MET-min/week (IPAQ-SF) ----
-# -------------------------------------------------------
-
-# Create and recode the variables of interest
+# Clean the IPAQ dataset and add variables of interest
 DB_IPAQ <-
   IPAQ |>
   dplyr::mutate(
@@ -207,9 +100,139 @@ DB_IPAQ <-
     )
   )
 
-# Perform analyses relating to the change between 6 and 12 months
+# Clean the EMAPS dataset and add variables of interest
+DB_EMAPS <-
+  EMAPS |>
+  dplyr::rename(MONTH = num_visit) |>
+  dplyr::mutate(MONTH = forcats::fct_recode(
+    as.factor(MONTH),
+    "0" = "1",
+    "6" = "2",
+    "12" = "3"
+  )) |>
+  dplyr::group_by(MONTH) |>
+  dplyr::mutate(
+    "Intrinsic motivation"    = (AP_q1  %+% AP_q6  %+%  AP_q11) / 3,
+    "Integrated regulation"   = (AP_q7  %+% AP_q10 %+%  AP_q13) / 3,
+    "Identified regulation"   = (AP_q4  %+% AP_q12 %+%  AP_q16) / 3,
+    "Introjected regulation"  = (AP_q3  %+% AP_14  %+%  AP_q18) / 3,
+    "External regulation"     = (AP_q9  %+% AP_q15 %+%  AP_q17) / 3,
+    "Amotivation"             = (AP_q2  %+% AP_q5  %+%  AP_q8)  / 3
+  ) |>
+  dplyr::select(patient, MONTH, "Intrinsic motivation":"Amotivation")
 
-## Keep the rows for months 6 and 12, and keep the participants with data at both 6 and 12 months
+# Clean BARRIERS dataset
+BARRIERS_cleaned <-
+  BARRIERS |>
+  dplyr::mutate(across(patient:autres, as.factor))
+
+
+# ------------------------------------------------------------
+# Describe participants characteristics at the inclusion stage ----
+# ------------------------------------------------------------
+
+# Get an overview of the variables
+INCLUSION_cleaned |> skimr::skim()
+
+# Analyse sex
+questionr::freq(INCLUSION_cleaned$sex, digits = 2)
+
+# Analyse height
+analyse_distribution(data = INCLUSION_cleaned, var = "height")
+## => Comment: Height approximately follows a gaussian distribution.
+
+# Analyse weight
+analyse_distribution(data = INCLUSION_cleaned, var = "weight")
+## => Comment: Weight approximately follows a gaussian distribution.
+
+# Analyse BMI
+analyse_distribution(data = INCLUSION_cleaned, var = "BMI")
+## => Comment: BMI approximately follows a gaussian distribution.
+
+# Analyse % Angioplasty
+questionr::freq(INCLUSION_cleaned$angioplasty, digits = 2)
+
+# Analyse % Bypass
+questionr::freq(INCLUSION_cleaned$bypass, digits = 2)
+
+
+# ------------------------------------------------------------------------------
+# Analyse the change in six-minute walking test distance between 0 and 12 months ----
+# ------------------------------------------------------------------------------
+
+# Keep the rows for months 0 and 12, and keep the participants with data at both 0 and 12 months
+DB_6MWT_0_12 <-
+  DB_6MWT |>
+  dplyr::filter(MONTH != "6") |>
+  dplyr::mutate(MONTH = factor(MONTH, levels = c("0", "12"))) |>
+  tidyr::drop_na() |>
+  dplyr::group_by(patient) |>
+  tidyr::nest() |>
+  dplyr::mutate(n_visits = purrr::map_dbl(data, ~ nrow(.x))) |>
+  dplyr::filter(n_visits == 2) |>
+  dplyr::ungroup() |>
+  tidyr::unnest(data)
+
+# Test the change in central tendency as initially planned in the project
+t.test(
+  formula = DIST_M ~ MONTH,
+  data = DB_6MWT_0_12,
+  mu = 0,
+  paired = TRUE,
+  var.equal = FALSE
+)
+
+# Analyse the change in the distribution
+change_6MWT <-
+  analyse_change(
+    data = DB_6MWT_0_12,
+    id = "patient",
+    x = "MONTH",
+    y = "DIST_M",
+    rain_side = "f1x1",
+    nudge_y = 6,
+    color_fill = "#0089C6",
+    color_stat = "black",
+    labs_1x = "Months post-program",
+    labs_1y = "6MWT distance (m)",
+    labs_2x = "",
+    labs_2y = "6MWT distance [Month 12 - Month 0] (m)",
+    labs_3x = "6MWT distance at Month 0 (m)",
+    labs_3y = "6MWT distance at Month 12 (m)",
+    labs_4x = "Months post-program",
+    labs_4y = "6MWT distance (m)",
+    labs_5x = "Deciles of 6MWT distance at Month 0 (m)",
+    labs_5y = "Decile Month 12 - Decile Month 0 (m)",
+    labs_6x = "Quantiles",
+    labs_6y = "Quantile sum = q + 1−q"
+  )
+
+## View the results of the change analysis
+### The `sf` object is a dataframe containing the information relating to
+### the shift function.
+### The `daf` object is a dataframe containing the information relating to
+### the difference asymmetry function.
+### You may want to export the figure to have a proper view.
+change_6MWT
+
+# Export the figure
+ragg::agg_tiff(
+  "../../fig1.tiff",
+  scaling = 0.4,
+  height = 16,
+  width = 16,
+  unit = "cm",
+  res = 400
+)
+change_6MWT$p
+dev.off()
+
+
+# -------------------------------------------------------------------------------
+# Analyse the change in PA dose in MET-min/week (IPAQ-SF) between 6 and 12 months ----
+# -------------------------------------------------------------------------------
+
+# Keep the rows for months 6 and 12, and keep the participants with data at both 6 and 12 months
 DB_IPAQ_6_12 <-
   DB_IPAQ |>
   dplyr::filter(MONTH != "0") |>
@@ -223,7 +246,7 @@ DB_IPAQ_6_12 <-
   dplyr::ungroup() |>
   tidyr::unnest(data)
 
-## Analyse the change in the distribution
+# Analyse the change in the distribution
 change_IPAQ <-
   analyse_change(
     data = DB_IPAQ_6_12,
@@ -256,7 +279,7 @@ change_IPAQ <-
 ### You may want to export the figure to have a proper view.
 change_IPAQ
 
-## Export the figure
+# Export the figure
 ragg::agg_tiff(
   "../../fig2.tiff",
   scaling = 0.41,
@@ -269,37 +292,11 @@ change_IPAQ$p
 dev.off()
 
 
-# ----------------------------------
-# Analyse the change in EMAPS scores ----
-# ----------------------------------
+# ----------------------------------------------------------
+# Analyse the change in EMAPS scores between 0 and 12 months ----
+# ----------------------------------------------------------
 
-# Define a custom + operator allowing to handle NAs
-`%+%` <- function(x, y)  mapply(sum, x, y, MoreArgs = list(na.rm = TRUE))
-
-# Compute summary scores and recode variables
-DB_EMAPS <-
-  EMAPS |>
-  dplyr::rename(MONTH = num_visit) |>
-  dplyr::mutate(MONTH = forcats::fct_recode(
-    as.factor(MONTH),
-    "0" = "1",
-    "6" = "2",
-    "12" = "3"
-  )) |>
-  dplyr::group_by(MONTH) |>
-  dplyr::mutate(
-    "Intrinsic motivation"    = (AP_q1  %+% AP_q6  %+%  AP_q11) / 3,
-    "Integrated regulation"   = (AP_q7  %+% AP_q10 %+%  AP_q13) / 3,
-    "Identified regulation"   = (AP_q4  %+% AP_q12 %+%  AP_q16) / 3,
-    "Introjected regulation"  = (AP_q3  %+% AP_14  %+%  AP_q18) / 3,
-    "External regulation"     = (AP_q9  %+% AP_q15 %+%  AP_q17) / 3,
-    "Amotivation"             = (AP_q2  %+% AP_q5  %+%  AP_q8)  / 3
-  ) |>
-  dplyr::select(patient, MONTH, "Intrinsic motivation":"Amotivation")
-
-# Perform analyses relating to the change  between 0 and 12 months
-
-## Keep the rows for months 0 and 12, and keep the participants with data at both 0 and 12 months
+# Keep the rows for months 0 and 12, and keep the participants with data at both 0 and 12 months
 DB_EMAPS_0_12 <-
   DB_EMAPS |>
   dplyr::filter(MONTH != "6") |>
@@ -312,7 +309,7 @@ DB_EMAPS_0_12 <-
   dplyr::ungroup() |>
   tidyr::unnest(data)
 
-## Analyse the change in the distributions
+# Analyse the change in the distributions
 DB_EMAPS_0_12_renamed <- DB_EMAPS_0_12 |>
   dplyr::rename( # variables are renamed because previous wording was problematic for the code below
     INTRINSIC = "Intrinsic motivation",
@@ -727,6 +724,8 @@ rmarkdown::render(
 # Build supplemental materials SM4. Figures relating to the change in EMAPS scores ----
 # between 0 and 12 months (N = 76)
 # --------------------------------------------------------------------------------
+
+# Generating the file will take a little bit of time
 rmarkdown::render(
   input = "./inst/templates/SM4.Rmd",
   output_file = "../../../../SM4.html",
@@ -736,10 +735,10 @@ rmarkdown::render(
 )
 
 
-# ------------------------------------------------------------------------------
-# Building supplemental materials SM5. Data relating to the shift and difference ----
+# ----------------------------------------------------------------------------
+# Build supplemental materials SM5. Data relating to the shift and difference  ----
 # asymmetry functions to describe the change in 6MWT, IPAQ-SF and EMAPS scores
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 
 rmarkdown::render(
   input = "./inst/templates/SM5.Rmd",
