@@ -216,6 +216,8 @@ change_6MWT <-
 change_6MWT
 
 # Export the figure
+# Please modify the path to the output using the first argument of the function
+# below so that it fits your needs.
 ragg::agg_tiff(
   "../../fig1.tiff",
   scaling = 0.4,
@@ -280,6 +282,8 @@ change_IPAQ <-
 change_IPAQ
 
 # Export the figure
+# Please modify the path to the output using the first argument of the function
+# below so that it fits your needs.
 ragg::agg_tiff(
   "../../fig2.tiff",
   scaling = 0.41,
@@ -510,6 +514,8 @@ p_bar <-
 p_bar
 
 # Export the figure
+# Please modify the path to the output using the first argument of the function
+# below so that it fits your needs.
 ragg::agg_tiff(
   "../../fig3.tiff",
   scaling = 0.3,
@@ -708,6 +714,8 @@ all_desc_stat_react <-
 )
 
 # Generate materials
+# Please modify the path to the output using the 'output_file' argument so that
+# it fits your needs.
 rmarkdown::render(
   input = "./inst/templates/SM3.Rmd",
   output_file = "../../../../SM3.html",
@@ -726,6 +734,8 @@ rmarkdown::render(
 # --------------------------------------------------------------------------------
 
 # Generating the file will take a little bit of time
+# Please modify the path to the output using the 'output_file' argument so that
+# it fits your needs.
 rmarkdown::render(
   input = "./inst/templates/SM4.Rmd",
   output_file = "../../../../SM4.html",
@@ -740,6 +750,8 @@ rmarkdown::render(
 # asymmetry functions to describe the change in 6MWT, IPAQ-SF and EMAPS scores
 # ----------------------------------------------------------------------------
 
+# Please modify the path to the output using the 'output_file' argument so that
+# it fits your needs.
 rmarkdown::render(
   input = "./inst/templates/SM5.Rmd",
   output_file = "../../../../SM5.html",
