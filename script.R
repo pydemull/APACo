@@ -4,14 +4,14 @@
 # a prospective, monocentric, and observational study'
 
 # -----------
-# Import data ----
+# Load data ----
 # -----------
-INCLUSION <- readr::read_csv2("data/INCLUSION.csv")
-VISIT_6M <- readr::read_csv2("data/VISIT_6M.csv")
-VISIT_12M <- readr::read_csv2("data/VISIT_12M.csv")
-IPAQ <- readr::read_csv2("data/IPAQ.csv")
-EMAPS <- readr::read_csv2("data/EMAPS.csv")
-BARRIERS <- readr::read_csv2("data/BARRIERS.csv")
+data("INCLUSION")
+data("VISIT_6M")
+data("VISIT_12M")
+data("IPAQ")
+data("EMAPS")
+data("BARRIERS")
 
 
 # ------------------------
@@ -25,6 +25,8 @@ INCLUSION_cleaned <-
 BARRIERS_cleaned <-
   BARRIERS |>
   dplyr::mutate(across(patient:autres, as.factor))
+
+
 # ------------------------------------------------------------
 # Describe participants characteristics at the inclusion stage ----
 # ------------------------------------------------------------
