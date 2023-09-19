@@ -3,8 +3,8 @@
 #' @param data A dataframe.
 #' @param id A character value to indicate the name of the variable designating the
 #'     identities of the observations.
-#' @param x A character value to indicate the name of the variable to be plotted on the X axis.
-#' @param y A character value to indicate the name of the variable to be plotted on the Y axis.
+#' @param x A character value to indicate the name of a factor variable (2 levels) to be plotted on the X axis.
+#' @param y A character value to indicate the name of a numeric variable to be plotted on the Y axis.
 #' @param rain_side A character value to indicate how you want the rainclouds displayed,
 #'     right ("r"), left ("l") or flanking ("f"), for a 1-by-1 flanking raincloud use ("f1x1")
 #'     and for a 2-by-2 use ("f2x2").
@@ -64,25 +64,25 @@ analyse_change <- function(data,
   if (is.null(labs_1y))
     labs_1y <- y
   if (is.null(labs_2x))
-    labs_2x <- x
+    labs_2x <- ""
   if (is.null(labs_2y))
     labs_2y <- y
   if (is.null(labs_3x))
-    labs_3x <- x
+    labs_3x <- levels((data |> dplyr::pull(x)))[[1]]
   if (is.null(labs_3y))
-    labs_3y <- y
+    labs_3y <- levels((data |> dplyr::pull(x)))[[2]]
   if (is.null(labs_4x))
     labs_4x <- x
   if (is.null(labs_4y))
     labs_4y <- y
   if (is.null(labs_5x))
-    labs_5x <- x
+    labs_5x <- "Quantile of group 1"
   if (is.null(labs_5y))
-    labs_5y <- y
+    labs_5y <- "Quantile difference (group 2 - group 1)"
   if (is.null(labs_6x))
-    labs_6x <- x
+    labs_6x <- "Quantile"
   if (is.null(labs_6y))
-    labs_6y <- y
+    labs_6y <- "Quantile sum = q + 1−q"
 
   # Set the vertical move of the labels of the graphic relating to the shift function
   if (is.null(nudge_y))
@@ -90,66 +90,66 @@ analyse_change <- function(data,
 
   # Make a raincloud plot to visualize individual changes
   p1 <-
-    ggplot(data = data, aes(x = .data[[x]], y = .data[[y]])) +
-    ggrain::geom_rain(
-      rain.side = rain_side,
-      fill = color_fill,
-      id.long.var = id,
-      point.args = rlang::list2(
-        alpha = 0.3,
-        color = color_fill,
-        size = 4
-      ),
-      line.args = rlang::list2(
-        alpha = 0.2,
-        color = color_fill,
-        linewidth = 1
-      ),
-      line.args.pos = rlang::list2(position = position_jitter(
-        width = .04,
-        height = 0,
-        seed = 42
-      )),
-      point.args.pos = rlang::list2(position = position_jitter(
-        width = .04,
-        height = 0,
-        seed = 42
-      )),
-      boxplot.args = rlang::list2(
-        width = 0.05,
-        fill = color_fill,
-        outlier.alpha = 0
-      )
-
-    ) +
-    stat_summary(
-      aes(group = 1),
-      fun = "mean",
-      geom = "line",
-      size = 1,
-      color = color_stat
-    ) +
-    stat_summary(
-      aes(group = .data[[x]]),
-      fun = "mean",
-      geom = "point",
-      size = 3,
-      color = color_stat
-    ) +
-    stat_summary(
-      aes(group = .data[[x]]),
-      fun.data = "mean_sdl",
-      geom = "errorbar",
-      fun.args = list(mult = 1),
-      width = 0.05,
-      linewidth = 0.7,
-      color = color_stat
-    ) +
-    labs(title = "Marginal distributions",
-         x = labs_1x,
-         y = labs_1y) +
-    theme(legend.position = "none")
-
+    suppressWarnings(
+      ggplot(data = data, aes(x = .data[[x]], y = .data[[y]])) +
+        ggrain::geom_rain(
+          rain.side = rain_side,
+          fill = color_fill,
+          id.long.var = id,
+          point.args = rlang::list2(
+            alpha = 0.3,
+            color = color_fill,
+            size = 4
+          ),
+          line.args = rlang::list2(
+            alpha = 0.2,
+            color = color_fill,
+            linewidth = 1
+          ),
+          line.args.pos = rlang::list2(position = position_jitter(
+            width = .04,
+            height = 0,
+            seed = 42
+          )),
+          point.args.pos = rlang::list2(position = position_jitter(
+            width = .04,
+            height = 0,
+            seed = 42
+          )),
+          boxplot.args = rlang::list2(
+            width = 0.05,
+            fill = color_fill,
+            outlier.alpha = 0
+          )
+        ) +
+        stat_summary(
+          aes(group = 1),
+          fun = "mean",
+          geom = "line",
+          size = 1,
+          color = color_stat
+        ) +
+        stat_summary(
+          aes(group = .data[[x]]),
+          fun = "mean",
+          geom = "point",
+          size = 3,
+          color = color_stat
+        ) +
+        stat_summary(
+          aes(group = .data[[x]]),
+          fun.data = "mean_sdl",
+          geom = "errorbar",
+          fun.args = list(mult = 1),
+          width = 0.05,
+          linewidth = 0.7,
+          color = color_stat
+        ) +
+        labs(title = "Marginal distributions",
+             x = labs_1x,
+             y = labs_1y) +
+        theme(legend.position = "none")
+    )
 
   # Make a raincloud plot to visualize pairwise differences
 
@@ -353,7 +353,7 @@ analyse_change <- function(data,
   ## Make plot
   p4 <-
     ggplot(data = data |>
-             dplyr::mutate(MONTH = forcats::fct_relevel(MONTH, level2, level1)),
+             dplyr::mutate({{x}} := forcats::fct_relevel(.data[[x]], level2, level1)),
            aes(x = .data[[x]],
                y = .data[[y]])) +
     ggbeeswarm::geom_quasirandom(

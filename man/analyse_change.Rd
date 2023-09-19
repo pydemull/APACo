@@ -33,9 +33,9 @@ analyse_change(
 \item{id}{A character value to indicate the name of the variable designating the
 identities of the observations.}
 
-\item{x}{A character value to indicate the name of the variable to be plotted on the X axis.}
+\item{x}{A character value to indicate the name of a factor variable (2 levels) to be plotted on the X axis.}
 
-\item{y}{A character value to indicate the name of the variable to be plotted on the Y axis.}
+\item{y}{A character value to indicate the name of a numeric variable to be plotted on the Y axis.}
 
 \item{rain_side}{A character value to indicate how you want the rainclouds displayed,
 right ("r"), left ("l") or flanking ("f"), for a 1-by-1 flanking raincloud use ("f1x1")

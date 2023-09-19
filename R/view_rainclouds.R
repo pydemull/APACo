@@ -45,59 +45,61 @@ view_rainclouds <- function(data,
 
   # Make plot
   p <-
-    ggplot(data = data, aes(x = .data[[x]], y = .data[[y]])) +
-    ggrain::geom_rain(
-      rain.side = rain_side,
-      fill = color_fill,
-      id.long.var = id,
-      point.args = rlang::list2(
-        alpha = 0.3,
-        color = color_fill,
-        size = 4
-      ),
-      line.args = rlang::list2(
-        alpha = 0.2,
-        color = color_fill,
-        linewidth = 1
-      ),
-      line.args.pos = rlang::list2(position = position_jitter(
-        width = .04,
-        height = 0,
-        seed = 42
-      )),
-      point.args.pos = rlang::list2(position = position_jitter(
-        width = .04,
-        height = 0,
-        seed = 42
-      ))
-    ) +
-    stat_summary(
-      aes(group = 1),
-      fun = "mean",
-      geom = "line",
-      size = 1,
-      color = color_stat
-    ) +
-    stat_summary(
-      aes(group = .data[[x]]),
-      fun = "mean",
-      geom = "point",
-      size = 3,
-      color = color_stat
-    ) +
-    stat_summary(
-      aes(group = .data[[x]]),
-      fun.data = "mean_sdl",
-      geom = "errorbar",
-      fun.args = list(mult = 1),
-      width = 0.05,
-      linewidth = 0.7,
-      color = color_stat
-    ) +
-    labs(title = "Marginal distributions",
-         x = labs_x,
-         y = labs_y) +
-    theme(legend.position = "none")
+    suppressWarnings(
+      ggplot(data = data, aes(x = .data[[x]], y = .data[[y]])) +
+        ggrain::geom_rain(
+          rain.side = rain_side,
+          fill = color_fill,
+          id.long.var = id,
+          point.args = rlang::list2(
+            alpha = 0.3,
+            color = color_fill,
+            size = 4
+          ),
+          line.args = rlang::list2(
+            alpha = 0.2,
+            color = color_fill,
+            linewidth = 1
+          ),
+          line.args.pos = rlang::list2(position = position_jitter(
+            width = .04,
+            height = 0,
+            seed = 42
+          )),
+          point.args.pos = rlang::list2(position = position_jitter(
+            width = .04,
+            height = 0,
+            seed = 42
+          ))
+        ) +
+        stat_summary(
+          aes(group = 1),
+          fun = "mean",
+          geom = "line",
+          size = 1,
+          color = color_stat
+        ) +
+        stat_summary(
+          aes(group = .data[[x]]),
+          fun = "mean",
+          geom = "point",
+          size = 3,
+          color = color_stat
+        ) +
+        stat_summary(
+          aes(group = .data[[x]]),
+          fun.data = "mean_sdl",
+          geom = "errorbar",
+          fun.args = list(mult = 1),
+          width = 0.05,
+          linewidth = 0.7,
+          color = color_stat
+        ) +
+        labs(title = "Marginal distributions",
+             x = labs_x,
+             y = labs_y) +
+        theme(legend.position = "none")
+    )
 
   # Return plot
   p
