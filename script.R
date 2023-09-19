@@ -193,7 +193,7 @@ DB_6MWT_0_12 <-
   dplyr::ungroup() |>
   tidyr::unnest(data)
 
-# Test the change in central tendency as initially planned in the project
+# Test the change in the mean as initially planned in the project
 t.test(
   formula = DIST_M ~ MONTH,
   data = DB_6MWT_0_12 |> dplyr::mutate(MONTH = forcats::fct_relevel(MONTH, "12", "0")),
