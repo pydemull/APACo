@@ -3,8 +3,8 @@
 #' @param data A dataframe.
 #' @param id A character value to indicate the name of the variable designating the
 #'     identities of the observations.
-#' @param x A character value to indicate the name of the variable to be plotted on the X axis.
-#' @param y A character value to indicate the name of the variable to be plotted on the Y axis.
+#' @param x A character value to indicate the name of a factor variable (2 levels) to be plotted on the X axis.
+#' @param y A character value to indicate the name of a numeric variable to be plotted on the Y axis.
 #' @param rain_side A character value to indicate how you want the rainclouds displayed,
 #'     right ("r"), left ("l") or flanking ("f"), for a 1-by-1 flanking raincloud use ("f1x1")
 #'     and for a 2-by-2 use ("f2x2").

@@ -4,7 +4,7 @@
 #'     using a raincloud plot and a qq-plot
 #'
 #' @param data A dataframe.
-#' @param var A character value to indicate the name of the variable to be plotted.
+#' @param var A character value to indicate the name of a numeric variable to be plotted.
 #'
 #' @return A ggplot object.
 #' @export
