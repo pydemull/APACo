@@ -1,5 +1,5 @@
 Package: APACo
-Title: Reproduce APA & CO project analyses
+Title: Reproduce APA & Co project analyses
 Version: 0.0.0.9000
 Authors@R: 
     person("Pierre-Yves", "de Müllenheim", , "pydemull@uco.frm", role = c("aut", "cre"),
@@ -35,4 +35,6 @@ Depends:
 LazyData: true
 Suggests: 
     devtools,
+    testthat (>= 3.0.0),
     usethis
+Config/testthat/edition: 3
