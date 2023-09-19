@@ -14,7 +14,8 @@ data("IPAQ")
 data("EMAPS")
 data("BARRIERS")
 
-# Please use ?`DATASET_NAME` in the Console for information regarding the content of the dataset.
+# Please use ?`DATASET_NAME` in the Console to get information about the content of
+# the dataset.
 
 
 # ------------------------
@@ -24,14 +25,24 @@ data("BARRIERS")
 # Clean INCLUSION dataset
 INCLUSION_cleaned <-
   INCLUSION |>
-  dplyr::mutate(dplyr::across(c(sex, angioplasty, bypass), as.factor),
+  dplyr::mutate(dplyr::across(c(patient, sex, angioplasty, bypass), as.factor),
                 BMI = weight / ((height / 100) ^ 2))
+
+# Clean VISIT_6M dataset
+VISIT_6M_cleaned <-
+  VISIT_6M |>
+  dplyr::mutate(patient = as.factor(patient))
+
+# Clean VISIT_12M dataset
+VISIT_12M_cleaned <-
+  VISIT_12M |>
+  dplyr::mutate(patient = as.factor(patient))
 
 # Create a dataset with all six-minute walking tests
 DB_6MWT <-
   INCLUSION_cleaned |>
-  dplyr::left_join(VISIT_6M, by = "patient") |>
-  dplyr::left_join(VISIT_12M, by = "patient") |>
+  dplyr::left_join(VISIT_6M_cleaned, by = "patient") |>
+  dplyr::left_join(VISIT_12M_cleaned, by = "patient") |>
   dplyr::select(patient, DIST_6WT_M0, DIST_6WT_M6, DIST_6WT_M12) |>
   dplyr::rename(MONTH_0 = DIST_6WT_M0,
                 MONTH_6 = DIST_6WT_M6,
@@ -55,6 +66,7 @@ DB_6MWT <-
 DB_IPAQ <-
   IPAQ |>
   dplyr::mutate(
+    patient = as.factor(patient),
     total_hours_heavy = ifelse(
       is.na(total_hours_heavy) |
         total_hours_heavy == 999,
@@ -104,12 +116,15 @@ DB_IPAQ <-
 DB_EMAPS <-
   EMAPS |>
   dplyr::rename(MONTH = num_visit) |>
-  dplyr::mutate(MONTH = forcats::fct_recode(
-    as.factor(MONTH),
-    "0" = "1",
-    "6" = "2",
-    "12" = "3"
-  )) |>
+  dplyr::mutate(
+    patient = as.factor(patient),
+    MONTH = forcats::fct_recode(
+      as.factor(MONTH),
+      "0" = "1",
+      "6" = "2",
+      "12" = "3"
+    )
+  ) |>
   dplyr::group_by(MONTH) |>
   dplyr::mutate(
     "Intrinsic motivation"    = (AP_q1  %+% AP_q6  %+%  AP_q11) / 3,
@@ -136,6 +151,11 @@ INCLUSION_cleaned |> skimr::skim()
 
 # Analyse sex
 questionr::freq(INCLUSION_cleaned$sex, digits = 2)
+
+# Analyse age
+analyse_distribution(data = INCLUSION_cleaned, var = "age")
+## => Comment: Right tail is very short.
+
 
 # Analyse height
 analyse_distribution(data = INCLUSION_cleaned, var = "height")
@@ -176,7 +196,7 @@ DB_6MWT_0_12 <-
 # Test the change in central tendency as initially planned in the project
 t.test(
   formula = DIST_M ~ MONTH,
-  data = DB_6MWT_0_12,
+  data = DB_6MWT_0_12 |> dplyr::mutate(MONTH = forcats::fct_relevel(MONTH, "12", "0")),
   mu = 0,
   paired = TRUE,
   var.equal = FALSE
@@ -288,7 +308,7 @@ ragg::agg_tiff(
   "../../fig2.tiff",
   scaling = 0.41,
   height = 16,
-  width = 16,
+  width = 20,
   unit = "cm",
   res = 400
 )
@@ -332,18 +352,18 @@ change_emaps <-
 
   if (x == "INTEGRATED")
   {
-    x_lab = "Integrated motivation"
+    x_lab = "Integrated regulation"
     color_fill <- "chartreuse4"
   }
 
   if (x == "IDENTIFIED")
   {
-    x_lab = "Identified motivation"
+    x_lab = "Identified regulation"
     color_fill <- "chartreuse4"
   }
   if (x == "INTROJECTED")
   {
-    x_lab = "Introjected motivation"
+    x_lab = "Introjected regulation"
     color_fill <- "grey50"
   }
 
