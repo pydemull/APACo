@@ -58,7 +58,7 @@ res <-
                     "\n",
                     "# `r x$variable`",
                     "\n",
-                    "```{r, echo = FALSE, fig.width = 20, fig.height = 20, dpi = 250, fig.cap = 'On panels A and C, the error bars over the points are the standard deviations around the means. On panels D and F, the errors bars are 95% confidence intervals non corrected for multiple comparisons. On panel E, the black line depicts the identity line. If any, significant results (based on adjusted p-values) in the shift (panel C) and difference asymmetry (panel F) functions are highlighted using thick red circles.'}",
+                    "```{r, echo = FALSE, fig.width = 20, fig.height = 20, dpi = 250, fig.cap = 'On panels A and C, the error bars over the points are the standard deviations around the means. On panels D and F, the error bars are 95% confidence intervals non corrected for multiple comparisons. On panel E, the black line depicts the identity line. If any, significant results (based on adjusted p-values) in the shift (panel D) and difference asymmetry (panel F) functions are highlighted using thick red circles.'}",
                     "print(x$p)",
                     "```"
   ),
