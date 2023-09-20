@@ -27,6 +27,7 @@
 #' @return A ggplot object.
 #' @export
 #' @import ggplot2
+#' @import patchwork
 #' @importFrom stats p.adjust
 
 analyse_change <- function(data,
@@ -160,7 +161,7 @@ analyse_change <- function(data,
   ## Rearrange data (a wide format is needed to compute the differences)
   data2 <-
     data |>
-    tidyr::pivot_wider(names_from = .data[[x]], values_from = .data[[y]]) |>
+    tidyr::pivot_wider(names_from = {{ x }}, values_from = {{ y }}) |>
     dplyr::mutate(diff = .data[[level2]] - .data[[level1]])
 
   ## Make plot
@@ -257,7 +258,7 @@ analyse_change <- function(data,
       )
     )
 
-  ## Add p-values adjusted using the Benjamini-Hochberg's False Discovery Rate method
+  ## Add p-values adjusted using the Benjamini-Hochbergs False Discovery Rate method
   sf$adj_p_value_bh <- round(p.adjust(sf$p_value, method = "BH"), 2)
 
   ##  Make plot
@@ -345,7 +346,7 @@ analyse_change <- function(data,
   table_sf <-
     sf |>
     tidyr::pivot_longer(
-      cols = c(level2, level1),
+      cols = tidyselect::all_of(c(level2, level1)),
       names_to = "group",
       values_to = "vals"
     )
@@ -421,7 +422,7 @@ analyse_change <- function(data,
     (
       rogme::asymdhd(
         data |>
-          tidyr::pivot_wider(names_from = .data[[x]], values_from = .data[[y]]) |>
+          tidyr::pivot_wider(names_from = {{ x }}, values_from = {{ y }}) |>
           dplyr::mutate(diff = .data[[level2]] - .data[[level1]],
                         gr = as.factor("group1")),
         formula = diff ~ gr,
@@ -430,7 +431,7 @@ analyse_change <- function(data,
     )[[1]]
   set.seed(NULL)
 
-  ## Add p-values adjusted using the Benjamini-Hochberg's False Discovery Rate method
+  ## Add p-values adjusted using the Benjamini-Hochberg False Discovery Rate method
   daf$adj_p_value_bh <-
     round(p.adjust(daf$p.value, method = "BH"), 2)
 
