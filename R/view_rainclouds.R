@@ -16,6 +16,7 @@
 #' @return A ggplot object.
 #' @export
 #' @import ggplot2
+#' @import Hmisc
 #'
 
 view_rainclouds <- function(data,

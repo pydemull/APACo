@@ -10,6 +10,8 @@
 #' @export
 #' @import ggplot2
 #' @import patchwork
+#' @import Hmisc
+#'
 
 analyse_distribution <- function(data,
                                  var) {

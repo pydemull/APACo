@@ -27,6 +27,7 @@
 #' @return A ggplot object.
 #' @export
 #' @import ggplot2
+#' @import Hmisc
 #' @import patchwork
 #' @importFrom stats p.adjust
 
@@ -83,7 +84,7 @@ analyse_change <- function(data,
   if (is.null(labs_6x))
     labs_6x <- "Quantile"
   if (is.null(labs_6y))
-    labs_6y <- "Quantile sum = q + 1−q"
+    labs_6y <- "Quantile sum = q + 1-q"
 
   # Set the vertical move of the labels of the graphic relating to the shift function
   if (is.null(nudge_y))
