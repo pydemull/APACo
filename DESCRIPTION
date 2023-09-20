@@ -27,7 +27,8 @@ Imports:
     rlang,
     rogme (>= 0.2.1),
     skimr,
-    tidyr
+    tidyr,
+    tidyselect
 Remotes: 
     GRousselet/rogme
 Depends: 

@@ -1,4 +1,4 @@
-testthat::test_that("The plot is correctly generated", {
+test_that("The plot is correctly generated", {
 
   # Build plot
   p <-
@@ -8,6 +8,6 @@ testthat::test_that("The plot is correctly generated", {
   )
 
   # Do test
-  testthat::expect_s3_class(p, "ggplot")
+  expect_s3_class(p, "ggplot")
 
 })

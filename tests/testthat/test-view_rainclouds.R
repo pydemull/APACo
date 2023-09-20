@@ -22,6 +22,6 @@ test_that("The figure is correctly generated", {
     )
 
   # Do test
-  testthat::expect_s3_class(p, "ggplot")
+  expect_s3_class(p, "ggplot")
 
 })

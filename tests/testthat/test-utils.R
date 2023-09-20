@@ -1,4 +1,4 @@
-testthat::test_that("Sum across columns works with NAs", {
+test_that("Sum across columns works with NAs", {
 
   # Define basic dataframe
   df <-
@@ -18,6 +18,6 @@ testthat::test_that("Sum across columns works with NAs", {
     dplyr::pull(sum)
 
   # Do test
-  testthat::expect_equal(test_sum, ref_sum)
+  expect_equal(test_sum, ref_sum)
 
 })
