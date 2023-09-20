@@ -9,6 +9,7 @@
 #' @return A ggplot object.
 #' @export
 #' @import ggplot2
+#' @import patchwork
 
 analyse_distribution <- function(data,
                                  var) {
