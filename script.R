@@ -557,7 +557,7 @@ dev.off()
 
 # -------------------------------------------------------------------------
 # Build supplemental materials SM3. Data relating to all the 6MWT distances, ----
-# IPAQ-SF scores, and EMAPS scores measured during the study
+# IPAQ-SF MET-min/week, and EMAPS scores measured during the study
 # -------------------------------------------------------------------------
 
 # Figures

@@ -1,5 +1,5 @@
 ---
-title: "SM5. Data relating to the shift and difference asymmetry functions to describe the change in 6MWT distances, IPAQ-SF MET-min/week, and EMAPS scores"
+title: "SM5. Data relating to the shift and difference asymmetry functions to describe the change in 6MWT distance, IPAQ-SF MET-min/week, and EMAPS scores"
 output: 
   html_document:
     theme: cosmo
