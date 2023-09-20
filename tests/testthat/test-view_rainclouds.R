@@ -1,4 +1,4 @@
-test_that("The figure is correctly generated", {
+test_that("The rainclouds are correctly generated", {
 
 
   # Prepare data
