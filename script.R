@@ -232,6 +232,8 @@ change_6MWT <-
 ### the shift function.
 ### The `daf` object is a dataframe containing the information relating to
 ### the difference asymmetry function.
+### Please increase the size of the RStudio plot pane if you have a
+### grid.Call error.
 ### You may want to export the figure to have a proper view.
 change_6MWT
 
@@ -298,6 +300,8 @@ change_IPAQ <-
 ### the shift function.
 ### The `daf` object is a dataframe containing the information relating to
 ### the difference asymmetry function.
+### Please increase the size of the RStudio plot pane if you have a
+### grid.Call error.
 ### You may want to export the figure to have a proper view.
 change_IPAQ
 
@@ -413,6 +417,8 @@ change_emaps <-
 ### the shift function.
 ### The `daf` object is a dataframe containing the information relating to
 ### the difference asymmetry function.
+### Please increase the size of the RStudio plot pane if you have a
+### grid.Call error.
 ### You may want to export the figure to have a proper view.
 change_emaps
 
@@ -530,7 +536,8 @@ p_bar <-
     axis.text.x = element_blank()
   )
 
-# View the figure
+# View the figure (please increase the size of the RStudio plot pane
+# if you have a grid.Call error
 p_bar
 
 # Export the figure
