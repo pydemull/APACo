@@ -26,6 +26,7 @@ Imports:
     rlang,
     rogme (>= 0.2.1),
     skimr,
+    targets,
     tidyr,
     tidyselect
 Remotes: 

@@ -139,7 +139,7 @@ DB_EMAPS <-
 # Clean BARRIERS dataset
 BARRIERS_cleaned <-
   BARRIERS |>
-  dplyr::mutate(across(patient:autres, as.factor))
+  dplyr::mutate(dplyr::across(patient:autres, as.factor))
 
 
 # ------------------------------------------------------------
