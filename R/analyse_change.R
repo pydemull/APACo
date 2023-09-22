@@ -128,7 +128,7 @@ analyse_change <- function(data,
           aes(group = 1),
           fun = "mean",
           geom = "line",
-          size = 1,
+          linewidth = 1,
           color = color_stat
         ) +
         stat_summary(

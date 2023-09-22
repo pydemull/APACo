@@ -77,7 +77,7 @@ view_rainclouds <- function(data,
           aes(group = 1),
           fun = "mean",
           geom = "line",
-          size = 1,
+          linewidth = 1,
           color = color_stat
         ) +
         stat_summary(
@@ -96,8 +96,7 @@ view_rainclouds <- function(data,
           linewidth = 0.7,
           color = color_stat
         ) +
-        labs(title = "Marginal distributions",
-             x = labs_x,
+        labs(x = labs_x,
              y = labs_y) +
         theme(legend.position = "none")
     )

@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Pierre-Yves", "de Müllenheim", , "pydemull@uco.frm", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: A package to reproduce the analytical pipeline of the APA & Co project.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -23,9 +23,13 @@ Imports:
     ragg,
     reactable,
     readr,
+    renv,
     rlang,
+    rmarkdown,
     rogme (>= 0.2.1),
     skimr,
+    tarchetypes,
+    targets,
     tidyr,
     tidyselect
 Remotes: 

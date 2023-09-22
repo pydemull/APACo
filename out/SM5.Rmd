@@ -9,10 +9,6 @@ output:
     number_sections: yes
     df_print: paged
 toc-title: "Table of content"
-params:
-  change_6MWT: NA
-  change_IPAQ: NA
-  change_emaps: NA
 ---
 ```{css, echo=FALSE}
 .title {
@@ -48,12 +44,15 @@ pre code {
 ```
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE)
+change_6MWT <- targets::tar_read(change_6MWT)
+change_IPAQ <- targets::tar_read(change_IPAQ)
+change_EMAPS <- targets::tar_read(change_EMAPS)
 ```
 
 ```{r, include=FALSE}
 list_titles <- list(
-  "Six-minute walking test",
+  "6MWT distance",
   "IPAQ-SF MET-min / week",
   "EMAPS | Intrinsic motivation",
   "EMAPS | Integrated regulation",
@@ -66,12 +65,12 @@ list_titles <- list(
 list_tables <- list(
   change_6MWT,
   change_IPAQ,
-  change_emaps[[1]],
-  change_emaps[[2]],
-  change_emaps[[3]],
-  change_emaps[[4]],
-  change_emaps[[5]],
-  change_emaps[[6]]
+  change_EMAPS[[1]],
+  change_EMAPS[[2]],
+  change_EMAPS[[3]],
+  change_EMAPS[[4]],
+  change_EMAPS[[5]],
+  change_EMAPS[[6]]
 )
 
 legend_sf <- "q = quantile; ci.low = lower bounds of the confidence intervals; ci.up = upper bounds of the confidence intervals; adj_p_value_bh = p value adjusted for multiple comparisons using the Benjamini-Hochberg False Discovery Rate method."
