@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_rmd_template.R
 \name{get_rmd_template}
 \alias{get_rmd_template}
-\title{Get .Rmd template (APA & Co project)}
+\title{Get .Rmd template}
 \usage{
 get_rmd_template(dir = "./out", name)
 }

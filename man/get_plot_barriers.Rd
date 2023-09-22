@@ -2,16 +2,18 @@
 % Please edit documentation in R/get_plot_BARRIERS.R
 \name{get_plot_BARRIERS}
 \alias{get_plot_BARRIERS}
-\title{Get the plot showing the results relating to the barriers to physical activity (APA & Co project)}
+\title{Get the plot showing the results relating to the barriers to physical activity
+at 12 months.}
 \usage{
 get_plot_BARRIERS(data)
 }
 \arguments{
-\item{data}{'BARRIERS_cleaned' dataframe (from APA & Co project analysis pipeline).}
+\item{data}{'BARRIERS_cleaned' dataframe (from APA & Co project analytical pipeline).}
 }
 \value{
 A ggplot object.
 }
 \description{
-Get the plot showing the results relating to the barriers to physical activity (APA & Co project)
+Get the plot showing the results relating to the barriers to physical activity
+at 12 months.
 }

@@ -1,7 +1,7 @@
 
-#' Get results for the change in 6MWT distance between 0 and 12 months (APA & Co project)
+#' Get results for the change in 6MWT distance between 0 and 12 months
 #'
-#' @param data 'DB_6MWT_0_12' dataframe (from APA & Co project analysis pipeline).
+#' @param data 'DB_6MWT_0_12' dataframe (from APA & Co project analytical pipeline).
 #'
 #' @return A list with one figure and two tables (one for the shift function, and one for
 #'     the difference asymmetry function).

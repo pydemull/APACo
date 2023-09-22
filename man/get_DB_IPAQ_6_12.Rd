@@ -7,12 +7,12 @@
 get_DB_IPAQ_6_12(data)
 }
 \arguments{
-\item{data}{'DB_IPAQ' dataframe (from APA & Co project analysis pipeline).}
+\item{data}{'DB_IPAQ' dataframe (from APA & Co project analytical pipeline).}
 }
 \value{
 A dataframe.
 }
 \description{
 Keep the rows for months 6 and 12, and keep the participants with data
-at both 6 and 12 months (APA & Co project)
+at both 6 and 12 months.
 }

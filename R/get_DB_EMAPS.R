@@ -1,7 +1,7 @@
 
-#' Get final EMAPS database (APA & Co project)
+#' Get final EMAPS database
 #'
-#' @param data 'EMAPS' dataframe (from APA & Co project analysis pipeline).
+#' @param data 'EMAPS' dataframe (from APA & Co project analytical pipeline).
 #'
 #' @return A dataframe.
 #' @export

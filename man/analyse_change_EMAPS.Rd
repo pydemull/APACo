@@ -2,17 +2,17 @@
 % Please edit documentation in R/analyse_change_EMAPS.R
 \name{analyse_change_EMAPS}
 \alias{analyse_change_EMAPS}
-\title{Get results for the change in EMAPS scores between 0 and 12 months (APA & Co project)}
+\title{Get results for the change in EMAPS scores between 0 and 12 months}
 \usage{
 analyse_change_EMAPS(data)
 }
 \arguments{
-\item{data}{'DB_EMAPS_0_12' dataframe (from APA & Co project analysis pipeline).}
+\item{data}{'DB_EMAPS_0_12' dataframe (from APA & Co project analytical pipeline).}
 }
 \value{
 A list of results lists relating to each EMAPS score. Each list includes one figure
 and two tables (one for the shift function, and one for the difference asymmetry function).
 }
 \description{
-Get results for the change in EMAPS scores between 0 and 12 months (APA & Co project)
+Get results for the change in EMAPS scores between 0 and 12 months
 }

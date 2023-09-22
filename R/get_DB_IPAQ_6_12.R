@@ -2,9 +2,9 @@
 #' Filtering DB_IPAQ
 #'
 #' Keep the rows for months 6 and 12, and keep the participants with data
-#'     at both 6 and 12 months (APA & Co project)
+#'     at both 6 and 12 months.
 #'
-#' @param data 'DB_IPAQ' dataframe (from APA & Co project analysis pipeline).
+#' @param data 'DB_IPAQ' dataframe (from APA & Co project analytical pipeline).
 #'
 #' @return A dataframe.
 #' @export

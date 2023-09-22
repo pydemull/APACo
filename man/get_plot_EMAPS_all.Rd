@@ -2,16 +2,16 @@
 % Please edit documentation in R/get_plot_EMAPS_all.R
 \name{get_plot_EMAPS_all}
 \alias{get_plot_EMAPS_all}
-\title{Get plot for all EMAPS scores data (APA & Co project)}
+\title{Get plot for all EMAPS scores data}
 \usage{
 get_plot_EMAPS_all(data)
 }
 \arguments{
-\item{data}{'DB_EMAPS' dataframe (from APA & Co project analysis pipeline).}
+\item{data}{'DB_EMAPS' dataframe (from APA & Co project analytical pipeline).}
 }
 \value{
 A ggplot object.
 }
 \description{
-Get plot for all EMAPS scores data (APA & Co project)
+Get plot for all EMAPS scores data
 }

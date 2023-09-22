@@ -2,16 +2,16 @@
 % Please edit documentation in R/get_DB_IPAQ.R
 \name{get_DB_IPAQ}
 \alias{get_DB_IPAQ}
-\title{Get final IPAQ database (APA & Co project)}
+\title{Get final IPAQ database}
 \usage{
 get_DB_IPAQ(data)
 }
 \arguments{
-\item{data}{'IPAQ' dataframe (from APA & Co project analysis pipeline).}
+\item{data}{'IPAQ' dataframe (from APA & Co project analytical pipeline).}
 }
 \value{
 A dataframe.
 }
 \description{
-Get final IPAQ database (APA & Co project)
+Get final IPAQ database
 }

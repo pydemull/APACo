@@ -7,12 +7,12 @@
 get_DB_6MWT_0_12(data)
 }
 \arguments{
-\item{data}{'DB_6MWT' dataframe (from APA & Co project analysis pipeline).}
+\item{data}{'DB_6MWT' dataframe (from APA & Co project analytical pipeline).}
 }
 \value{
 A dataframe.
 }
 \description{
 Keep the rows for months 0 and 12, and keep the participants with data
-at both 0 and 12 months (APA & Co project)
+at both 0 and 12 months.
 }

@@ -2,16 +2,16 @@
 % Please edit documentation in R/get_plot_6MWT_all.R
 \name{get_plot_6MWT_all}
 \alias{get_plot_6MWT_all}
-\title{Get plot for all 6MWT distance data (APA & Co project)}
+\title{Get plot for all 6MWT distance data}
 \usage{
 get_plot_6MWT_all(data)
 }
 \arguments{
-\item{data}{'DB_6MWT' dataframe (from APA & Co project analysis pipeline).}
+\item{data}{'DB_6MWT' dataframe (from APA & Co project analytical pipeline).}
 }
 \value{
 A ggplot object.
 }
 \description{
-Get plot for all 6MWT distance data (APA & Co project)
+Get plot for all 6MWT distance data
 }

@@ -2,16 +2,16 @@
 % Please edit documentation in R/t_test_6MWT_0_12.R
 \name{t_test_6MWT_0_12}
 \alias{t_test_6MWT_0_12}
-\title{T-test for comparing means of 6MWT distances at 0 and 12 months (APA & Co project)}
+\title{T-test for comparing means of 6MWT distances at 0 and 12 months}
 \usage{
 t_test_6MWT_0_12(data)
 }
 \arguments{
-\item{data}{'DB_6MWT_0_12' dataframe (from APA & Co project analysis pipeline).}
+\item{data}{'DB_6MWT_0_12' dataframe (from APA & Co project analytical pipeline).}
 }
 \value{
 An object of class 'htest'.
 }
 \description{
-T-test for comparing means of 6MWT distances at 0 and 12 months (APA & Co project)
+T-test for comparing means of 6MWT distances at 0 and 12 months
 }

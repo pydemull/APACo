@@ -1,7 +1,7 @@
 
-#' T-test for comparing means of 6MWT distances at 0 and 12 months (APA & Co project)
+#' T-test for comparing means of 6MWT distances at 0 and 12 months
 #'
-#' @param data 'DB_6MWT_0_12' dataframe (from APA & Co project analysis pipeline).
+#' @param data 'DB_6MWT_0_12' dataframe (from APA & Co project analytical pipeline).
 #'
 #' @return An object of class 'htest'.
 #' @export

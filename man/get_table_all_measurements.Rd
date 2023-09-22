@@ -2,22 +2,20 @@
 % Please edit documentation in R/get_table_all_measurements.R
 \name{get_table_all_measurements}
 \alias{get_table_all_measurements}
-\title{Get a table of descriptive statistics for all measurements relating to 6MWT, IPAQ, and EMAPS
-measurements (APA & Co project)}
+\title{Get a table of descriptive statistics for all measurements relating to 6MWT, IPAQ-SF, and EMAPS}
 \usage{
 get_table_all_measurements(data1, data2, data3)
 }
 \arguments{
-\item{data1}{'DB_6MWT' dataframe (from APA & Co project analysis pipeline).}
+\item{data1}{'DB_6MWT' dataframe (from APA & Co project analytical pipeline).}
 
-\item{data2}{'IPAQ' dataframe (from APA & Co project analysis pipeline).}
+\item{data2}{'DB_IPAQ' dataframe (from APA & Co project analytical pipeline).}
 
-\item{data3}{'EMAPS' dataframe (from APA & Co project analysis pipeline).}
+\item{data3}{'DB_EMAPS' dataframe (from APA & Co project analytical pipeline).}
 }
 \value{
 A reactable object.
 }
 \description{
-Get a table of descriptive statistics for all measurements relating to 6MWT, IPAQ, and EMAPS
-measurements (APA & Co project)
+Get a table of descriptive statistics for all measurements relating to 6MWT, IPAQ-SF, and EMAPS
 }

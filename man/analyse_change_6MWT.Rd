@@ -2,17 +2,17 @@
 % Please edit documentation in R/analyse_change_6MWT.R
 \name{analyse_change_6MWT}
 \alias{analyse_change_6MWT}
-\title{Get results for the change in 6MWT distance between 0 and 12 months (APA & Co project)}
+\title{Get results for the change in 6MWT distance between 0 and 12 months}
 \usage{
 analyse_change_6MWT(data)
 }
 \arguments{
-\item{data}{'DB_6MWT_0_12' dataframe (from APA & Co project analysis pipeline).}
+\item{data}{'DB_6MWT_0_12' dataframe (from APA & Co project analytical pipeline).}
 }
 \value{
 A list with one figure and two tables (one for the shift function, and one for
 the difference asymmetry function).
 }
 \description{
-Get results for the change in 6MWT distance between 0 and 12 months (APA & Co project)
+Get results for the change in 6MWT distance between 0 and 12 months
 }

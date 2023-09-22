@@ -2,16 +2,16 @@
 % Please edit documentation in R/get_DB_EMAPS.R
 \name{get_DB_EMAPS}
 \alias{get_DB_EMAPS}
-\title{Get final EMAPS database (APA & Co project)}
+\title{Get final EMAPS database}
 \usage{
 get_DB_EMAPS(data)
 }
 \arguments{
-\item{data}{'EMAPS' dataframe (from APA & Co project analysis pipeline).}
+\item{data}{'EMAPS' dataframe (from APA & Co project analytical pipeline).}
 }
 \value{
 A dataframe.
 }
 \description{
-Get final EMAPS database (APA & Co project)
+Get final EMAPS database
 }

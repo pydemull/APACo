@@ -2,16 +2,16 @@
 % Please edit documentation in R/get_plot_IPAQ_all.R
 \name{get_plot_IPAQ_all}
 \alias{get_plot_IPAQ_all}
-\title{Get plot for all IPAQ MET-min/week data (APA & Co project)}
+\title{Get plot for all IPAQ MET-min/week data}
 \usage{
 get_plot_IPAQ_all(data)
 }
 \arguments{
-\item{data}{'IPAQ' dataframe (from APA & Co project analysis pipeline).}
+\item{data}{'IPAQ' dataframe (from APA & Co project analytical pipeline).}
 }
 \value{
 A ggplot object.
 }
 \description{
-Get plot for all IPAQ MET-min/week data (APA & Co project)
+Get plot for all IPAQ MET-min/week data
 }

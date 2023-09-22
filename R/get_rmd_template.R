@@ -1,5 +1,5 @@
 
-#' Get .Rmd template (APA & Co project)
+#' Get .Rmd template
 #'
 #' The function copies an .Rmd template file from the APACo package to put it in a new directory
 #'     called 'out' created  at the root of the current directory when running the analytical

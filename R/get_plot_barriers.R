@@ -1,7 +1,8 @@
 
-#' Get the plot showing the results relating to the barriers to physical activity (APA & Co project)
+#' Get the plot showing the results relating to the barriers to physical activity
+#'     at 12 months.
 #'
-#' @param data 'BARRIERS_cleaned' dataframe (from APA & Co project analysis pipeline).
+#' @param data 'BARRIERS_cleaned' dataframe (from APA & Co project analytical pipeline).
 #'
 #' @return A ggplot object.
 #' @export
