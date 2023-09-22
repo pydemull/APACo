@@ -96,8 +96,7 @@ view_rainclouds <- function(data,
           linewidth = 0.7,
           color = color_stat
         ) +
-        labs(title = "Marginal distributions",
-             x = labs_x,
+        labs(x = labs_x,
              y = labs_y) +
         theme(legend.position = "none")
     )
