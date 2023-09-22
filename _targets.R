@@ -81,27 +81,21 @@ list(
   tar_target(fig2, save_figure("out/fig2.tiff", change_IPAQ$p, scaling = 0.41, width = 20), format = "file"),
   tar_target(fig3, save_figure("out/fig3.tiff", p_BARRIERS, scaling = 0.3, height = 5, width = 10), format = "file"),
 
-  # Get templates allowing to build .html files
-  tar_target(path_to_main, get_rmd_template(name = "main.Rmd"), format = "file"),
-  tar_target(path_to_SM3, get_rmd_template(name = "SM3.Rmd"), format = "file"),
-  tar_target(path_to_SM4, get_rmd_template(name = "SM4.Rmd"), format = "file"),
-  tar_target(path_to_SM5, get_rmd_template(name = "SM5.Rmd"), format = "file"),
-
-  # Buid report including main results
+  # Build report including main results
   tar_render(main, "out/main.Rmd"),
 
   # Build Supplemental Materials 3
   tar_target(p_6MWT_all, get_plot_6MWT_all(DB_6MWT)),
   tar_target(p_IPAQ_all, get_plot_IPAQ_all(DB_IPAQ)),
   tar_target(p_EMAPS_all, get_plot_EMAPS_all(DB_EMAPS)),
-  tar_target(table_all_desc_stat, get_table_all_measurements(DB_6MWT, DB_IPAQ, DB_EMAPS))
-  #tar_render(SM3, "out/SM3.Rmd"),
+  tar_target(table_all_desc_stat, get_table_all_measurements(DB_6MWT, DB_IPAQ, DB_EMAPS)),
+  tar_render(SM3, "out/SM3.Rmd"),
 
   # Build Supplemental Materials 4
-  #tar_render(SM4, "out/SM4.Rmd"),
+  tar_render(SM4, "out/SM4.Rmd"),
 
   # Build Supplemental Materials 5
-  #tar_render(SM5, "out/SM5.Rmd")
+  tar_render(SM5, "out/SM5.Rmd")
 
 )
 
