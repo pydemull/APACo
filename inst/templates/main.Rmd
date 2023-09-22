@@ -1,0 +1,115 @@
+---
+title: "APA & Co project - Results shown in the manuscript"
+output: 
+  html_document:
+    theme: cosmo
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+    number_sections: yes
+    df_print: paged
+toc-title: "Table of content"
+
+---
+```{css, echo=FALSE}
+.title {
+  font-weight: bold;
+}
+
+
+h1 {
+  font-size: 25px;
+  font-weight: bold;
+}
+h2 {
+  font-size: 23px;
+  font-weight: bold;
+}
+h3 {
+  font-size: 21px;
+}
+p.caption {
+  color: #777;
+  margin-top: 10px;
+}
+p code {
+  white-space: inherit;
+}
+pre {
+  word-break: normal;
+  word-wrap: normal;
+}
+pre code {
+  white-space: inherit;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE)
+ggplot2::theme_set(theme_bw())
+```
+
+# Descriptive analysis of the participants
+## Overview
+```{r}
+targets::tar_read(analysis_INCLUSION)
+```
+
+## Sex
+```{r}
+targets::tar_read(analysis_sex)
+```
+
+## Age
+```{r}
+targets::tar_read(analysis_age)
+```
+
+## Height
+```{r}
+targets::tar_read(analysis_height)
+```
+
+## Weight
+```{r}
+targets::tar_read(analysis_weight)
+```
+
+## Body mass index
+```{r}
+targets::tar_read(analysis_bmi)
+```
+
+## Angioplasty
+```{r}
+targets::tar_read(analysis_angioplasty)
+```
+
+## Bypass
+```{r}
+targets::tar_read(analysis_bypass)
+```
+
+# change in 6MWT distance between 0 and 12 months
+## T-test
+```{r}
+targets::tar_read(t_test_results_6MWT)
+```
+
+## Shift and difference asymmetry functions
+```{r, fig.width=20, fig.height=16}
+targets::tar_read(change_6MWT)$p
+```
+
+# Change in IPAQ MET-min/week between 6 and 12 months
+## Shift and difference asymmetry functions
+```{r, fig.width=20, fig.height=16}
+targets::tar_read(change_IPAQ)$p
+```
+
+# Barriers to physical activities at 12 months
+```{r, fig.width=5, fig.height=10}
+targets::tar_read(p_BARRIERS)
+```
+
+
