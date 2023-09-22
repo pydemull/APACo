@@ -5,8 +5,12 @@
 #'
 #' @return A ggplot object.
 #' @export
+#' @importFrom stats binom.test
 #'
-get_plot_barriers<- function(data) {
+get_plot_BARRIERS <- function(data) {
+
+  ggplot2::theme_set(theme_bw())
+
   data |>
     dplyr::select(patient:isolement_faible_RS) |>
     tidyr::pivot_longer(cols = c(-patient),

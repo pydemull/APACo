@@ -7,6 +7,9 @@
 #' @export
 #'
 get_plot_6MWT_all <- function(data) {
+
+  ggplot2::theme_set(theme_bw())
+
   view_rainclouds(
     data = data,
     id = "patient",

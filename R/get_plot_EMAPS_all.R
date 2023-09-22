@@ -7,13 +7,24 @@
 #' @export
 #'
 get_plot_EMAPS_all <- function(data){
+
+  ggplot2::theme_set(theme_bw())
+
   data |>
+    dplyr::rename(
+      "Intrinsic motivation" = INTRINSIC,
+      "Integrated regulation" = INTEGRATED,
+      "Identified regulation" = IDENTIFIED,
+      "Introjected regulation" = INTROJECTED,
+      "External regulation" = EXTERNAL,
+      "Amotivation" = AMOTIVATION
+    ) |>
     tidyr::pivot_longer(
       cols = -c(patient, MONTH),
       names_to = "type_motiv",
       values_to = "val"
     ) |>
-    dplyr::mutate(across(type_motiv, \(x) factor(
+    dplyr::mutate(dplyr::across(type_motiv, \(x) factor(
       x,
       levels = c(
         "Intrinsic motivation",
@@ -49,7 +60,7 @@ get_plot_EMAPS_all <- function(data){
       aes(group = 1),
       fun = "mean",
       geom = "line",
-      size = 0.5,
+      linewidth = 0.5,
       color = "black"
     ) +
     stat_summary(
