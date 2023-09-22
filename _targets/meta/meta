@@ -1,28 +1,47 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
 %+%|function|238b2c5cab11edc0|||||||||||||||
 .__global__|object|50c9db009a2c8228|||||||||||||||
-analyse_age|stem|5bcfb935e502089d|87330dc6293e2e50|227bbc5005d320f2|982794083||t19621.8089071384s|005fb3d67c36d7ed|131731|rds|local|vector|||5.87|le package dplyr a été compilé avec la version R 4.2.3. le package ggbeeswarm a été compilé avec la version R 4.2.3. le package ggplot2 a été compilé avec la version R 4.2.3. le package rlang a été compilé avec la version R 4.2.3|
-analyse_angioplasty|stem|defb272f25d1421d|fdcf7d226f60f94c|3f39c19d6c902f79|-1946214111||t19621.8098572202s|8c237f5c678b0a48|160|rds|local|vector|||6|le package dplyr a été compilé avec la version R 4.2.3. le package ggbeeswarm a été compilé avec la version R 4.2.3. le package ggplot2 a été compilé avec la version R 4.2.3. le package rlang a été compilé avec la version R 4.2.3|
-analyse_bmi|stem|073f9ed7e88e53dc|627a7ed61e57d8d3|227bbc5005d320f2|-256501789||t19621.8130626807s|af53da07b71565f5|131700|rds|local|vector|||0.2||
-analyse_bypass|stem|c094740d96087a70|1e378182c3d5908d|3f39c19d6c902f79|-593414335||t19621.8088873933s|e209d753280b6d62|157|rds|local|vector|||5.57|le package dplyr a été compilé avec la version R 4.2.3. le package ggbeeswarm a été compilé avec la version R 4.2.3. le package ggplot2 a été compilé avec la version R 4.2.3. le package rlang a été compilé avec la version R 4.2.3|
 analyse_change|function|ea128c83c2683501|||||||||||||||
+analyse_change_6MWT|function|8480d4663e4ae085|||||||||||||||
+analyse_change_EMAPS|function|d58639b84f84e84c|||||||||||||||
+analyse_change_ipaq|function|d25271cb4601c25d|||||||||||||||
+analyse_change_IPAQ|function|d25271cb4601c25d|||||||||||||||
 analyse_distribution|function|742c38718b57e073|||||||||||||||
-analyse_height|stem|52d4bcb484c3782d|5366735ad8cdaccd|227bbc5005d320f2|607383840||t19621.8092602576s|005fb3d67c36d7ed|131731|rds|local|vector|||5.76|le package dplyr a été compilé avec la version R 4.2.3. le package ggbeeswarm a été compilé avec la version R 4.2.3. le package ggplot2 a été compilé avec la version R 4.2.3. le package rlang a été compilé avec la version R 4.2.3|
-analyse_INNCLUSION|stem|2ad06a4efd2797a6|fa87b2dc16ca2d31|3f39c19d6c902f79|1604873675||t19621.8092521771s|20103052e45cc9ad|883|rds|local|vector|||5.89|le package dplyr a été compilé avec la version R 4.2.3. le package ggbeeswarm a été compilé avec la version R 4.2.3. le package ggplot2 a été compilé avec la version R 4.2.3. le package rlang a été compilé avec la version R 4.2.3|
-analyse_sex|stem|1b903979ae87acb8|3b95ef20b5c93c5e|3f39c19d6c902f79|581121351||t19621.8095457933s|bbe0e43529942e5e|163|rds|local|vector|||5.91|le package dplyr a été compilé avec la version R 4.2.3. le package ggbeeswarm a été compilé avec la version R 4.2.3. le package ggplot2 a été compilé avec la version R 4.2.3. le package rlang a été compilé avec la version R 4.2.3|
-analyse_weight|stem|7ea5642772f335b5|4274c9f2ad5a241e|227bbc5005d320f2|636883901||t19621.8089145867s|5d5af8f08b93e870|131736|rds|local|vector|||5.79|le package dplyr a été compilé avec la version R 4.2.3. le package ggbeeswarm a été compilé avec la version R 4.2.3. le package ggplot2 a été compilé avec la version R 4.2.3. le package rlang a été compilé avec la version R 4.2.3|
+analysis_age|stem|c364eb3b13c8c3ab|87330dc6293e2e50|dd3e11bec26a30d9|-1707383603||t19622.3060499196s|cf748c9126d1738c|131930|rds|local|vector|||0.02||
+analysis_angioplasty|stem|740965b23f980bec|fdcf7d226f60f94c|2061f62d3de88196|1744242262||t19622.306034949s|8c237f5c678b0a48|160|rds|local|vector|||0||
+analysis_bmi|stem|a18f27f67ac55b1f|627a7ed61e57d8d3|dd3e11bec26a30d9|-1890419458||t19622.3060474466s|9015b5a41ee50dcd|131932|rds|local|vector|||0||
+analysis_bypass|stem|78add273f32e35b3|1e378182c3d5908d|2061f62d3de88196|302090149||t19622.3060368883s|e209d753280b6d62|157|rds|local|vector|||0||
+analysis_height|stem|66b3832954d61e70|5366735ad8cdaccd|dd3e11bec26a30d9|1850643543||t19622.3060420015s|6e61e9e44663d325|131936|rds|local|vector|||0.01||
+analysis_INCLUSION|stem|ab563f0cc33b0f9f|fa87b2dc16ca2d31|2061f62d3de88196|-1378940209||t19622.3060449376s|20103052e45cc9ad|883|rds|local|vector|||0.09||
+analysis_sex|stem|d3a91019e6d9a65d|3b95ef20b5c93c5e|2061f62d3de88196|425779045||t19622.306033333s|bbe0e43529942e5e|163|rds|local|vector|||0||
+analysis_weight|stem|22b05a1c3bdbea55|4274c9f2ad5a241e|dd3e11bec26a30d9|1372500378||t19622.3060393422s|2c27f98f06f89403|131935|rds|local|vector|||0.03||
 BARRIERS|object|74cc1e76c260b3f6|||||||||||||||
-BARRIERS_cleaned|stem|1435f71ca35a9975|d567e78fae2b2ef0|cedc7242df2addd4|-344686442||t19621.8096313402s|1476f25704154386|928|rds|local|vector|||5.63|le package dplyr a été compilé avec la version R 4.2.3. le package ggbeeswarm a été compilé avec la version R 4.2.3. le package ggplot2 a été compilé avec la version R 4.2.3. le package rlang a été compilé avec la version R 4.2.3|
-DB_6MWT|stem|599c6fbab3303ae1|cdbe3e4a2d1d987a|b6ec8a479ca2e3ed|1414496104||t19621.8096373291s|3d6ef44d6b37d74c|1189|rds|local|vector|||5.66|le package dplyr a été compilé avec la version R 4.2.3. le package ggbeeswarm a été compilé avec la version R 4.2.3. le package ggplot2 a été compilé avec la version R 4.2.3. le package rlang a été compilé avec la version R 4.2.3|
-DB_6MWT_0_12|stem|c4138a1fb9d1b4e7|622b0a738f26c780|16aec1f0870b1079|-1948074758||t19621.813075323s|bad639f7a08f9f23|952|rds|local|vector|||0.29||
-DB_EMAPS|stem|2abba01ef56fbf3b|920e33193531b0aa|73536ec3e461130a|977892587||t19621.8130443385s|0ff4ebba527fba7e|2756|rds|local|vector|||6.1|le package dplyr a été compilé avec la version R 4.2.3. le package ggbeeswarm a été compilé avec la version R 4.2.3. le package ggplot2 a été compilé avec la version R 4.2.3. le package rlang a été compilé avec la version R 4.2.3|
-DB_IPAQ|stem|9a8d4472f7974f7c|cbc4460f18384f13|b0093339ab6074ba|636469199||t19621.8085338193s|9ea0c661a2cfa29b|5392|rds|local|vector|||6.1|le package dplyr a été compilé avec la version R 4.2.3. le package ggbeeswarm a été compilé avec la version R 4.2.3. le package ggplot2 a été compilé avec la version R 4.2.3. le package rlang a été compilé avec la version R 4.2.3|
+BARRIERS_cleaned|stem|dc216b40b12f4d76|d567e78fae2b2ef0|cedc7242df2addd4|-344686442||t19622.3060292726s|1476f25704154386|928|rds|local|vector|||0||
+change_6MWT|stem|70da78756637237e|9919ebf20beb3653|334800620c64475c|-305996662||t19622.3709383862s|f514602e422f976e|394599|rds|local|vector|||0.95||
+change_IPAQ|stem|0f31d82381be4109|dc63b6e471780d58|b7905e6533fdc6a0|514556576||t19622.3708893668s|824e15053bceb85b|390980|rds|local|vector|||1.44||
+DB_6MWT|stem|83da67676f35cb35|0152fab7807b2c66|059005235abcdc5b|1414496104||t19622.306052086s|72a3e0bfc0e9f469|1188|rds|local|vector|||0.01||
+DB_6MWT_0_12|stem|8b2885fed4b15bb4|a81ab8a1259c1352|ddd13f03de6014e2|-1948074758||t19622.3060544049s|bad639f7a08f9f23|952|rds|local|vector|||0.05||
+DB_EMAPS|stem|8a0fc3a863065bb2|f0333734a8948a23|63ffbf2a1ac99424|977892587||t19622.3708623918s|0a47333fcf72ed93|2743|rds|local|vector|||1.98||
+DB_EMAPS_0_12|stem|a0469a8a915bf29d|7cd11048b9d8cc21|36913bbf6b1e8ad1|-1140397065||t19622.3708679761s|0e8f3d0032dce63d|1591|rds|local|vector|||0.08||
+DB_IPAQ|stem|d65d3dbe6c9a299a|7285a73180003610|ada107d02b10431d|636469199||t19622.306024399s|9ea0c661a2cfa29b|5392|rds|local|vector|||0.02||
+DB_IPAQ_6_12|stem|30a0e7c6f0c2a8ea|1725aa946f3edd3c|4c60e7cc57887f46|-635332505||t19622.3100605614s|7d645bf271ac4f66|1088|rds|local|vector|||0.07||
 EMAPS|object|efc60fb7859cc6f9|||||||||||||||
+fig1|stem|f508fc76a9119a43|c879d443b4648bc1|6924a05f2646fbeb|-1347776011|out/fig1.tiff|t19622.3709599099s|693d6b8405d0b33b|19036288|file|local|vector|||1.66||
+fig2|stem|d8d60223ccc3305d|518278871a49133f|c2e06c79b2a1b16c|-983253655|out/fig2.tiff|t19622.370922623s|f005c2d8de0c10c2|23797198|file|local|vector|||2.66|1m22mUsing the size aesthetic with geom_polygon was deprecated in ggplot2 3.4.0.36mℹ39m Please use the linewidth aesthetic instead.|
+get_DB_6MWT|function|8720d845ef760307|||||||||||||||
+get_DB_6MWT_0_12|function|34b4cb3b8c0c6874|||||||||||||||
+get_DB_EMAPS|function|f016db3482f70d5b|||||||||||||||
+get_DB_EMAPS_0_12|function|34b4cb3b8c0c6874|||||||||||||||
+get_DB_IPAQ|function|5ea4f96f624ff574|||||||||||||||
+get_DB_IPAQ_6_12|function|cff94884df487501|||||||||||||||
 INCLUSION|object|9bec5e9ebeda283c|||||||||||||||
-INCLUSION_cleaned|stem|46ef419c0f6ba651|2457bfb714565b3e|e0e32ef07301290d|-842041367||t19621.8085282248s|e5fb07dd0e76e8a4|2064|rds|local|vector|||6.28|le package dplyr a été compilé avec la version R 4.2.3. le package ggbeeswarm a été compilé avec la version R 4.2.3. le package ggplot2 a été compilé avec la version R 4.2.3. le package rlang a été compilé avec la version R 4.2.3|
+INCLUSION_cleaned|stem|cb7003a6e0d4b58f|2457bfb714565b3e|e0e32ef07301290d|-842041367||t19622.306022148s|e5fb07dd0e76e8a4|2064|rds|local|vector|||1.97||
 IPAQ|object|4a24c5ef0b92a108|||||||||||||||
+save_figure|function|ce2e5f607c931231|||||||||||||||
+t_test_6MWT_0_12|function|a9986617a736e812|||||||||||||||
+t_test_results_6MWT|stem|0ec2858f9e5aaa81|88bba541fc0efbde|5635a78e11b57f1a|575146275||t19622.3060742686s|2da402a946d20212|354|rds|local|vector|||0.01||
 view_rainclouds|function|0823038fcfab2dee|||||||||||||||
 VISIT_12M|object|6cb5a40825521170|||||||||||||||
-VISIT_12M_cleaned|stem|d89b660d556dbba5|42b609d64a18bdb8|8692c8b974def351|-1000452922||t19621.8085403985s|27763cdafaa76b0a|902|rds|local|vector|||6.2|le package dplyr a été compilé avec la version R 4.2.3. le package ggbeeswarm a été compilé avec la version R 4.2.3. le package ggplot2 a été compilé avec la version R 4.2.3. le package rlang a été compilé avec la version R 4.2.3|
+VISIT_12M_cleaned|stem|64ac89e53739c55d|42b609d64a18bdb8|8692c8b974def351|-1000452922||t19622.3060258991s|01a4368c621ea788|903|rds|local|vector|||0||
 VISIT_6M|object|48c3a071a965baa9|||||||||||||||
-VISIT_6M_cleaned|stem|df9fe6ae70c855ff|a40c7be5a520ff3c|08b54c41eafce9ea|684185012||t19621.8092670183s|33fc5a4849fac781|950|rds|local|vector|||5.67|le package dplyr a été compilé avec la version R 4.2.3. le package ggbeeswarm a été compilé avec la version R 4.2.3. le package ggplot2 a été compilé avec la version R 4.2.3. le package rlang a été compilé avec la version R 4.2.3|
+VISIT_6M_cleaned|stem|ab3b3e48db46b3e1|a40c7be5a520ff3c|08b54c41eafce9ea|684185012||t19622.3060277132s|482729213cf81a34|949|rds|local|vector|||0||
