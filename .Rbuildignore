@@ -4,3 +4,9 @@
 ^\.Rproj\.user$
 ^data-raw$
 ^LICENSE\.md$
+^_targets$
+^_targets\.R$
+^out$
+^run\.R$
+^run\.sh$
+^script\.R$
