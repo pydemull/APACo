@@ -17,15 +17,17 @@ save_figure(
 \arguments{
 \item{filename}{Cf. ?ragg::agg_tiff.}
 
+\item{...}{The object to be plotted.}
+
 \item{scaling}{Cf. ?ragg::agg_tiff.}
 
 \item{height}{Cf. ?ragg::agg_tiff.}
 
 \item{width}{Cf. ?ragg::agg_tiff.}
 
-\item{res}{Cf. ?ragg::agg_tiff.}
+\item{units}{Cf. ?ragg::agg_tiff.}
 
-\item{unit}{Cf. ?ragg::agg_tiff.}
+\item{res}{Cf. ?ragg::agg_tiff.}
 }
 \value{
 A character string indicating the path to the saved figure.

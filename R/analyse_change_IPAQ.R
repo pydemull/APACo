@@ -3,8 +3,8 @@
 #'
 #' @param data 'DB_IPAQ_6_12' dataframe (from APA & Co project analysis pipeline).
 #'
-#' @return A list with one graphic and two tables (one for the shift function, and one for
-#'     the difference aysmmetry function).
+#' @return A list with one figure and two tables (one for the shift function, and one for
+#'     the difference asymmetry function).
 #' @export
 #'
 analyse_change_IPAQ <- function(data) {
@@ -28,6 +28,6 @@ analyse_change_IPAQ <- function(data) {
     labs_5x = "Deciles of MET-min/week at Month 0",
     labs_5y = "Decile Month 12 - Decile Month 0 (MET-min/week)",
     labs_6x = "Quantiles",
-    labs_6y = "Quantile sum = q + 1−q"
+    labs_6y = "Quantile sum = q + 1-q"
   )
 }

@@ -10,8 +10,8 @@ analyse_change_6MWT(data)
 \item{data}{'DB_6MWT_0_12' dataframe (from APA & Co project analysis pipeline).}
 }
 \value{
-A list with one graphic and two tables (one for the shift function, and one for
-the difference aysmmetry function).
+A list with one figure and two tables (one for the shift function, and one for
+the difference asymmetry function).
 }
 \description{
 Get results for the change in 6MWT distance between 0 and 12 months (APA & Co project)

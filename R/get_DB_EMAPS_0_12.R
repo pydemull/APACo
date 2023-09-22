@@ -1,5 +1,7 @@
 
-#' Filtering DB_EMAPS: Keep the rows for months 0 and 12, and keep the participants with data
+#' Filtering DB_EMAPS
+#'
+#' Keep the rows for months 0 and 12, and keep the participants with data
 #'     at both 0 and 12 months (APA & Co project)
 #'
 #' @param data 'DB_EMAPS' dataframe (from APA & Co project analysis pipeline).

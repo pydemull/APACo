@@ -2,8 +2,7 @@
 % Please edit documentation in R/get_DB_6MWT_0_12.R
 \name{get_DB_6MWT_0_12}
 \alias{get_DB_6MWT_0_12}
-\title{Filtering DB_6MWT: Keep the rows for months 0 and 12, and keep the participants with data
-at both 0 and 12 months (APA & Co project)}
+\title{Filtering DB_6MWT}
 \usage{
 get_DB_6MWT_0_12(data)
 }
@@ -14,6 +13,6 @@ get_DB_6MWT_0_12(data)
 A dataframe.
 }
 \description{
-Filtering DB_6MWT: Keep the rows for months 0 and 12, and keep the participants with data
+Keep the rows for months 0 and 12, and keep the participants with data
 at both 0 and 12 months (APA & Co project)
 }

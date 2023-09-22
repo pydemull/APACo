@@ -10,8 +10,8 @@ analyse_change_EMAPS(data)
 \item{data}{'DB_EMAPS_0_12' dataframe (from APA & Co project analysis pipeline).}
 }
 \value{
-A list of results lists relating to each EMAPS socre. Each list includes one graphic
-and two tables (one for the shift function, and one for the difference aysmmetry function).
+A list of results lists relating to each EMAPS score. Each list includes one figure
+and two tables (one for the shift function, and one for the difference asymmetry function).
 }
 \description{
 Get results for the change in EMAPS scores between 0 and 12 months (APA & Co project)

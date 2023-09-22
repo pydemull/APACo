@@ -5,6 +5,7 @@
 #'
 #' @return An object of class 'htest'.
 #' @export
+#' @importFrom stats t.test
 #'
 t_test_6MWT_0_12 <- function(data) {
   t.test(

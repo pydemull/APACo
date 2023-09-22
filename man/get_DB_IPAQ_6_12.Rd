@@ -2,8 +2,7 @@
 % Please edit documentation in R/get_DB_IPAQ_6_12.R
 \name{get_DB_IPAQ_6_12}
 \alias{get_DB_IPAQ_6_12}
-\title{Filtering DB_IPAQ: Keep the rows for months 6 and 12, and keep the participants with data
-at both 6 and 12 months (APA & Co project)}
+\title{Filtering DB_IPAQ}
 \usage{
 get_DB_IPAQ_6_12(data)
 }
@@ -14,6 +13,6 @@ get_DB_IPAQ_6_12(data)
 A dataframe.
 }
 \description{
-Filtering DB_IPAQ: Keep the rows for months 6 and 12, and keep the participants with data
+Keep the rows for months 6 and 12, and keep the participants with data
 at both 6 and 12 months (APA & Co project)
 }

@@ -3,8 +3,8 @@
 #'
 #' @param data 'DB_6MWT_0_12' dataframe (from APA & Co project analysis pipeline).
 #'
-#' @return A list with one graphic and two tables (one for the shift function, and one for
-#'     the difference aysmmetry function).
+#' @return A list with one figure and two tables (one for the shift function, and one for
+#'     the difference asymmetry function).
 #' @export
 #'
 analyse_change_6MWT <- function(data) {
@@ -28,6 +28,6 @@ analyse_change_6MWT <- function(data) {
     labs_5x = "Deciles of 6MWT distance at Month 0 (m)",
     labs_5y = "Decile Month 12 - Decile Month 0 (m)",
     labs_6x = "Quantiles",
-    labs_6y = "Quantile sum = q + 1−q"
+    labs_6y = "Quantile sum = q + 1-q"
   )
 }

@@ -3,8 +3,8 @@
 #'
 #' @param data 'DB_EMAPS_0_12' dataframe (from APA & Co project analysis pipeline).
 #'
-#' @return A list of results lists relating to each EMAPS socre. Each list includes one graphic
-#'    and two tables (one for the shift function, and one for the difference aysmmetry function).
+#' @return A list of results lists relating to each EMAPS score. Each list includes one figure
+#'    and two tables (one for the shift function, and one for the difference asymmetry function).
 #' @export
 #'
 analyse_change_EMAPS <- function(data) {
@@ -45,7 +45,7 @@ analyse_change_EMAPS <- function(data) {
 
     list_emaps <-
       analyse_change(
-        data = df_renamed |> dplyr::select(patient, MONTH, x),
+        data = data |> dplyr::select(patient, MONTH, x),
         id = "patient",
         x = "MONTH",
         y = x,
@@ -64,7 +64,7 @@ analyse_change_EMAPS <- function(data) {
         labs_5x = paste0("Deciles of ", x_lab, " score at Month 0"),
         labs_5y = "Decile Month 12 - Decile Month 0",
         labs_6x = "Quantiles",
-        labs_6y = "Quantile sum = q + 1−q"
+        labs_6y = "Quantile sum = q + 1-q"
       )
 
     return(list_emaps)
