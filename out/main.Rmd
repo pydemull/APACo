@@ -90,7 +90,7 @@ targets::tar_read(analysis_angioplasty)
 targets::tar_read(analysis_bypass)
 ```
 
-# change in 6MWT distance between 0 and 12 months
+# Change in 6MWT distance between 0 and 12 months
 ## T-test
 ```{r}
 targets::tar_read(t_test_results_6MWT)
@@ -108,7 +108,7 @@ targets::tar_read(change_IPAQ)$p
 ```
 
 # Barriers to physical activities at 12 months
-```{r, fig.width=5, fig.height=10}
+```{r, fig.width=12, fig.height=8}
 targets::tar_read(p_BARRIERS)
 ```
 
