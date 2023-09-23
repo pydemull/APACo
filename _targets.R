@@ -4,7 +4,7 @@ library(targets)
 library(tarchetypes)
 
 # Set target options:
-tar_option_set(packages = c("APACo", "Hmisc"))
+tar_option_set(packages = c("APACo", "ggplot2", "Hmisc"))
 
 # Define pipeline
 list(
