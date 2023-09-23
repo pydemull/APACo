@@ -2,7 +2,7 @@
 % Please edit documentation in R/read_data.R
 \name{read_data}
 \alias{read_data}
-\title{Read dataset from a package}
+\title{Read dataset from a package when using a {target} analytical pipeline}
 \usage{
 read_data(data_name, package_name)
 }
@@ -15,5 +15,6 @@ read_data(data_name, package_name)
 A dataset.
 }
 \description{
-Read dataset from a package
+This function is from the book by Bruno Rodriguez entitled 'Building reproducible
+analytical pipelines with R' (pp 410-411).
 }
