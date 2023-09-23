@@ -46,7 +46,7 @@ pre code {
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE)
 ggplot2::theme_set(theme_bw())
-change_EMAPS <- targets::tar_read(change_EMAPS)
+targets::tar_load(change_EMAPS)
 ```
 
 ```{r, results = "asis"}
