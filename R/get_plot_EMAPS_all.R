@@ -1,7 +1,7 @@
 
 #' Get plot for all EMAPS scores data
 #'
-#' @param data 'DB_EMAPS' dataframe (from APA & Co project analytical pipeline).
+#' @param data 'DB_EMAPS' data frame (from APA & Co project analytical pipeline).
 #'
 #' @return A ggplot object.
 #' @export

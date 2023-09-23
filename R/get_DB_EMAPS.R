@@ -1,9 +1,9 @@
 
 #' Get final EMAPS database
 #'
-#' @param data 'EMAPS' dataframe (from APA & Co project analytical pipeline).
+#' @param data 'EMAPS' data frame (from APA & Co project analytical pipeline).
 #'
-#' @return A dataframe.
+#' @return A data frame.
 #' @export
 #'
 get_DB_EMAPS <- function(data) {

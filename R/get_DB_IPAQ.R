@@ -1,9 +1,9 @@
 
 #' Get final IPAQ database
 #'
-#' @param data 'IPAQ' dataframe (from APA & Co project analytical pipeline).
+#' @param data 'IPAQ' data frame (from APA & Co project analytical pipeline).
 #'
-#' @return A dataframe.
+#' @return A data frame.
 #' @export
 #'
 get_DB_IPAQ <- function(data) {

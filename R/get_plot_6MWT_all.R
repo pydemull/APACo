@@ -1,7 +1,7 @@
 
 #' Get plot for all 6MWT distance data
 #'
-#' @param data 'DB_6MWT' dataframe (from APA & Co project analytical pipeline).
+#' @param data 'DB_6MWT' data frame (from APA & Co project analytical pipeline).
 #'
 #' @return A ggplot object.
 #' @export

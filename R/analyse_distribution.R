@@ -3,7 +3,7 @@
 #' Function to graphically analyse the distribution of a continuous variable
 #'     using a raincloud plot and a qq-plot
 #'
-#' @param data A dataframe.
+#' @param data A data frame.
 #' @param var A character value to indicate the name of a numeric variable to be plotted.
 #'
 #' @return A ggplot object.

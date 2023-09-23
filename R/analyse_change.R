@@ -1,6 +1,6 @@
 #' Get a set of figures and tables for analysing the change in the variable of interest
 #'
-#' @param data A dataframe.
+#' @param data A data frame.
 #' @param id A character value to indicate the name of the variable designating the
 #'     identities of the observations.
 #' @param x A character value to indicate the name of a factor variable (2 levels) to be plotted on the X axis.

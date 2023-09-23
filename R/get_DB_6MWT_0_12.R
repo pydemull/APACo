@@ -4,9 +4,9 @@
 #' Keep the rows for months 0 and 12, and keep the participants with data
 #'     at both 0 and 12 months.
 #'
-#' @param data 'DB_6MWT' dataframe (from APA & Co project analytical pipeline).
+#' @param data 'DB_6MWT' data frame (from APA & Co project analytical pipeline).
 #'
-#' @return A dataframe.
+#' @return A data frame.
 #' @export
 #'
 get_DB_6MWT_0_12 <- function(data) {

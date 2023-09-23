@@ -1,7 +1,7 @@
 
 #' Get plot for all IPAQ MET-min/week data
 #'
-#' @param data 'IPAQ' dataframe (from APA & Co project analytical pipeline).
+#' @param data 'IPAQ' data frame (from APA & Co project analytical pipeline).
 #'
 #' @return A ggplot object.
 #' @export

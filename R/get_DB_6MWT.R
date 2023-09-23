@@ -1,11 +1,11 @@
 
 #' Get final 6MWT database
 #'
-#' @param data1 'INCLUSION_cleaned' dataframe (from APA & Co project analytical pipeline).
-#' @param data2 'VISIT_6M_cleaned' dataframe (from APA & Co project analytical pipeline).
-#' @param data3 'VISIT_12M_cleaned' dataframe (from APA & Co project analytical pipeline).
+#' @param data1 'INCLUSION_cleaned' data frame (from APA & Co project analytical pipeline).
+#' @param data2 'VISIT_6M_cleaned' data frame (from APA & Co project analytical pipeline).
+#' @param data3 'VISIT_12M_cleaned' data frame (from APA & Co project analytical pipeline).
 #'
-#' @return A dataframe.
+#' @return A data frame.
 #' @export
 #'
 get_DB_6MWT <- function(data1, data2, data3) {
