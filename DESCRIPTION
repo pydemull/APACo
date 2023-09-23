@@ -25,7 +25,6 @@ Imports:
     readr,
     renv,
     rlang,
-    rmarkdown,
     rogme (>= 0.2.1),
     skimr,
     tarchetypes,
