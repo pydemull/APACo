@@ -7,7 +7,7 @@
 analyse_distribution(data, var)
 }
 \arguments{
-\item{data}{A dataframe.}
+\item{data}{A data frame.}
 
 \item{var}{A character value to indicate the name of a numeric variable to be plotted.}
 }

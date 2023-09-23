@@ -7,7 +7,7 @@
 t_test_6MWT_0_12(data)
 }
 \arguments{
-\item{data}{'DB_6MWT_0_12' dataframe (from APA & Co project analytical pipeline).}
+\item{data}{'DB_6MWT_0_12' data frame (from APA & Co project analytical pipeline).}
 }
 \value{
 An object of class 'htest'.

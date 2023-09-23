@@ -7,14 +7,14 @@
 get_DB_6MWT(data1, data2, data3)
 }
 \arguments{
-\item{data1}{'INCLUSION_cleaned' dataframe (from APA & Co project analytical pipeline).}
+\item{data1}{'INCLUSION_cleaned' data frame (from APA & Co project analytical pipeline).}
 
-\item{data2}{'VISIT_6M_cleaned' dataframe (from APA & Co project analytical pipeline).}
+\item{data2}{'VISIT_6M_cleaned' data frame (from APA & Co project analytical pipeline).}
 
-\item{data3}{'VISIT_12M_cleaned' dataframe (from APA & Co project analytical pipeline).}
+\item{data3}{'VISIT_12M_cleaned' data frame (from APA & Co project analytical pipeline).}
 }
 \value{
-A dataframe.
+A data frame.
 }
 \description{
 Get final 6MWT database

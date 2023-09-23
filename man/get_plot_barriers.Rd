@@ -8,7 +8,7 @@ at 12 months.}
 get_plot_BARRIERS(data)
 }
 \arguments{
-\item{data}{'BARRIERS_cleaned' dataframe (from APA & Co project analytical pipeline).}
+\item{data}{'BARRIERS_cleaned' data frame (from APA & Co project analytical pipeline).}
 }
 \value{
 A ggplot object.

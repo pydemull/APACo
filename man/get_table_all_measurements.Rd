@@ -7,11 +7,11 @@
 get_table_all_measurements(data1, data2, data3)
 }
 \arguments{
-\item{data1}{'DB_6MWT' dataframe (from APA & Co project analytical pipeline).}
+\item{data1}{'DB_6MWT' data frame (from APA & Co project analytical pipeline).}
 
-\item{data2}{'DB_IPAQ' dataframe (from APA & Co project analytical pipeline).}
+\item{data2}{'DB_IPAQ' data frame (from APA & Co project analytical pipeline).}
 
-\item{data3}{'DB_EMAPS' dataframe (from APA & Co project analytical pipeline).}
+\item{data3}{'DB_EMAPS' data frame (from APA & Co project analytical pipeline).}
 }
 \value{
 A reactable object.

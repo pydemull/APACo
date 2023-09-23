@@ -7,7 +7,7 @@
 get_plot_EMAPS_all(data)
 }
 \arguments{
-\item{data}{'DB_EMAPS' dataframe (from APA & Co project analytical pipeline).}
+\item{data}{'DB_EMAPS' data frame (from APA & Co project analytical pipeline).}
 }
 \value{
 A ggplot object.

@@ -7,7 +7,7 @@
 get_plot_6MWT_all(data)
 }
 \arguments{
-\item{data}{'DB_6MWT' dataframe (from APA & Co project analytical pipeline).}
+\item{data}{'DB_6MWT' data frame (from APA & Co project analytical pipeline).}
 }
 \value{
 A ggplot object.

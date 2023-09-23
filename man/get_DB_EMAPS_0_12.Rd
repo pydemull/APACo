@@ -7,10 +7,10 @@
 get_DB_EMAPS_0_12(data)
 }
 \arguments{
-\item{data}{'DB_EMAPS' dataframe (from APA & Co project analysis pipeline).}
+\item{data}{'DB_EMAPS' data frame (from APA & Co project analysis pipeline).}
 }
 \value{
-A dataframe.
+A data frame.
 }
 \description{
 Keep the rows for months 0 and 12, and keep the participants with data

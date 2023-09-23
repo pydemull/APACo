@@ -28,7 +28,7 @@ analyse_change(
 )
 }
 \arguments{
-\item{data}{A dataframe.}
+\item{data}{A data frame.}
 
 \item{id}{A character value to indicate the name of the variable designating the
 identities of the observations.}

@@ -7,10 +7,10 @@
 get_DB_IPAQ(data)
 }
 \arguments{
-\item{data}{'IPAQ' dataframe (from APA & Co project analytical pipeline).}
+\item{data}{'IPAQ' data frame (from APA & Co project analytical pipeline).}
 }
 \value{
-A dataframe.
+A data frame.
 }
 \description{
 Get final IPAQ database
