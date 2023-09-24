@@ -1,6 +1,6 @@
 
 #' Get the plot showing the results relating to the barriers to physical activity
-#'     at 12 months.
+#'     at 12 months
 #'
 #' @param data 'BARRIERS_cleaned' data frame (from APA & Co project analytical pipeline).
 #'
