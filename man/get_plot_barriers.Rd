@@ -3,7 +3,7 @@
 \name{get_plot_BARRIERS}
 \alias{get_plot_BARRIERS}
 \title{Get the plot showing the results relating to the barriers to physical activity
-at 12 months.}
+at 12 months}
 \usage{
 get_plot_BARRIERS(data)
 }
@@ -15,5 +15,5 @@ A ggplot object.
 }
 \description{
 Get the plot showing the results relating to the barriers to physical activity
-at 12 months.
+at 12 months
 }
