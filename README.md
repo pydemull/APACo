@@ -67,8 +67,8 @@ object, or using `targets::tar_load(OBJECT_NAME)` in the Console to load
 the object in the global environment. You can load all the created
 objects in one go using `targets::tar_load_everything()` in the Console.
 All the figures and .html files generated during the run of the
-analytical pipeline will appear in a new `out/` folder placed at the
-root of the project.
+analytical pipeline will appear in the `out/` folder placed at the root
+of the project.
 
 ## Verify the code
 
