@@ -15,6 +15,6 @@ read_data(data_name, package_name)
 A dataset.
 }
 \description{
-This function is from the book by Bruno Rodriguez entitled 'Building reproducible
+This function is from the book by Bruno Rodrigues entitled 'Building reproducible
 analytical pipelines with R' (pp 410-411).
 }

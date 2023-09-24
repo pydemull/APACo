@@ -1,7 +1,7 @@
 
 #' Read dataset from a package when using a {target} analytical pipeline
 #'
-#'This function is from the book by Bruno Rodriguez entitled 'Building reproducible
+#'This function is from the book by Bruno Rodrigues entitled 'Building reproducible
 #'     analytical pipelines with R' (pp 410-411).
 #'
 #' @param data_name A character value naming the dataset to be loaded.
