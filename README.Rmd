@@ -2,17 +2,23 @@
 output: github_document
 ---
 
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   eval = FALSE,
   collapse = TRUE,
   comment = "#>",
-  fig.path = "README-",
+  fig.path = "man/figures/README-",
   out.width = "100%"
 )
 ```
 
 # APACo
+
+<!-- badges: start -->
+<!-- badges: end -->
+
 ## Get an overview of the package
 This package was build to perform, share, and reproduce the analytical pipeline implemented to get the results of the 'APA&Co' project ([ClinicalTrials.gov ID: NCT04732923](https://clinicaltrials.gov/study/NCT04732923?term=APA%26Co&rank=4)). Briefly, the 'APA&Co' project was conducted to observe the change in physical condition, physical activity, and motivation for physical activity in coronary artery disease patients at 1 year after following a cardiac rehabilitation program. This research project was managed by the hospital center of Cholet (France). The present package is not intended to provide functions that could be reused in other projects. Some of the functions actually could be used for this purpose, but most of them were designed only to work with the data of the project.
 

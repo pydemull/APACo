@@ -1,5 +1,10 @@
 
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
 # APACo
+
+<!-- badges: start -->
+<!-- badges: end -->
 
 ## Get an overview of the package
 
