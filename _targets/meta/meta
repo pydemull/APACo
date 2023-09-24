@@ -26,14 +26,14 @@ fig3|stem|0b396b9063ef3466|6c6b69109453089d|7e3dc9313422060a|-1819616846|out/fig
 INCLUSION|stem|203c924378159a18|182aa595d3fffb87|ef46db3751d8e999|-706273776||t19623.8742059754s|136a5fe25975821a|1260|rds|local|vector|||1.07||
 INCLUSION_cleaned|stem|8241502d29b97791|2457bfb714565b3e|76a3e034e4d6bef3|-842041367||t19623.8742091625s|2a944dfb05ccbb51|2198|rds|local|vector|||0.02||
 IPAQ|stem|75eeae76217ddb34|1346720e1c280619|ef46db3751d8e999|-699938591||t19623.8742072057s|1afea30a23fb672b|2898|rds|local|vector|||0.04||
-main|stem|76a38e5b78ef1aa2|28d93a370f57a97e|756ebb0922f1fd9c|669725655|out/main.html*out/main.Rmd|t19623.9159387462s|ce79340ad79a3b89|2135791|file|local|vector|||14.83||
+main|stem|c01b82b0966810af|28d93a370f57a97e|756ebb0922f1fd9c|669725655|out/main.html*out/main.Rmd|t19624.6993922199s|fd8e5eabbaed3d4f|2135943|file|local|vector|||14.06||
 p_6MWT_all|stem|32fa3563e2ba40aa|06ee0a2c9beeb5ec|a7fe576202637f65|213372475||t19623.874329239s|c41dc88aafedd4f3|127842|rds|local|vector|||0.04||
 p_BARRIERS|stem|a0446233c7611df0|39b31c707ab71194|ba8ac2082474eaea|-1831709500||t19623.8742350839s|89429519bf0eb506|146375|rds|local|vector|||0.09||
 p_EMAPS_all|stem|03c47e08de7e7309|fc6baeefb1958ed2|1d38bf4b0a34debc|-1476425316||t19623.8742317916s|e999cc2ceb5c2cb6|232349|rds|local|vector|||0.05||
 p_IPAQ_all|stem|24dc14c86727f520|71a66e6a74512ae5|3864df3a635cd17c|-1416840214||t19623.8742298388s|f44e359f5ded1cc8|141454|rds|local|vector|||0.01||
-SM3|stem|5a69d0c7023cbbef|8d3c356c06aa14e1|e1aab44cda53bd15|1743562486|out/SM3.html*out/SM3.Rmd|t19623.9157610464s|81b3e00b99c10b88|1970131|file|local|vector|||8.89||
-SM4|stem|b081ed31e752ec3d|974887f8a8d76db0|a8a000c4c963aa0d|1959477427|out/SM4.html*out/SM4.Rmd|t19623.9156438399s|67608dd17876c363|10374644|file|local|vector|||153.76|You changed the working directory to CUserspydemullenheimDesktopVCpackagesAPACoout probably via setwd. It will be restored to CUserspydemullenheimDesktopVCpackagesAPACo. See the Note section in knitrknit|
-SM5|stem|02bf47df1423e349|528ee805218780ca|d560db4c3578a2fe|-1829143281|out/SM5.html*out/SM5.Rmd|t19623.8764545149s|fe153cf0aebd4ceb|1135033|file|local|vector|||3.14|You changed the working directory to CUserspydemullenheimDesktopVCpackagesAPACoout probably via setwd. It will be restored to CUserspydemullenheimDesktopVCpackagesAPACo. See the Note section in knitrknit|
+SM3|stem|a1de7fd38c293004|8d3c356c06aa14e1|e1aab44cda53bd15|1743562486|out/SM3.html*out/SM3.Rmd|t19624.6991549723s|228c69a94619814f|1970117|file|local|vector|||9.79||
+SM4|stem|aaba27b10a9333fb|974887f8a8d76db0|a8a000c4c963aa0d|1959477427|out/SM4.html*out/SM4.Rmd|t19624.6990207443s|5bad05aac3dd07de|10374638|file|local|vector|||181.52|You changed the working directory to CUserspydemullenheimDesktopVCpackagesAPACoout probably via setwd. It will be restored to CUserspydemullenheimDesktopVCpackagesAPACo. See the Note section in knitrknit|
+SM5|stem|7893b6dd79179bf0|528ee805218780ca|d560db4c3578a2fe|-1829143281|out/SM5.html*out/SM5.Rmd|t19624.6992290582s|ef0df50f7866699e|1135098|file|local|vector|||5.92|You changed the working directory to CUserspydemullenheimDesktopVCpackagesAPACoout probably via setwd. It will be restored to CUserspydemullenheimDesktopVCpackagesAPACo. See the Note section in knitrknit|
 t_test_results_6MWT|stem|0ec2858f9e5aaa81|88bba541fc0efbde|61b28d4444d74efe|575146275||t19623.8762973572s|2da402a946d20212|354|rds|local|vector|||0.03||
 table_all_desc_stat|stem|1c70981b8ec675ba|afb58bc3c80a8de0|5f0dda348739ecb6|1424188110||t19623.874327263s|2e514b6e7df76d81|1332|rds|local|vector|||0.09||
 VISIT_12M|stem|d755bed0bba9855d|b7f01c31f34ee3a8|ef46db3751d8e999|-1867020525||t19623.874208204s|b24c3eae4f512946|797|rds|local|vector|||0||
