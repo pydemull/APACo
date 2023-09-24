@@ -2,7 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-/data
 /out/*.tiff
 /out/*.html
 docs/

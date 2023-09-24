@@ -1611,9 +1611,9 @@
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteRepo": "rogme",
       "RemoteUsername": "GRousselet",
-      "RemoteRef": "HEAD",
+      "RemoteRepo": "rogme",
+      "RemoteRef": "master",
       "RemoteSha": "650d29393f43b8d82f35eca70fbef5927de8b7a9",
       "Requirements": [
         "HDInterval",
@@ -1625,7 +1625,7 @@
         "tidybayes",
         "tidyr"
       ],
-      "Hash": "2ad50bd3320d2acd2ca6b25f8122c914"
+      "Hash": "8c77b75f70f260f773322c33871b6449"
     },
     "rpart": {
       "Package": "rpart",

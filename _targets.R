@@ -17,7 +17,7 @@ list(
   tar_target(BARRIERS, read_data("BARRIERS", "APACo")),
 
   # Prepare general datasets
-  tar_target(INCLUSION_cleaned, INCLUSION |> dplyr::mutate(dplyr::across( c(patient, sex, angioplasty, bypass), as.factor), BMI = weight / ((height / 100) ^ 2))),
+  tar_target(INCLUSION_cleaned, INCLUSION |> dplyr::mutate(dplyr::across(c(patient, sex, angioplasty, bypass), as.factor), BMI = weight / ((height / 100) ^ 2))),
   tar_target(VISIT_6M_cleaned, VISIT_6M |> dplyr::mutate(patient = as.factor(patient))),
   tar_target(VISIT_12M_cleaned, VISIT_12M |> dplyr::mutate(patient = as.factor(patient))),
   tar_target(DB_6MWT, get_DB_6MWT(INCLUSION_cleaned, VISIT_6M_cleaned, VISIT_12M_cleaned)),
