@@ -31,7 +31,7 @@ Imports:
     targets,
     tidyr,
     tidyselect
-Remotes: 
+Remotes:  
     GRousselet/rogme
 Depends: 
     R (>= 4.1.0)
