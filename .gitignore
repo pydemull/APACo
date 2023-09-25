@@ -5,3 +5,5 @@
 /out/*.tiff
 /out/*.html
 docs/
+renv/
+_targets/
