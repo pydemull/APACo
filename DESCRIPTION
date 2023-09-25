@@ -23,12 +23,9 @@ Imports:
     ragg,
     reactable,
     readr,
-    renv,
     rlang,
     rogme (>= 0.2.1),
     skimr,
-    tarchetypes,
-    targets,
     tidyr,
     tidyselect
 Remotes:  
