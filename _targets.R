@@ -58,20 +58,20 @@ list(
   tar_target(fig3, save_figure("out/fig3.tiff", p_BARRIERS, scaling = 0.3, height = 5, width = 10), format = "file"),
 
   # Build report including main results
-  tar_render(main, "out/main.Rmd"),
+  tar_render(main, "main.Rmd", output_dir = "out/"),
 
   # Build Supplemental Materials 3
   tar_target(p_6MWT_all, get_plot_6MWT_all(DB_6MWT)),
   tar_target(p_IPAQ_all, get_plot_IPAQ_all(DB_IPAQ)),
   tar_target(p_EMAPS_all, get_plot_EMAPS_all(DB_EMAPS)),
   tar_target(table_all_desc_stat, get_table_all_measurements(DB_6MWT, DB_IPAQ, DB_EMAPS)),
-  tar_render(SM3, "out/SM3.Rmd"),
+  tar_render(SM3, "SM3.Rmd", output_dir = "out/"),
 
   # Build Supplemental Materials 4
-  tar_render(SM4, "out/SM4.Rmd"),
+  tar_render(SM4, "SM4.Rmd", output_dir = "out/"),
 
   # Build Supplemental Materials 5
-  tar_render(SM5, "out/SM5.Rmd")
+  tar_render(SM5, "SM5.Rmd", output_dir = "out/")
 
 )
 
