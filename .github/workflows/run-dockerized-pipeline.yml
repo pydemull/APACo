@@ -1,4 +1,4 @@
-name: Reproducible pipeline
+name: run-dockerized-pipeline
 
 on:
   push:
