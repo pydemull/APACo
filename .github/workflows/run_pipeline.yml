@@ -1,0 +1,30 @@
+name: Reproducible pipeline
+
+on:
+  push:
+    branches:
+      - master
+      - pipeline
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Build the Docker image
+      run: docker build -t apaco_image .
+
+    - name: Docker Run Action
+      run: >
+        docker run --rm --name apaco_container -v
+        /github/workspace/shared_folder:/project/shared_folder:rw
+        apaco_image
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: housing_output_${{ github.sha }}
+        path: /github/workspace/shared_folder/

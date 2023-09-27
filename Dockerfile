@@ -1,36 +1,4 @@
-pydemull/r_4.3.1:docker-89e5b1ec41e567e5fb273567ee99e056a80fa935
-
-RUN apt-get update && apt-get install -y \
-    libicu-dev \
-    libglpk-dev \
-    libxml2-dev \
-    libcairo2-dev \
-    libgit2-dev \
-    default-libmysqlclient-dev \
-    libpq-dev \
-    libsasl2-dev \
-    libsqlite3-dev \
-    libssh2-1-dev \
-    libxtst6 \
-    libcurl4-openssl-dev \
-    libharfbuzz-dev \
-    libfontconfig1-dev \
-    libfribidi-dev \
-    libfreetype6-dev \
-    libpng-dev \
-    libtiff-dev \
-    libtiff5-dev \
-    libjpeg-dev \
-    libxt-dev \
-    make \
-    unixodbc-dev \
-    wget \
-    zlib1g-dev \
-    pandoc
-
-RUN R -e "install.packages('remotes')"
-
-RUN R -e "remotes::install_github('rstudio/renv@0.16.0')"
+FROM pydemull/r_4.3.1:docker-daf575f8799b86d376a76e886dc26965318649b1
 
 WORKDIR /project
 
