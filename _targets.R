@@ -53,25 +53,25 @@ list(
   tar_target(p_BARRIERS, get_plot_BARRIERS(BARRIERS_cleaned)),
 
   # Export figures 1, 2, and 3
-  tar_target(fig1, save_figure("out/fig1.tiff", change_6MWT$p), format = "file"),
-  tar_target(fig2, save_figure("out/fig2.tiff", change_IPAQ$p, scaling = 0.41, width = 20), format = "file"),
-  tar_target(fig3, save_figure("out/fig3.tiff", p_BARRIERS, scaling = 0.3, height = 5, width = 10), format = "file"),
+  tar_target(fig1, save_figure("pipeline_output/fig1.tiff", change_6MWT$p), format = "file"),
+  tar_target(fig2, save_figure("pipeline_output/fig2.tiff", change_IPAQ$p, scaling = 0.41, width = 20), format = "file"),
+  tar_target(fig3, save_figure("pipeline_output/fig3.tiff", p_BARRIERS, scaling = 0.3, height = 5, width = 10), format = "file"),
 
   # Build report including main results
-  tar_render(main, "main.Rmd", output_dir = "out/"),
+  tar_render(main, "main.Rmd", output_dir = "pipeline_output/"),
 
   # Build Supplemental Materials 3
   tar_target(p_6MWT_all, get_plot_6MWT_all(DB_6MWT)),
   tar_target(p_IPAQ_all, get_plot_IPAQ_all(DB_IPAQ)),
   tar_target(p_EMAPS_all, get_plot_EMAPS_all(DB_EMAPS)),
   tar_target(table_all_desc_stat, get_table_all_measurements(DB_6MWT, DB_IPAQ, DB_EMAPS)),
-  tar_render(SM3, "SM3.Rmd", output_dir = "out/"),
+  tar_render(SM3, "SM3.Rmd", output_dir = "pipeline_output/"),
 
   # Build Supplemental Materials 4
-  tar_render(SM4, "SM4.Rmd", output_dir = "out/"),
+  tar_render(SM4, "SM4.Rmd", output_dir = "pipeline_output/"),
 
   # Build Supplemental Materials 5
-  tar_render(SM5, "SM5.Rmd", output_dir = "out/")
+  tar_render(SM5, "SM5.Rmd", output_dir = "pipeline_output/")
 
 )
 
