@@ -1,5 +1,5 @@
 ---
-title: "APA & Co project | Results shown in the manuscript"
+title: "APA&Co project | Results shown in the manuscript"
 output: 
   html_document:
     theme: cosmo

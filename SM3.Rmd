@@ -1,5 +1,5 @@
 ---
-title: "APA & Co project | SM3. Data relating to all the 6MWT, IPAQ-SF, and EMAPS measurements during the study"
+title: "APA&Co project | SM3. Data relating to all the 6MWT, IPAQ-SF, and EMAPS measurements during the study"
 output: 
   html_document:
     theme: cosmo
