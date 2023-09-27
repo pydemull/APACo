@@ -1,4 +1,4 @@
-FROM rocker/r-ver:4.3.1
+pydemull/r_4.3.1:docker-89e5b1ec41e567e5fb273567ee99e056a80fa935
 
 RUN apt-get update && apt-get install -y \
     libicu-dev \
