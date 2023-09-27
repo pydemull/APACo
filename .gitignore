@@ -2,7 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-/out/*.tiff
-/out/*.html
+pipeline_output/
 docs/
 _targets/
