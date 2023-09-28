@@ -17,8 +17,8 @@ implemented to get the results of the APA&Co project
 NCT04732923](https://clinicaltrials.gov/study/NCT04732923?term=APA%26Co&rank=4)).
 The APA&Co project was conducted to observe the change in physical
 condition, physical activity, and motivation for physical activity in
-coronary artery disease patients at 1 year after following a cardiac
-rehabilitation program. This research project was managed by the
+coronary artery disease patients at 1 year after having followed a
+cardiac rehabilitation program. This research project was managed by the
 hospital center of Cholet (France).
 
 The repository has four branches, `master`, `gh-pages`, `docker`, and
@@ -37,7 +37,7 @@ The repository has four branches, `master`, `gh-pages`, `docker`, and
   one of the major function of the package, called `analyse_change` and
   that provides both figures and tables describing the differences
   between two marginal distributions of paired data, has been developped
-  so that it may be reused in worflows using similar data.
+  so that it may be reused when working with similar data.
 
 - The `gh-pages` branch hosts the files on which stands the [{APACo}
   package website](https://pydemull.github.io/APACo/). This website
@@ -45,10 +45,10 @@ The repository has four branches, `master`, `gh-pages`, `docker`, and
   tab](https://pydemull.github.io/APACo/reference/index.html) where the
   list of the datasets and functions included in the package is shown.
   Each item of the list briefly presents the content of the datasets or
-  the arguments of the considered function. If you want to learn about
-  the computations that the {APACo} package functions implement, you
-  shoud go to the `R/` folder of the `master` branch where each file
-  contains the code of a given function.
+  the arguments of the considered function. If you want to know the
+  computations that the {APACo} package functions implement, you shoud
+  go to the `R/` folder of the `master` branch where each file contains
+  the code of a given function.
 
 - The `docker` branch contains the code to build a Docker image and to
   push that image to a Docker Hub repository. A Docker image is a kind
@@ -61,7 +61,7 @@ The repository has four branches, `master`, `gh-pages`, `docker`, and
 
 - The `pipeline` branch contains the code that runs the analytical
   pipeline of the APA&Co project. This pipeline, that is based on the
-  `{targets}` package, is an organized sucession of actions that use the
+  `{targets}` package, is an organized sequence of actions that use the
   datasets and the functions of the `{APA&Co}` package to generate the
   results embedded in .html files. The main interest of the pipeline is
   to automatically (so non-interactively) drive the analyses. This is an
@@ -70,15 +70,16 @@ The repository has four branches, `master`, `gh-pages`, `docker`, and
   package to allow the restoration of all the package dependencies
   relating to the analytical pipeline, which is another step required to
   ensure the reproducibility of the analytical pipeline and thus the
-  results. Of note, this branch also hosts a GitHub Action workflow that
-  builds a Docker image from the one hosted on the Docker Hub repository
-  as described above. This new image contains the results of the APA&Co
-  project that are stored as .html files in a Docker volume after
-  running the installation of the package dependencies of the analytical
-  pipeline and then running the analytical pipeline itself. After that,
-  the workflow consists in building a Docker container from which the
-  .html files are moved to the present GitHub repository. You can access
-  these .html files by consulting the last [dockerized-pipeline workflow
+  results. Of note, this branch also hosts a GitHub Actions workflow
+  that builds a Docker image from the one hosted on the Docker Hub
+  repository as described above. This new image contains the results of
+  the APA&Co project that are stored as .html files in a Docker volume
+  after running the installation of the package dependencies of the
+  analytical pipeline and then running the analytical pipeline itself.
+  After that, the workflow consists in building a Docker container from
+  which the .html files are moved to the present GitHub repository. You
+  can access these .html files by consulting the last
+  [dockerized-pipeline workflow
   run](https://github.com/pydemull/APACo/actions/workflows/run-dockerized-pipeline.yml).
   When you are on the web page of the workflow and click on the link of
   a workflow (the last one for example), you are conducted to a new web
@@ -90,8 +91,8 @@ The repository has four branches, `master`, `gh-pages`, `docker`, and
 
 We suggest two approaches to reproduce the analyses of the APA&Co
 project : running the analytical pipeline on a PC and its current system
-settings; or running the analytical pipeline on the web in a predefined
-Docker image. These two approaches are some advantages and limits
+settings; or running the analytical pipeline on the web with GitHub
+Actions and Docker. These two approaches are some advantages and limits
 depending on you are interested by the understanding or the
 reproducibility of the analyses.
 
@@ -130,7 +131,7 @@ renv::restore()
 ```
 
 This may takes some time so that all the required packages are
-downloaded from the web and then installed in the project directory
+downloaded from the web and then installed in the project directory.
 
 - Step 5: Run the analytical pipeline with `{targets}` using the
   following command line in the Console:
@@ -168,17 +169,17 @@ confortable view of the code, is to go to the [Github repository of the
 the `R/` folder contain the code of each of the functions developped for
 the project.
 
-### Running the analytical pipeline on the web in a predefined Docker image
+### Running the analytical pipeline on the web with GitHub Actions and Docker
 
 Running an analytical pipeline using a Docker image is a robust approach
-make it reproducible, forever. This approach has already been a little
-described above during the `pipeline` branch description. Actually, this
-approach could be implemented on a personal machine where Docker
-software would be installed but as this may not be easy to implement by
-people that are not familiar with this, we do not describe the steps to
-do this. Instead, it is possible to rerun the analytical pipeline on the
-web in the APACo repository. To do this, go to the [web page relating to
-the run-dockerized-pipeline
+to make it reproducible, forever. This approach has already been a
+little described above during the `pipeline` branch description.
+Actually, this approach could be implemented on a personal machine where
+Docker software would be installed but as this may not be easy to
+implement by people that are not familiar with this, we do not describe
+the steps to do this. Instead, it is possible to rerun the analytical
+pipeline on the web in the APACo repository. To do this, go to the [web
+page relating to the run-dockerized-pipeline
 worflow](https://github.com/pydemull/APACo/actions/workflows/run-dockerized-pipeline.yml).
 Then, click, on the last worklow if there are several workflows that
 have been run. On the rigth of the screen, you will have a button
@@ -204,10 +205,10 @@ the the commit hash. This commit hash is a number that allows to
 identify a particular commit and then the state of the package when the
 commit was performed. Once you get that hash, you can add it to the
 following incomplete URL: <https://github.com/pydemull/APACo/tree/>. You
-will get the final URL where is hosted the package as it was when the
-commit was performed. For example, at the moment of writing theses
+will thus get the final URL where is hosted the package as it was when
+the commit was performed. For example, at the moment of writing theses
 lines, the hash of the commit corresponding to the version of the
-{APACo} used by the analytical pipeline is
+{APACo} package used by the analytical pipeline is
 `10c80e32a70ff523a02df61219a14ae2e8ef4274`. Thus, the exact code that is
 used in the analytical pipeline corresponding to this commit can be
 viewed in the `R/` folder at the following adress:
@@ -230,7 +231,7 @@ International (CC BY-NC-ND 4.0)</a>.
 
 ## Acknowledgements
 
-The Dockerfiles and GitHub Action workflows that allow an exact
+The Dockerfiles and GitHub Actions workflows that allow an exact
 reproduction of the analytical pipeline of the APA&Co project are
 versions updated from [Bruno Rodrigues](https://github.com/b-rodrigues)’
 work. More precisely:
