@@ -24,29 +24,30 @@ hospital center of Cholet (France).
 The repository has four branches, `master`, `gh-pages`, `docker`, and
 `pipeline`:
 
-- The `master` branch hosts the content of the {APACo} package. The
+- The `master` branch hosts the content of the `{APACo}` package. The
   content of the package includes datasets that have been built from the
   data obtained through the measurements implemented in the APA&Co
   project. These datasets actually are censored versions of the original
   datasets to limit the access to only the materials required to
-  understand the results to be reported in scientific publications. The
-  package also includes the code (the functions) that has been developed
-  to analyse the data of the project. The code is based on R programming
+  understand the results shown in the present repository. The package
+  also includes the code (the functions) that has been developed to
+  analyse the data of the project. The code is based on R programming
   language. Of note, the functions of the package have not been written
-  so that they can be easily reused in other projects. That being said,
-  one of the major function of the package, called `analyse_change` and
-  that provides both figures and tables describing the differences
-  between two marginal distributions of paired data, has been developped
-  so that it may be reused when working with similar data.
+  with the aim to make them easily reusable in other projects. That
+  being said, one of the major function of the package, called
+  `analyse_change` and that provides both figures and tables describing
+  the differences between two marginal distributions of paired data, has
+  been developped so that it may be reused when working with similar
+  data.
 
-- The `gh-pages` branch hosts the files on which stands the [{APACo}
+- The `gh-pages` branch hosts the files on which stands the [`{APACo}`
   package website](https://pydemull.github.io/APACo/). This website
   contains a [Reference
   tab](https://pydemull.github.io/APACo/reference/index.html) where the
   list of the datasets and functions included in the package is shown.
   Each item of the list briefly presents the content of the datasets or
   the arguments of the considered function. If you want to know the
-  computations that the {APACo} package functions implement, you shoud
+  computations that the `{APACo}` package functions implement, you shoud
   go to the `R/` folder of the `master` branch where each file contains
   the code of a given function.
 
@@ -62,7 +63,7 @@ The repository has four branches, `master`, `gh-pages`, `docker`, and
 - The `pipeline` branch contains the code that runs the analytical
   pipeline of the APA&Co project. This pipeline, that is based on the
   `{targets}` package, is an organized sequence of actions that use the
-  datasets and the functions of the `{APA&Co}` package to generate the
+  datasets and the functions of the `{APACo}` package to generate the
   results embedded in .html files. The main interest of the pipeline is
   to automatically (so non-interactively) drive the analyses. This is an
   important step to ensure the reproducibility of the analyses and the
@@ -82,10 +83,10 @@ The repository has four branches, `master`, `gh-pages`, `docker`, and
   [dockerized-pipeline workflow
   run](https://github.com/pydemull/APACo/actions/workflows/run-dockerized-pipeline.yml).
   When you are on the web page of the workflow and click on the link of
-  a workflow (the last one for example), you are conducted to a new web
-  page where an `Artifacts` section contains the created files embedded
-  in a zipped folder. You can finally download that folder on your
-  machine to consult the results.
+  a workflow run (the last one for example, at the top of the list), you
+  are conducted to a new web page where an `Artifacts` section contains
+  the created files embedded in a zipped folder. You can finally
+  download that folder on your machine to consult the results.
 
 ## How the content of this repository can be used to allow the reproduction of the analyses of the APA&Co project
 
@@ -93,7 +94,7 @@ We suggest two approaches to reproduce the analyses of the APA&Co
 project : running the analytical pipeline on a PC and its current system
 settings; or running the analytical pipeline on the web with GitHub
 Actions and Docker. These two approaches are some advantages and limits
-depending on you are interested by the understanding or the
+depending on you are interested in the understanding or the
 reproducibility of the analyses.
 
 ### Running the analytical pipeline on a PC and its current system settings
@@ -165,34 +166,36 @@ performed to get that object as second argument. A quick way of looking
 at the code could be to copy the name of a function of interest and
 paste it in the Console. Another way, which will provide you a more
 confortable view of the code, is to go to the [Github repository of the
-{APACo} package](https://github.com/pydemull/APACo). The files placed in
-the `R/` folder contain the code of each of the functions developped for
-the project.
+`{APACo}` package](https://github.com/pydemull/APACo). The files placed
+in the `R/` folder contain the code of each of the functions developped
+for the project.
 
 ### Running the analytical pipeline on the web with GitHub Actions and Docker
 
 Running an analytical pipeline using a Docker image is a robust approach
-to make it reproducible, forever. This approach has already been a
-little described above during the `pipeline` branch description.
-Actually, this approach could be implemented on a personal machine where
-Docker software would be installed but as this may not be easy to
-implement by people that are not familiar with this, we do not describe
-the steps to do this. Instead, it is possible to rerun the analytical
-pipeline on the web in the APACo repository. To do this, go to the [web
-page relating to the run-dockerized-pipeline
+to make it reproducible, forever. Here, this approach is implemented on
+the web via the use of a GitHub Actions workflow. This strategy has
+already been a little described above during the `pipeline` branch
+description. A similar approach, offline and thus without GitHub
+Actions, could be implemented on a personal machine where Docker
+software would be installed but as this may not be easy to implement by
+people that are not familiar with this, we do not describe the steps to
+do this. Instead, it is possible to rerun the analytical pipeline on the
+web in the APACo repository. To do this, go to the [web page relating to
+the run-dockerized-pipeline
 worflow](https://github.com/pydemull/APACo/actions/workflows/run-dockerized-pipeline.yml).
-Then, click, on the last worklow if there are several workflows that
-have been run. On the rigth of the screen, you will have a button
-`Re-run all jobs`. If you confirm this action, the workflow will run
-another time. Then, if you click on the `build` button, you will have a
-view of all the installation and analytical steps performed by the
-workflow. The downside of this approach is that you will not can
-interact with the content to explore the intermediate objects created to
-finally get the results. However, if you have sufficient knowledge about
-R programming language, you can infere the content of these objects from
-the code shown in the `master` branch of the APACo repository.
+Then, click on the last worklow run. On the rigth of the screen, you
+will have a button `Re-run all jobs`. If you confirm this action, the
+workflow will run another time. Then, if you click on the `build`
+button, you will have a view of all the installation and analytical
+steps performed by the workflow. The downside of this approach is that
+you will not can interact with the content to explore the intermediate
+objects created to finally get the results. However, if you have
+sufficient knowledge about R programming language, you can infere the
+content of these objects from the code shown in the `master` branch of
+the APACo repository.
 
-## How to be sure of the {APACo} package version that is used when running the analytical pipeline?
+## How to be sure of the `{APACo}` package version that is used when running the analytical pipeline?
 
 The answer to this question is essential if you want to know exactly
 what pieces of code have been used to get the final results of the
@@ -208,11 +211,11 @@ following incomplete URL: <https://github.com/pydemull/APACo/tree/>. You
 will thus get the final URL where is hosted the package as it was when
 the commit was performed. For example, at the moment of writing theses
 lines, the hash of the commit corresponding to the version of the
-{APACo} package used by the analytical pipeline is
+`{APACo}` package used by the analytical pipeline is
 `10c80e32a70ff523a02df61219a14ae2e8ef4274`. Thus, the exact code that is
 used in the analytical pipeline corresponding to this commit can be
 viewed in the `R/` folder at the following adress:
-<https://github.com/pydemull/APACo/tree/10c80e32a70ff523a02df61219a14ae2e8ef4274>
+<https://github.com/pydemull/APACo/tree/10c80e32a70ff523a02df61219a14ae2e8ef4274>.
 
 ## Licenses
 
