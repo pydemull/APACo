@@ -1,3 +1,5 @@
+# workflow adapted from https://github.com/b-rodrigues/ga_demo/blob/main/.github/workflows/build-renv.yml
+
 name: docker-image-build-deployment
 
 on:
