@@ -51,14 +51,15 @@ The repository has four branches, `master`, `gh-pages`, `docker`, and
   go to the `R/` folder of the `master` branch where each file contains
   the code of a given function.
 
-- The `docker` branch contains the code to build a Docker image and to
-  push that image to a Docker Hub repository. A Docker image is a kind
-  of virtual environment, that can be configured as needed, and that is
-  immutable. In the present case, the Docker image includes R software
-  (v4.3.1) and a version of the `{renv}` package. The interest of this
-  Docker image is to provide an environment in which we can be sure that
-  the analytical pipeline of the project will work and will provide
-  exactly the same results.
+- The `docker` branch contains the code to build a
+  [Docker](https://www.docker.com/) image and to push that image to a
+  Docker Hub repository. A Docker image is a kind of virtual
+  environment, that can be configured as needed, and that is immutable.
+  In the present case, the Docker image includes R software (v4.3.1) and
+  a version of the `{renv}` package. The interest of this Docker image
+  is to provide an environment in which we can be sure that the
+  analytical pipeline of the project will work and will provide exactly
+  the same results, for ever.
 
 - The `pipeline` branch contains the code that runs the analytical
   pipeline of the APA&Co project. This pipeline, that is based on the
@@ -172,14 +173,14 @@ for the project.
 
 ### Running the analytical pipeline on the web with GitHub Actions and Docker
 
-Running an analytical pipeline using a Docker image is a robust approach
-to make it reproducible. Here, this approach is implemented on the web
-via the use of a GitHub Actions workflow. This strategy has already been
-a little described above during the `pipeline` branch description. A
+Using a Docker image is a robust approach to reproducibly run an
+analytical pipeline. Here, this approach is implemented on the web via
+the use of a GitHub Actions workflow. This strategy has already been a
+little described above during the `pipeline` branch description. A
 similar approach, offline and thus without GitHub Actions, could be
 implemented on a personal machine where Docker software would be
-installed but as this may not be easy to implement by people that are
-not familiar with this, we do not describe the steps to do this.
+installed. However, as this may not be easy to implement by people that
+are not familiar with Docker, we do not describe the steps to do this.
 Instead, it is possible to rerun the analytical pipeline on the web in
 the APACo repository. To do this, go to the [web page relating to the
 `run-dockerized-pipeline`
@@ -216,6 +217,24 @@ used by the analytical pipeline is
 used in the analytical pipeline corresponding to this commit can be
 viewed in the `R/` folder at the following adress:
 <https://github.com/pydemull/APACo/tree/10c80e32a70ff523a02df61219a14ae2e8ef4274>.
+
+## Is the GitHub Actions\|Docker-based approach presented here so robust to allow the reproduction of the analytical pipeline?
+
+Actually, there may be a vulnerability. Indeed, the process implemented
+in the GitHub Actions workflow starts from a Docker image that has an R
+version compatible with the analytical pipeline and a working version of
+the `{renv}` package only. This means that the initial Docker image has
+not yet the package dependencies of the analytical pipeline installed.
+Therefore, the package dependencies have to be installed during the
+workflow. Unfortunately, among the package dependencies, there are two
+non-CRAN packages to be installed: `{rogme}` and `{APACo}`. This is
+important because if the two repositories that host these packages
+disappear from the web, it may not be possible to install them during
+the workflow, and the run of the analytical pipeline will fail. As the
+deletion of these two repositories is very unlikely, we did not perform
+extra work to build a Docker image that would contain all the required
+materials but that would have an interest only for persons who have the
+time and the skills to directly work with this image.
 
 ## Licenses
 
