@@ -37,7 +37,7 @@ jobs:
 
       - name: Install igraph
         run: |
-          install.packages("igraph", type = "binary")
+          install.packages("igraph")
         shell: Rscript {0}
 
       - name: Build site
