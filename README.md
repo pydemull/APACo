@@ -184,16 +184,16 @@ do this. Instead, it is possible to rerun the analytical pipeline on the
 web in the APACo repository. To do this, go to the [web page relating to
 the run-dockerized-pipeline
 worflow](https://github.com/pydemull/APACo/actions/workflows/run-dockerized-pipeline.yml).
-Then, click on the last worklow run. On the rigth of the screen, you
-will have a button `Re-run all jobs`. If you confirm this action, the
-workflow will run another time. Then, if you click on the `build`
-button, you will have a view of all the installation and analytical
-steps performed by the workflow. The downside of this approach is that
-you will not can interact with the content to explore the intermediate
-objects created to finally get the results. However, if you have
-sufficient knowledge about R programming language, you can infere the
-content of these objects from the code shown in the `master` branch of
-the APACo repository.
+Then, click on the last workflow run. On the rigth of the screen, you
+will have a `Re-run all jobs` button. If you click on that button and
+confirm this action, the workflow will run another time. Then, if you
+click on the `build` button, you will have a view of all the
+installation and analytical steps performed by the workflow. The
+downside of this approach is that you will not can interact with the
+content to explore the intermediate objects created to finally get the
+results. However, if you have sufficient knowledge about R programming
+language, you can infere the content of these objects from the code
+shown in the `master` branch of the APACo repository.
 
 ## How to be sure of the `{APACo}` package version that is used when running the analytical pipeline?
 
