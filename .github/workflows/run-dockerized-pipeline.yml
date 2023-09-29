@@ -1,3 +1,5 @@
+# workflow adapted from https://github.com/b-rodrigues/ga_demo_rap
+
 name: run-dockerized-pipeline
 
 on:
