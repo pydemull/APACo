@@ -28,5 +28,5 @@ jobs:
 
     - uses: actions/upload-artifact@v3
       with:
-        name: housing_output_${{ github.sha }}
+        name: apaco_output_${{ github.sha }}
         path: /github/workspace/shared_folder/
