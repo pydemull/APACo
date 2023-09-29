@@ -58,7 +58,7 @@ The repository has four branches, `master`, `gh-pages`, `docker`, and
   (v4.3.1) and a version of the `{renv}` package. The interest of this
   Docker image is to provide an environment in which we can be sure that
   the analytical pipeline of the project will work and will provide
-  exactly the same results, forever.
+  exactly the same results.
 
 - The `pipeline` branch contains the code that runs the analytical
   pipeline of the APA&Co project. This pipeline, that is based on the
@@ -88,12 +88,12 @@ The repository has four branches, `master`, `gh-pages`, `docker`, and
   the created files embedded in a zipped folder. You can finally
   download that folder on your machine to consult the results.
 
-## How the content of this repository can be used to allow the reproduction of the analyses of the APA&Co project
+## How the content of this repository can be used to allow the reproduction of the analyses of the APA&Co project?
 
 We suggest two approaches to reproduce the analyses of the APA&Co
-project : running the analytical pipeline on a PC and its current system
+project: running the analytical pipeline on a PC and its current system
 settings; or running the analytical pipeline on the web with GitHub
-Actions and Docker. These two approaches are some advantages and limits
+Actions and Docker. These two approaches have some advantages and limits
 depending on you are interested in the understanding or the
 reproducibility of the analyses.
 
@@ -111,8 +111,8 @@ using, and the configuration of the system that lives on your machine.
 This is why, in order to reproduce the analytical pipeline exactly as it
 was performed to get the results of the project, the second approach is
 better, and actually, not so far to be the best. Anyway, if you want to
-reproduce the analytical pipeline on your machine in R, please follow
-the steps below.
+reproduce the analytical pipeline on your machine using R software (and
+RStudio) only, please follow the steps below.
 
 - Step 1: [Install R (version \>= 4.1.0)](https://cran.rstudio.com/),
   [RStudio](https://posit.co/download/rstudio-desktop/), and the [latest
@@ -131,8 +131,8 @@ the steps below.
 renv::restore()
 ```
 
-This may takes some time so that all the required packages are
-downloaded from the web and then installed in the project directory.
+This may take some time so that all the required packages are downloaded
+from the web and then installed in the project directory.
 
 - Step 5: Run the analytical pipeline with `{targets}` using the
   following command line in the Console:
@@ -173,16 +173,16 @@ for the project.
 ### Running the analytical pipeline on the web with GitHub Actions and Docker
 
 Running an analytical pipeline using a Docker image is a robust approach
-to make it reproducible, forever. Here, this approach is implemented on
-the web via the use of a GitHub Actions workflow. This strategy has
-already been a little described above during the `pipeline` branch
-description. A similar approach, offline and thus without GitHub
-Actions, could be implemented on a personal machine where Docker
-software would be installed but as this may not be easy to implement by
-people that are not familiar with this, we do not describe the steps to
-do this. Instead, it is possible to rerun the analytical pipeline on the
-web in the APACo repository. To do this, go to the [web page relating to
-the run-dockerized-pipeline
+to make it reproducible. Here, this approach is implemented on the web
+via the use of a GitHub Actions workflow. This strategy has already been
+a little described above during the `pipeline` branch description. A
+similar approach, offline and thus without GitHub Actions, could be
+implemented on a personal machine where Docker software would be
+installed but as this may not be easy to implement by people that are
+not familiar with this, we do not describe the steps to do this.
+Instead, it is possible to rerun the analytical pipeline on the web in
+the APACo repository. To do this, go to the [web page relating to the
+`run-dockerized-pipeline`
 worflow](https://github.com/pydemull/APACo/actions/workflows/run-dockerized-pipeline.yml).
 Then, click on the last workflow run. On the rigth of the screen, you
 will have a `Re-run all jobs` button. If you click on that button and
@@ -204,14 +204,14 @@ placed in the `pipeline` branch. This file contains all the package
 dependencies needed to run the analytical pipeline. Moreover, for each
 package, beyond the version that could be shown, you must look at the
 `RemoteSha` field of the package section in the `renv.lock` file to get
-the the commit hash. This commit hash is a number that allows to
-identify a particular commit and then the state of the package when the
-commit was performed. Once you get that hash, you can add it to the
-following incomplete URL: <https://github.com/pydemull/APACo/tree/>. You
-will thus get the final URL where is hosted the package as it was when
-the commit was performed. For example, at the moment of writing theses
-lines, the hash of the commit corresponding to the version of the
-`{APACo}` package used by the analytical pipeline is
+the commit hash. This commit hash is a number that allows to identify a
+particular commit and then the state of the package when the commit was
+performed. Once you get that hash, you can add it to the following
+incomplete URL: <https://github.com/pydemull/APACo/tree/>. You will thus
+get the final URL where is hosted the package as it was when the commit
+was performed. For example, at the moment of writing theses lines, the
+hash of the commit corresponding to the version of the `{APACo}` package
+used by the analytical pipeline is
 `10c80e32a70ff523a02df61219a14ae2e8ef4274`. Thus, the exact code that is
 used in the analytical pipeline corresponding to this commit can be
 viewed in the `R/` folder at the following adress:
