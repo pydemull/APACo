@@ -1,6 +1,6 @@
 Package: APACo
-Title: Reproduce APA & Co project analyses
-Version: 0.0.1
+Title: Reproduce APA&Co project analyses
+Version: 0.0.1.9000
 Authors@R: 
     person("Pierre-Yves", "de Müllenheim", , "pydemull@uco.frm", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
@@ -28,7 +28,7 @@ Imports:
     skimr,
     tidyr,
     tidyselect
-Remotes:  
+Remotes: 
     GRousselet/rogme
 Depends: 
     R (>= 4.1.0)
