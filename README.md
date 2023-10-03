@@ -21,8 +21,8 @@ coronary artery disease patients at 1 year after having followed a
 cardiac rehabilitation program. This research project was managed by the
 hospital center of Cholet (France).
 
-The repository has four branches, `master`, `gh-pages`, `docker`, and
-`pipeline`:
+The repository has four branches (`master`, `gh-pages`, `docker`, and
+`pipeline`):
 
 - The `master` branch hosts the content of the `{APACo}` package. The
   content of the package includes datasets that have been built from the
@@ -73,14 +73,14 @@ The repository has four branches, `master`, `gh-pages`, `docker`, and
   step required to ensure the reproducibility of the analytical pipeline
   and thus the results. Of note, this branch also hosts a GitHub Actions
   workflow that builds a Docker image from the one hosted in the Docker
-  Hub repository as described above. This new image contains the results
-  of the APA&Co project that are stored as .tiff figures and .html files
-  in a Docker volume after running the installation of the package
-  dependencies of the analytical pipeline and then running the
-  analytical pipeline itself. After that, the workflow consists in
-  building a Docker container from which the .tiff/.html files are moved
-  to the present GitHub repository. You may access these files by
-  consulting the last [dockerized-pipeline workflow
+  Hub repository as described above with the run of the installation of
+  the package dependencies of the analytical pipeline. Then, a Docker
+  container is run to execute the analytical pipeline and generating the
+  results of the APA&Co project. These results are stored as .tiff
+  figures and .html files in a Docker volume. After that, the workflow
+  consists in moving the .tiff/.html files to the present GitHub
+  repository. You may access these files by consulting the last
+  [dockerized-pipeline workflow
   run](https://github.com/pydemull/APACo/actions/workflows/run-dockerized-pipeline.yml).
   When you are on the web page of the workflow and click on the link of
   a workflow run (the last one for example, at the top of the list), you
@@ -101,30 +101,31 @@ interested in the understanding or the reproducibility of the analyses.
 
 This approach may be interesting if you want to explore, after running
 the analytical pipeline, the content of the created objects and the
-content of the functions in the same place, that is, in the
-environnement where you are running R software. However, the main
-downside of this approach is that reproducibility is not fully
-garanteed. Indeed, the success of an analytical pipeline run is
-dependent on various factors that cannot be controlled by the content of
-the present repository, in particular, the current version of R you are
-using, and the configuration of the system that lives on your machine.
-This is why, in order to reproduce the analytical pipeline exactly as it
-was performed to get the results of the project, the second approach is
-better, and actually, not so far to be the best. Anyway, if you want to
-reproduce the analytical pipeline on your machine using R software (and
-RStudio) only, please follow the steps below.
+content of the functions in the same place, that is, for the present
+case, in an RStudio environment. However, the main downside of this
+approach is that reproducibility is not fully garanteed. Indeed, the
+success of an analytical pipeline run is dependent on various factors
+that cannot be controlled by the content of the present repository, in
+particular, the current version of R you are using, and the
+configuration of the system that lives on your machine. This is why, in
+order to reproduce the analytical pipeline exactly as it was performed
+to get the results of the project, the Docker-based approach is better,
+and actually, not so far to be the best. Anyway, if you want to
+reproduce the analytical pipeline on your machine using an RStudio
+environment, please follow the steps below.
 
-- Step 1: [Install R (recommended versions: \>= 4.1.0 and \<=
-  4.3.1)](https://cran.rstudio.com/),
-  [RStudio](https://posit.co/download/rstudio-desktop/), and the [latest
-  version of Rtools (if your are a Windows
-  user)](https://cran.r-project.org/bin/windows/Rtools/) on your
-  machine. To retrieve previous releases of R, you can go
+- Step 1: [Install R](https://cran.rstudio.com/) (recommended versions:
+  \>= 4.1.0 and \<= 4.3.1),
+  [RStudio](https://posit.co/download/rstudio-desktop/), and the latest
+  version of [Rtools](https://cran.r-project.org/bin/windows/Rtools/)
+  (if your are a Windows user) on your machine. To retrieve previous
+  releases of R, you can go
   [here](https://cran.r-project.org/bin/windows/base/old/) for Windows,
   and [here](https://cran.r-project.org/bin/macosx/) for Mac.
-- Step 2: Go to the [`pipeline` branch of the APACo
-  repository](https://github.com/pydemull/APACo/tree/pipeline) and click
-  on the green button called `Code`. Then click on `Download ZIP`.
+- Step 2: Go to the
+  [`pipeline`](https://github.com/pydemull/APACo/tree/pipeline) branch
+  of the APACo repository and click on the green button called `Code`.
+  Then click on `Download ZIP`.
 - Step 3: Unzip the zipped folder on your machine, open it, and
   double-click on the `APACo.Rproj` file to open the project in RStudio.
 - Step 4: Restore the package dependencies of the project with `{renv}`
@@ -160,10 +161,10 @@ any object in the global environment running
 created objects in one go running `targets::tar_load_everything()` in
 the Console. All the .tiff figures and .html files generated during the
 run of the analytical pipeline will appear in the `pipeline_out/` folder
-created at the root of the project during the process. To have more
-information about what are the computations actually performed behind
-the scene, you can open the `_targets.R` file placed at the root of the
-project. This file essentially includes a list of
+created at the root of the project folder during the processing phase.
+To have more information about what are the computations actually
+performed behind the scene, you can open the `_targets.R` file placed at
+the root of the project. This file essentially includes a list of
 `targets::tar_target()` functions, with the name of the object created
 as first argument, and the operations performed to get that object as
 second argument. A quick way of looking at the code could be to copy the
@@ -171,28 +172,31 @@ name of a function of interest and paste it in the Console after writing
 `APACo::`. For example, for the `analyse_change()` function of the
 `{APACo}` package, you could run in the Console the following command:
 `APACo::analyse_change`. Another way, which will provide you a more
-confortable view of the code, is to go to the [Github repository of the
-`{APACo}` package](https://github.com/pydemull/APACo). The files placed
-in the `R/` folder contain the code of each of the functions developped
-for the project.
+confortable view of the code, is to go to the [Github
+repository](https://github.com/pydemull/APACo) of the `{APACo}` package.
+The files placed in the `R/` folder contain the code of each of the
+functions developped for the project.
 
 ### Running the analytical pipeline on a PC with Docker
 
 Using a Docker image is a robust approach to reproducibly run an
 analytical pipeline. Indeed, a Docker image is a kind of virtual
 environment where all the settings can be defined as wanted so that all
-the analyses can be performed as when developping the pipeline. Please
-follow the steps below to use this approach with your machine:
+the analyses can be performed as when developping the analytical
+pipeline. Please follow the steps below to use this approach with your
+machine:
 
 - Step 1: Install [Docker Desktop](https://www.docker.com/) on your
   machine.
-- Step 2: Open Docker Desktop. If you are a Windows user, you could have
-  a warning message indicating that Docker Desktop requires a newer WSL
-  kernel version. As suggested in the message, run the command line
-  `wsl --update` in the Command Prompt. When the installation is done,
-  try again to open Docker Desktop.
-- Step 3: Go to the pipeline branch of the APACo repository and click on
-  the green button called `Code`. Then click on `Download ZIP`.
+- Step 2: Open Docker Desktop on your machine. If you are a Windows
+  user, you could have a warning message indicating that Docker Desktop
+  requires a newer WSL kernel version. As suggested in the message, run
+  the command line `wsl --update` in the Command Prompt app. When the
+  installation is done, try again to open Docker Desktop.
+- Step 3: Go to the
+  [`pipeline`](https://github.com/pydemull/APACo/tree/pipeline) branch
+  of the APACo repository and click on the green button called `Code`.
+  Then click on `Download ZIP`.
 - Step 4: Unzip the zipped folder on your machine and open it.
 - Step 5: Open, in the unzipped folder, the Command Prompt (Terminal on
   Mac) app (you know, this software that shows you only a window with a
@@ -206,12 +210,12 @@ follow the steps below to use this approach with your machine:
 C:\Users\YOUR_USER_NAME\Downloads\APACo-pipeline>
 ```
 
-In the example above (for Windows users), `C:\Users\YOUR_USER_NAME`
-stands for the current user session, and `Downloads\APACo-pipeline`
-stands for the remaining part of the path to the unzipped folder named
-`APACo-pipeline`. You may have several folder names to use in the path
-between `YOUR_USER_NAME` and `APACo-pipeline` depending on where you
-have placed the unzipped folder on your machine.
+In the example above (appropriate for Windows users),
+`C:\Users\YOUR_USER_NAME\` stands for the current user session, and
+`Downloads\APACo-pipeline` stands for the remaining part of the path to
+the unzipped folder named `APACo-pipeline`. You may have several folder
+names to use in the path between `YOUR_USER_NAME` and `APACo-pipeline`
+depending on where you have placed the unzipped folder on your machine.
 
 If you are a Mac user and thus want to open the Terminal app in the
 unzipped folder, you may try the following recommendation: ‘*The easiest
@@ -232,10 +236,12 @@ example for Windows users):
 cd C:/Users/YOUR_USER_NAME/Downloads/APACo-pipeline
 ```
 
-- Step 6: Ensure you have an internet connexion and build the required
-  Docker image (the place where will be created the files embedding the
-  results) by running the following command line (do not forget the
-  point at the end of the line):
+- Step 6: Ensure you have an internet connexion, build the required
+  Docker image (the place where will be run the analytical pipeline),
+  and run the Docker container executing the analytical pipeline and
+  placing the results generated in a Docker volume, this by running the
+  following command line in the Command Prompt (Terminal) app (do not
+  forget the point at the end of the line):
 
 ``` r
 docker build -t apaco_image .
@@ -247,26 +253,28 @@ package), building a new Docker image on the top of it by downloading
 and installing the R package dependencies, and finally running the
 analytical pipeline in R.
 
-- Step 7: Create a Docker container to move the files embedding the
-  results from the Docker image to your machine, and more precisely to
-  the folder named `shared_folder` that is inside the unzipped folder
-  named `APACo-pipeline`. To do this, use the following command line:
+- Step 7: Move the files embedding the results from the Docker volume to
+  your machine, and more precisely to the folder named `shared_folder`
+  that is inside the unzipped folder named `APACo-pipeline`. To do this,
+  run the following command line in the Command Prompt (or Terminal)
+  app:
 
 ``` r
-docker run --rm --name apaco_container -v C:/Users/USER_NAME/Downloads/APACo-pipeline/shared_folder:/project/shared_folder:rw apaco_image
+docker run --rm --name apaco_container -v C:/Users/YOUR_USER_NAME/Downloads/APACo-pipeline/shared_folder:/project/shared_folder:rw apaco_image
 ```
 
-In the example above (adapted for a Windows
-user),`C:/Users/USER_NAME/Downloads/APACo-pipeline/shared_folder`) is
-the absolute path to the folder named `shared_folder` at the root of the
+In the example above (appropriate for Windows users),
+`C:/Users/YOUR_USER_NAME/Downloads/APACo-pipeline/shared_folder` is the
+absolute path to the folder named `shared_folder` at the root of the
 unzipped folder named `APACo-pipeline`. As previoulsy described, you
-should replace `C:/Users/USER_NAME/Downloads/` by the path that fits
-your needs.This is the only part of the code you should modify.
+should replace `C:/Users/YOUR_USER_NAME/Downloads/` by the path that
+fits your needs. This is the only part of the code you should modify
+(assuming the unzipped folder is still named `APACo-pipeline`.
 
-Step 8: Finally, go to the `shared_folder` folder at the root of the
-initially unzipped folder (i.e., inside the `APACo-pipeline` folder).
-The results embedded in .tiff figures and .html files should be there.
-You can now close the Command Prompt (or Terminal) app.
+- Step 8: Finally, go to the `shared_folder` folder at the root of the
+  initially unzipped folder (i.e., inside the `APACo-pipeline` folder).
+  The results embedded in .tiff figures and .html files should be there.
+  You can now close the Command Prompt (or Terminal) app.
 
 While the presented approach is in principle robust to reproduce the
 analytical pipeline, the downside of this approach is that you will not
@@ -293,10 +301,10 @@ get the final URL where is hosted the package as it was when the commit
 was performed. For example, at the moment of writing theses lines, the
 hash of the commit corresponding to the version of the `{APACo}` package
 used by the analytical pipeline is
-`10c80e32a70ff523a02df61219a14ae2e8ef4274`. Thus, the exact code that is
+`f088468b46b94d80ace755c89ba2c6ce7effafa5`. Thus, the exact code that is
 used in the analytical pipeline corresponding to this commit can be
 viewed in the `R/` folder at the following adress:
-<https://github.com/pydemull/APACo/tree/10c80e32a70ff523a02df61219a14ae2e8ef4274>.
+<https://github.com/pydemull/APACo/tree/f088468b46b94d80ace755c89ba2c6ce7effafa5>.
 
 ## Is the Docker-based approach presented here so robust to allow the reproduction of the analytical pipeline?
 
