@@ -7,7 +7,7 @@
 get_plot_IPAQ_all(data)
 }
 \arguments{
-\item{data}{'IPAQ' data frame (from APA & Co project analytical pipeline).}
+\item{data}{'IPAQ' data frame (from APA&Co project analytical pipeline).}
 }
 \value{
 A ggplot object.

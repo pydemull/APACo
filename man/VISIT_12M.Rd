@@ -16,7 +16,7 @@ A data frame with 77 rows and 3 columns:
 }
 }
 \source{
-APA & Co project
+APA&Co project
 }
 \usage{
 VISIT_12M

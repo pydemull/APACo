@@ -16,7 +16,7 @@
 #'   \item{bypas}{1 = Has had a bypass surgery; 0 = Has not had a bypass surgery.}
 #'   \item{DIST_6WT_M0}{6-min walking test distance in m.}
 #' }
-#' @source APA & Co project
+#' @source APA&Co project
 "INCLUSION"
 
 #===============================================================================
@@ -33,7 +33,7 @@
 #'   \item{weight}{Weight in kg.}
 #'   \item{DIST_6WT_M6}{6-min walking test distance in m.}
 #' }
-#' @source APA & Co project
+#' @source APA&Co project
 "VISIT_6M"
 
 #===============================================================================
@@ -50,7 +50,7 @@
 #'   \item{weight}{Weight in kg.}
 #'   \item{DIST_6WT_M6}{6-min walking test distance in m.}
 #' }
-#' @source APA & Co project
+#' @source APA&Co project
 "VISIT_12M"
 
 #===============================================================================
@@ -77,7 +77,7 @@
 #'   \item{bloc3_q2}{Number of days with walking activity (>= 10  min bouts) during the last 7 days.}
 #'   \item{bouts_walk_7days}{Number of (consecutive or not) walking periods of 10  min during the last 7 days; 9999 = Did not answer.}
 #'   }
-#' @source APA & Co project
+#' @source APA&Co project
 "IPAQ"
 
 #===============================================================================
@@ -94,7 +94,7 @@
 #'   \item{num_visit}{1 = visit at the end of the cardiac rehabilitation program; 2 = visit at 6 months post program; 3 = visit at 12 months post program.}
 #'   \item{AP_q1 to AP_q18}{Answers to the EMAPS items.}
 #'   }
-#' @source APA & Co project
+#' @source APA&Co project
 "EMAPS"
 
 #===============================================================================
@@ -121,6 +121,6 @@
 #'   \item{autres}{"Other reasons".}
 #'   \item{autre_precision_obstacle}{"Other details about barriers".}
 #'   }
-#' @source APA & Co project
+#' @source APA&Co project
 "BARRIERS"
 

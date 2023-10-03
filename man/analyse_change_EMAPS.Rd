@@ -7,7 +7,7 @@
 analyse_change_EMAPS(data)
 }
 \arguments{
-\item{data}{'DB_EMAPS_0_12' data frame (from APA & Co project analytical pipeline).}
+\item{data}{'DB_EMAPS_0_12' data frame (from APA&Co project analytical pipeline).}
 }
 \value{
 A list of results lists relating to each EMAPS score. Each list includes one figure

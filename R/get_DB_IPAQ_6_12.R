@@ -4,7 +4,7 @@
 #' Keep the rows for months 6 and 12, and keep the participants with data
 #'     at both 6 and 12 months.
 #'
-#' @param data 'DB_IPAQ' data frame (from APA & Co project analytical pipeline).
+#' @param data 'DB_IPAQ' data frame (from APA&Co project analytical pipeline).
 #'
 #' @return A data frame.
 #' @export

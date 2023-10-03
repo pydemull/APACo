@@ -1,7 +1,7 @@
 
 #' Get results for the change in EMAPS scores between 0 and 12 months
 #'
-#' @param data 'DB_EMAPS_0_12' data frame (from APA & Co project analytical pipeline).
+#' @param data 'DB_EMAPS_0_12' data frame (from APA&Co project analytical pipeline).
 #'
 #' @return A list of results lists relating to each EMAPS score. Each list includes one figure
 #'    and two tables (one for the shift function, and one for the difference asymmetry function).

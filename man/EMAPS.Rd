@@ -16,7 +16,7 @@ A data frame with 241 rows and 20 columns:
 }
 }
 \source{
-APA & Co project
+APA&Co project
 }
 \usage{
 EMAPS

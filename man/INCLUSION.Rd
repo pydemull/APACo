@@ -21,7 +21,7 @@ A data frame with 83 rows and 8 columns:
 }
 }
 \source{
-APA & Co project
+APA&Co project
 }
 \usage{
 INCLUSION

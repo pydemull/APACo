@@ -1,7 +1,7 @@
 
 #' Get final IPAQ database
 #'
-#' @param data 'IPAQ' data frame (from APA & Co project analytical pipeline).
+#' @param data 'IPAQ' data frame (from APA&Co project analytical pipeline).
 #'
 #' @return A data frame.
 #' @export

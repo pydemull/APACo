@@ -7,7 +7,7 @@
 get_DB_EMAPS(data)
 }
 \arguments{
-\item{data}{'EMAPS' data frame (from APA & Co project analytical pipeline).}
+\item{data}{'EMAPS' data frame (from APA&Co project analytical pipeline).}
 }
 \value{
 A data frame.

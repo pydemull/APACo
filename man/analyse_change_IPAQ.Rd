@@ -7,7 +7,7 @@
 analyse_change_IPAQ(data)
 }
 \arguments{
-\item{data}{'DB_IPAQ_6_12' data frame (from APA & Co project analytical pipeline).}
+\item{data}{'DB_IPAQ_6_12' data frame (from APA&Co project analytical pipeline).}
 }
 \value{
 A list with one figure and two tables (one for the shift function, and one for

@@ -1,9 +1,9 @@
 
 #' Get final 6MWT database
 #'
-#' @param data1 'INCLUSION_cleaned' data frame (from APA & Co project analytical pipeline).
-#' @param data2 'VISIT_6M_cleaned' data frame (from APA & Co project analytical pipeline).
-#' @param data3 'VISIT_12M_cleaned' data frame (from APA & Co project analytical pipeline).
+#' @param data1 'INCLUSION_cleaned' data frame (from APA&Co project analytical pipeline).
+#' @param data2 'VISIT_6M_cleaned' data frame (from APA&Co project analytical pipeline).
+#' @param data3 'VISIT_12M_cleaned' data frame (from APA&Co project analytical pipeline).
 #'
 #' @return A data frame.
 #' @export

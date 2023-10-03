@@ -26,7 +26,7 @@ A data frame with 243 rows and 13 columns:
 }
 }
 \source{
-APA & Co project
+APA&Co project
 }
 \usage{
 IPAQ

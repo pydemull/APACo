@@ -4,7 +4,7 @@
 #' Keep the rows for months 0 and 12, and keep the participants with data
 #'     at both 0 and 12 months (APA & Co project)
 #'
-#' @param data 'DB_EMAPS' data frame (from APA & Co project analysis pipeline).
+#' @param data 'DB_EMAPS' data frame (from APA&Co project analysis pipeline).
 #'
 #' @return A data frame.
 #' @export

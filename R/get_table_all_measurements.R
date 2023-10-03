@@ -1,9 +1,9 @@
 
 #' Get a table of descriptive statistics for all measurements relating to 6MWT, IPAQ-SF, and EMAPS
 #'
-#' @param data1  'DB_6MWT' data frame (from APA & Co project analytical pipeline).
-#' @param data2  'DB_IPAQ' data frame (from APA & Co project analytical pipeline).
-#' @param data3  'DB_EMAPS' data frame (from APA & Co project analytical pipeline).
+#' @param data1  'DB_6MWT' data frame (from APA&Co project analytical pipeline).
+#' @param data2  'DB_IPAQ' data frame (from APA&Co project analytical pipeline).
+#' @param data3  'DB_EMAPS' data frame (from APA&Co project analytical pipeline).
 #'
 #' @return A reactable object.
 #' @export

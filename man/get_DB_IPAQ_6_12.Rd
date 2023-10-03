@@ -7,7 +7,7 @@
 get_DB_IPAQ_6_12(data)
 }
 \arguments{
-\item{data}{'DB_IPAQ' data frame (from APA & Co project analytical pipeline).}
+\item{data}{'DB_IPAQ' data frame (from APA&Co project analytical pipeline).}
 }
 \value{
 A data frame.

@@ -26,7 +26,7 @@ A data frame with 77 rows and 12 columns:
 }
 }
 \source{
-APA & Co project
+APA&Co project
 }
 \usage{
 BARRIERS
