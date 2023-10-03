@@ -73,9 +73,9 @@ The repository has four branches (`master`, `gh-pages`, `docker`, and
   step required to ensure the reproducibility of the analytical pipeline
   and thus the results. Of note, this branch also hosts a GitHub Actions
   workflow that builds a Docker image from the one hosted in the Docker
-  Hub repository as described above with the run of the installation of
-  the package dependencies of the analytical pipeline. Then, a Docker
-  container is run to execute the analytical pipeline and generating the
+  Hub repository (as described above) with the run of the installation
+  of the package dependencies of the analytical pipeline. Then, a Docker
+  container is run to execute the analytical pipeline and generate the
   results of the APA&Co project. These results are stored as .tiff
   figures and .html files in a Docker volume. After that, the workflow
   consists in moving the .tiff/.html files to the present GitHub
@@ -239,7 +239,7 @@ cd C:/Users/YOUR_USER_NAME/Downloads/APACo-pipeline
 - Step 6: Ensure you have an internet connexion, build the required
   Docker image (the place where will be run the analytical pipeline),
   and run the Docker container executing the analytical pipeline and
-  placing the results generated in a Docker volume, this by running the
+  placing the generated results in a Docker volume, this by running the
   following command line in the Command Prompt (Terminal) app (do not
   forget the point at the end of the line):
 
@@ -269,12 +269,12 @@ absolute path to the folder named `shared_folder` at the root of the
 unzipped folder named `APACo-pipeline`. As previoulsy described, you
 should replace `C:/Users/YOUR_USER_NAME/Downloads/` by the path that
 fits your needs. This is the only part of the code you should modify
-(assuming the unzipped folder is still named `APACo-pipeline`.
+(assuming the unzipped folder is still named `APACo-pipeline`).
 
 - Step 8: Finally, go to the `shared_folder` folder at the root of the
-  initially unzipped folder (i.e., inside the `APACo-pipeline` folder).
-  The results embedded in .tiff figures and .html files should be there.
-  You can now close the Command Prompt (or Terminal) app.
+  unzipped folder (i.e., inside the `APACo-pipeline` folder). The
+  results embedded in .tiff figures and .html files should be there. You
+  can now close the Command Prompt (or Terminal) app.
 
 While the presented approach is in principle robust to reproduce the
 analytical pipeline, the downside of this approach is that you will not
