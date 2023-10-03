@@ -29,16 +29,15 @@ The repository has four branches, `master`, `gh-pages`, `docker`, and
   data obtained through the measurements implemented in the APA&Co
   project. These datasets actually are censored versions of the original
   datasets to limit the access to only the materials required to
-  understand the results shown in the present repository. The package
-  also includes the code (the functions) that has been developed to
-  analyse the data of the project. The code is based on R programming
-  language. Of note, the functions of the package have not been written
-  with the aim to make them easily reusable in other projects. That
-  being said, one of the major function of the package, called
-  `analyse_change` and that provides both figures and tables describing
-  the differences between two marginal distributions of paired data, has
-  been developped so that it may be reused when working with similar
-  data.
+  understand the results of the project. The package also includes the
+  code (the functions) that has been developed to analyse the data of
+  the project. The code is based on R programming language. Of note, the
+  functions of the package have not been written with the aim to make
+  them easily reusable in other projects. That being said, one of the
+  major function of the package, called `analyse_change` and that
+  provides both figures and tables describing the differences between
+  two marginal distributions of paired data, has been developped so that
+  it may be reused when working with similar data.
 
 - The `gh-pages` branch hosts the files on which stands the [`{APACo}`
   package website](https://pydemull.github.io/APACo/). This website
@@ -65,40 +64,40 @@ The repository has four branches, `master`, `gh-pages`, `docker`, and
   pipeline of the APA&Co project. This pipeline, that is based on the
   `{targets}` package, is an organized sequence of actions that use the
   datasets and the functions of the `{APACo}` package to generate the
-  results embedded in .html files. The main interest of the pipeline is
-  to automatically (so non-interactively) drive the analyses. This is an
-  important step to ensure the reproducibility of the analyses and the
-  results. The branch also contains R code that uses the `{renv}`
-  package to allow the restoration of all the package dependencies
-  relating to the analytical pipeline, which is another step required to
-  ensure the reproducibility of the analytical pipeline and thus the
-  results. Of note, this branch also hosts a GitHub Actions workflow
-  that builds a Docker image from the one hosted on the Docker Hub
-  repository as described above. This new image contains the results of
-  the APA&Co project that are stored as .html files in a Docker volume
-  after running the installation of the package dependencies of the
-  analytical pipeline and then running the analytical pipeline itself.
-  After that, the workflow consists in building a Docker container from
-  which the .html files are moved to the present GitHub repository. You
-  can access these .html files by consulting the last
-  [dockerized-pipeline workflow
+  results embedded in .tiff figures and .html files. The main interest
+  of the pipeline is to automatically (so non-interactively) drive the
+  analyses. This is an important step to ensure the reproducibility of
+  the analyses and the results. The branch also contains R code that
+  uses the `{renv}` package to allow the restoration of all the package
+  dependencies relating to the analytical pipeline, which is another
+  step required to ensure the reproducibility of the analytical pipeline
+  and thus the results. Of note, this branch also hosts a GitHub Actions
+  workflow that builds a Docker image from the one hosted in the Docker
+  Hub repository as described above. This new image contains the results
+  of the APA&Co project that are stored as .tiff figures and .html files
+  in a Docker volume after running the installation of the package
+  dependencies of the analytical pipeline and then running the
+  analytical pipeline itself. After that, the workflow consists in
+  building a Docker container from which the .tiff/.html files are moved
+  to the present GitHub repository. You may access these files by
+  consulting the last [dockerized-pipeline workflow
   run](https://github.com/pydemull/APACo/actions/workflows/run-dockerized-pipeline.yml).
   When you are on the web page of the workflow and click on the link of
   a workflow run (the last one for example, at the top of the list), you
   are conducted to a new web page where an `Artifacts` section contains
-  the created files embedded in a zipped folder. You can finally
-  download that folder on your machine to consult the results.
+  the created files embedded in a zipped folder. You will can finally
+  download that folder on your machine to consult the results if the
+  worklow has been run since less than 90 days.
 
 ## How the content of this repository can be used to allow the reproduction of the analyses of the APA&Co project?
 
 We suggest two approaches to reproduce the analyses of the APA&Co
-project: running the analytical pipeline on a PC and its current system
-settings; or running the analytical pipeline on the web with GitHub
-Actions and Docker. These two approaches have some advantages and limits
-depending on you are interested in the understanding or the
-reproducibility of the analyses.
+project: running the analytical pipeline on a PC using R and RStudio; or
+running the analytical pipeline on a PC with Docker. These two
+approaches have some advantages and limits depending on you are
+interested in the understanding or the reproducibility of the analyses.
 
-### Running the analytical pipeline on a PC and its current system settings
+### Running the analytical pipeline on a PC with R and RStudio
 
 This approach may be interesting if you want to explore, after running
 the analytical pipeline, the content of the created objects and the
@@ -115,11 +114,14 @@ better, and actually, not so far to be the best. Anyway, if you want to
 reproduce the analytical pipeline on your machine using R software (and
 RStudio) only, please follow the steps below.
 
-- Step 1: [Install R (version \>= 4.1.0)](https://cran.rstudio.com/),
+- Step 1: [Install R (recommended versions: \>= 4.1.0 and \<=
+  4.3.1)](https://cran.rstudio.com/),
   [RStudio](https://posit.co/download/rstudio-desktop/), and the [latest
   version of Rtools (if your are a Windows
   user)](https://cran.r-project.org/bin/windows/Rtools/) on your
-  machine.
+  machine. To retrieve previous releases of R, you can go
+  [here](https://cran.r-project.org/bin/windows/base/old/) for Windows,
+  and [here](https://cran.r-project.org/bin/macosx/) for Mac.
 - Step 2: Go to the [`pipeline` branch of the APACo
   repository](https://github.com/pydemull/APACo/tree/pipeline) and click
   on the green button called `Code`. Then click on `Download ZIP`.
@@ -156,45 +158,123 @@ pipeline ended, you will can read any created object running
 any object in the global environment running
 `targets::tar_load(OBJECT_NAME)` in the Console. You can load all the
 created objects in one go running `targets::tar_load_everything()` in
-the Console. All the figures and .html files generated during the run of
-the analytical pipeline will appear in the `pipeline_out/` folder placed
-at the root of the project. To have more information about what are the
-computations actually performed behind the scene, you can open the
-`_targets.R` file placed at the root of the project. This file
-essentially includes a list of `targets::tar_target()` functions, with
-the name of the object created as first argument, and the operations
-performed to get that object as second argument. A quick way of looking
-at the code could be to copy the name of a function of interest and
-paste it in the Console. Another way, which will provide you a more
+the Console. All the .tiff figures and .html files generated during the
+run of the analytical pipeline will appear in the `pipeline_out/` folder
+created at the root of the project during the process. To have more
+information about what are the computations actually performed behind
+the scene, you can open the `_targets.R` file placed at the root of the
+project. This file essentially includes a list of
+`targets::tar_target()` functions, with the name of the object created
+as first argument, and the operations performed to get that object as
+second argument. A quick way of looking at the code could be to copy the
+name of a function of interest and paste it in the Console after writing
+`APACo::`. For example, for the `analyse_change()` function of the
+`{APACo}` package, you could run in the Console the following command:
+`APACo::analyse_change`. Another way, which will provide you a more
 confortable view of the code, is to go to the [Github repository of the
 `{APACo}` package](https://github.com/pydemull/APACo). The files placed
 in the `R/` folder contain the code of each of the functions developped
 for the project.
 
-### Running the analytical pipeline on the web with GitHub Actions and Docker
+### Running the analytical pipeline on a PC with Docker
 
 Using a Docker image is a robust approach to reproducibly run an
-analytical pipeline. Here, this approach is implemented on the web via
-the use of a GitHub Actions workflow. This strategy has already been a
-little described above during the `pipeline` branch description. A
-similar approach, offline and thus without GitHub Actions, could be
-implemented on a personal machine where Docker software would be
-installed. However, as this may not be easy to implement by people that
-are not familiar with Docker, we do not describe the steps to do this.
-Instead, it is possible to rerun the analytical pipeline on the web in
-the APACo repository. To do this, go to the [web page relating to the
-`run-dockerized-pipeline`
-worflow](https://github.com/pydemull/APACo/actions/workflows/run-dockerized-pipeline.yml).
-Then, click on the last workflow run. On the rigth of the screen, you
-will have a `Re-run all jobs` button. If you click on that button and
-confirm this action, the workflow will run another time. Then, if you
-click on the `build` button, you will have a view of all the
-installation and analytical steps performed by the workflow. The
-downside of this approach is that you will not can interact with the
-content to explore the intermediate objects created to finally get the
-results. However, if you have sufficient knowledge about R programming
-language, you can infere the content of these objects from the code
-shown in the `master` branch of the APACo repository.
+analytical pipeline because a Docker image is a kind of virtual
+environment where all the settings can be defined as wanted so that all
+the analytical process is performed as when developping the pipeline.
+Please follow the steps below to use this approach with your machine:
+
+- Step 1: Install [Docker Desktop](https://www.docker.com/) on your
+  machine.
+- Step 2: Open Docker Desktop. If you are a Windows user, you could have
+  a warning message indicating that Docker Desktop requires a newer WSL
+  kernel version. As suggested in the message, run the command line
+  `wsl --update` in the Command Prompt. When the installation is done,
+  try again to open Docker Desktop.
+- Step 3: Go to the pipeline branch of the APACo repository and click on
+  the green button called `Code`. Then click on `Download ZIP`.
+- Step 4: Unzip the zipped folder on your machine and open it.
+- Step 5: Open, in the unzipped folder, the Command Prompt (Terminal on
+  Mac) app (you know, this software that shows you only a window with a
+  black background; do not be afraid of it). To do this, if you are a
+  Windows user, when you are inside the unzipped folder (at its root),
+  you can simply write `cmd` in the address bar displayed at the top of
+  your screen and press `Enter`. After that, you should see in the
+  Command Prompt window a line beginning by something like that:
+
+``` r
+C:\Users\YOUR_USER_NAME\Downloads\APACo-pipeline>
+```
+
+In the example above (for Windows users), `C:\Users\YOUR_USER_NAME`
+stands for the current user session, and `Downloads\APACo-pipeline`
+stands for the remaining part of the path to the unzipped folder named
+`APACo-pipeline`. You may have several folder names to use in the path
+between `YOUR_USER_NAME` and `APACo-pipeline` depending on where you
+have placed the unzipped folder on your machine.
+
+If you are a Mac user and thus want to open the Terminal app in the
+unzipped folder, you may try the following recommendation: ‘*The easiest
+way to open Terminal in your current folder on Mac is to use Finder to
+navigate to the location and right-click and open Terminal from the
+context menu. You can also use the Finder menu or drag and drop folders
+on top of the Terminal application in your dock.*’ (source
+[here](https://macosx-faq.com/open-terminal-current-folder/#:~:text=The%20easiest%20way%20to%20open,Terminal%20application%20in%20your%20dock)).
+
+If you want to manually indicate to the Command Prompt (or Terminal) app
+that you want to work in the unzipped folder, you can open Command
+Prompt (or Terminal), and run the following command line by replacing
+`YOUR_USER_NAME` by your actual user name and `Downloads/APACo-pipeline`
+by the path to the unzipped folder (below, `C:/Users/` stands for an
+example for Windows users):
+
+``` r
+cd C:/Users/YOUR_USER_NAME/Downloads/APACo-pipeline
+```
+
+- Step 6: Ensure you have an internet connexion and build the required
+  Docker image (the place where will be created the files embedding the
+  results) by running the following command line (do not forget the
+  point at the end of the line):
+
+``` r
+docker build -t apaco_image .
+```
+
+The whole process may take several minutes as it consists in downloading
+the base Docker image (with R v4.3.1 and a version of `{renv}` r
+package), building a new Docker image on the top of it by downloading
+and installing the R package dependencies, and finally running the
+analytical pipeline in R.
+
+- Step 7: Create a Docker container to move the files embedding the
+  results from the Docker image to your machine, and more precisely to
+  the folder named `shared_folder` that is inside the unzipped folder
+  named `APACo-pipeline`. To do this, use the following command line:
+
+``` r
+docker run --rm --name apaco_container -v C:/Users/USER_NAME/Downloads/APACo-pipeline/shared_folder:/project/shared_folder:rw apaco_image
+```
+
+In the example above (adapted for a Windows
+user),`C:/Users/USER_NAME/Downloads/APACo-pipeline/shared_folder`) is
+the absolute path to the folder named `shared_folder` at the root of the
+unzipped folder named `APACo-pipeline`. As previoulsy described, you
+should replace `C:/Users/USER_NAME/Downloads/` by the path that fits
+your needs.This is the only part of the code you should modify.
+
+Step 8: Finally, go to the `shared_folder` folder at the root of the
+initially unzipped folder (i.e., inside the `APACo-pipeline` folder).
+The results embedded in .tiff figures and .html files should be there.
+You can now close the Command Prompt (or Terminal) app.
+
+While the presented approach is in principle robust to reproduce the
+analytical pipeline, the downside of this approach is that you will not
+can easily interact with the content to explore the intermediate objects
+created to finally get the results (it is possible using additional
+command lines). However, if you have sufficient knowledge about R
+programming language, you can infere the content of these objects from
+the code shown in the `master` branch of the APACo repository.
 
 ## How to be sure of the `{APACo}` package version that is used when running the analytical pipeline?
 
@@ -218,10 +298,10 @@ used in the analytical pipeline corresponding to this commit can be
 viewed in the `R/` folder at the following adress:
 <https://github.com/pydemull/APACo/tree/10c80e32a70ff523a02df61219a14ae2e8ef4274>.
 
-## Is the GitHub Actions\|Docker-based approach presented here so robust to allow the reproduction of the analytical pipeline?
+## Is the Docker-based approach presented here so robust to allow the reproduction of the analytical pipeline?
 
 Actually, there may be a vulnerability. Indeed, the process implemented
-in the GitHub Actions workflow starts from a Docker image that has an R
+in the Docker-based approach starts from a Docker image that has an R
 version compatible with the analytical pipeline and a working version of
 the `{renv}` package only. This means that the initial Docker image has
 not yet the package dependencies of the analytical pipeline installed.
