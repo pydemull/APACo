@@ -70,9 +70,9 @@
 <div class="section level2">
 <h2 id="how-the-content-of-this-repository-can-be-used-to-allow-the-reproduction-of-the-analyses-of-the-apaco-project">How the content of this repository can be used to allow the reproduction of the analyses of the APA&amp;Co project?<a class="anchor" aria-label="anchor" href="#how-the-content-of-this-repository-can-be-used-to-allow-the-reproduction-of-the-analyses-of-the-apaco-project"></a>
 </h2>
-<p>We suggest two approaches to reproduce the analyses of the APA&amp;Co project: running the analytical pipeline on a PC using R and RStudio; or running the analytical pipeline on a PC with Docker. These two approaches have some advantages and limits depending on you are interested in the understanding or the reproducibility of the analyses.</p>
+<p>We suggest two approaches to reproduce the analyses of the APA&amp;Co project: running the analytical pipeline on a PC with RStudio; or running the analytical pipeline on a PC with Docker. These two approaches have some advantages and limits depending on you are interested in the understanding or the reproducibility of the analyses.</p>
 <div class="section level3">
-<h3 id="running-the-analytical-pipeline-on-a-pc-with-r-and-rstudio">Running the analytical pipeline on a PC with R and RStudio<a class="anchor" aria-label="anchor" href="#running-the-analytical-pipeline-on-a-pc-with-r-and-rstudio"></a>
+<h3 id="running-the-analytical-pipeline-on-a-pc-with-rstudio">Running the analytical pipeline on a PC with RStudio<a class="anchor" aria-label="anchor" href="#running-the-analytical-pipeline-on-a-pc-with-rstudio"></a>
 </h3>
 <p>This approach may be interesting if you want to explore, after running the analytical pipeline, the content of the created objects and the content of the functions in the same place, that is, in the environnement where you are running R software. However, the main downside of this approach is that reproducibility is not fully garanteed. Indeed, the success of an analytical pipeline run is dependent on various factors that cannot be controlled by the content of the present repository, in particular, the current version of R you are using, and the configuration of the system that lives on your machine. This is why, in order to reproduce the analytical pipeline exactly as it was performed to get the results of the project, the second approach is better, and actually, not so far to be the best. Anyway, if you want to reproduce the analytical pipeline on your machine using R software (and RStudio) only, please follow the steps below.</p>
 <ul>
@@ -95,7 +95,7 @@
 <div class="section level3">
 <h3 id="running-the-analytical-pipeline-on-a-pc-with-docker">Running the analytical pipeline on a PC with Docker<a class="anchor" aria-label="anchor" href="#running-the-analytical-pipeline-on-a-pc-with-docker"></a>
 </h3>
-<p>Using a Docker image is a robust approach to reproducibly run an analytical pipeline because a Docker image is a kind of virtual environment where all the settings can be defined as wanted so that all the analytical process is performed as when developping the pipeline. Please follow the steps below to use this approach with your machine:</p>
+<p>Using a Docker image is a robust approach to reproducibly run an analytical pipeline. Indeed, a Docker image is a kind of virtual environment where all the settings can be defined as wanted so that all the analyses can be performed as when developping the pipeline. Please follow the steps below to use this approach with your machine:</p>
 <ul>
 <li>Step 1: Install <a href="https://www.docker.com/" class="external-link">Docker Desktop</a> on your machine.</li>
 <li>Step 2: Open Docker Desktop. If you are a Windows user, you could have a warning message indicating that Docker Desktop requires a newer WSL kernel version. As suggested in the message, run the command line <code>wsl --update</code> in the Command Prompt. When the installation is done, try again to open Docker Desktop.</li>

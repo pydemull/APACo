@@ -92,12 +92,12 @@ The repository has four branches, `master`, `gh-pages`, `docker`, and
 ## How the content of this repository can be used to allow the reproduction of the analyses of the APA&Co project?
 
 We suggest two approaches to reproduce the analyses of the APA&Co
-project: running the analytical pipeline on a PC using R and RStudio; or
+project: running the analytical pipeline on a PC with RStudio; or
 running the analytical pipeline on a PC with Docker. These two
 approaches have some advantages and limits depending on you are
 interested in the understanding or the reproducibility of the analyses.
 
-### Running the analytical pipeline on a PC with R and RStudio
+### Running the analytical pipeline on a PC with RStudio
 
 This approach may be interesting if you want to explore, after running
 the analytical pipeline, the content of the created objects and the
@@ -179,10 +179,10 @@ for the project.
 ### Running the analytical pipeline on a PC with Docker
 
 Using a Docker image is a robust approach to reproducibly run an
-analytical pipeline because a Docker image is a kind of virtual
+analytical pipeline. Indeed, a Docker image is a kind of virtual
 environment where all the settings can be defined as wanted so that all
-the analytical process is performed as when developping the pipeline.
-Please follow the steps below to use this approach with your machine:
+the analyses can be performed as when developping the pipeline. Please
+follow the steps below to use this approach with your machine:
 
 - Step 1: Install [Docker Desktop](https://www.docker.com/) on your
   machine.
