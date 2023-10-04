@@ -74,13 +74,12 @@ The repository has four branches (`master`, `gh-pages`, `docker`, and
   and thus the results. Of note, this branch also hosts a GitHub Actions
   workflow that builds a Docker image from the one hosted in the Docker
   Hub repository (as described above) with the run of the installation
-  of the package dependencies of the analytical pipeline. Then, a Docker
-  container is run to execute the analytical pipeline and generate the
-  results of the APA&Co project. These results are stored as .tiff
-  figures and .html files in a Docker volume. After that, the workflow
-  consists in moving the .tiff/.html files to the present GitHub
-  repository. You may access these files by consulting the last
-  [dockerized-pipeline workflow
+  of the package dependencies of the analytical pipeline, and then the
+  run of the analytical pipeline that generates the results of the
+  APA&Co project. Then, the workflow opens a Docker container that
+  allows to move the results embedded in .tiff/.html files to the
+  present GitHub repository. You may access these files by consulting
+  the last [dockerized-pipeline workflow
   run](https://github.com/pydemull/APACo/actions/workflows/run-dockerized-pipeline.yml).
   When you are on the web page of the workflow and click on the link of
   a workflow run (the last one for example, at the top of the list), you
@@ -191,20 +190,21 @@ machine:
 - Step 2: Open Docker Desktop on your machine. If you are a Windows
   user, you could have a warning message indicating that Docker Desktop
   requires a newer WSL kernel version. As suggested in the message, run
-  the command line `wsl --update` in the Command Prompt app. When the
-  installation is done, try again to open Docker Desktop.
+  the command line `wsl --update` in the Command Prompt app (you know,
+  this software that shows you only a window with a black background; do
+  not be afraid of it). When the installation is done, try again to open
+  Docker Desktop.
 - Step 3: Go to the
   [`pipeline`](https://github.com/pydemull/APACo/tree/pipeline) branch
   of the APACo repository and click on the green button called `Code`.
   Then click on `Download ZIP`.
 - Step 4: Unzip the zipped folder on your machine and open it.
 - Step 5: Open, in the unzipped folder, the Command Prompt (Terminal on
-  Mac) app (you know, this software that shows you only a window with a
-  black background; do not be afraid of it). To do this, if you are a
-  Windows user, when you are inside the unzipped folder (at its root),
-  you can simply write `cmd` in the address bar displayed at the top of
-  your screen and press `Enter`. After that, you should see in the
-  Command Prompt window a line beginning by something like that:
+  Mac) app. To do this, if you are a Windows user, when you are inside
+  the unzipped folder (at its root), you can simply write `cmd` in the
+  address bar displayed at the top of your screen and press `Enter`.
+  After that, you should see in the Command Prompt window a line
+  beginning by something like that:
 
 ``` r
 C:\Users\YOUR_USER_NAME\Downloads\APACo-pipeline>
@@ -236,12 +236,11 @@ example for Windows users):
 cd C:/Users/YOUR_USER_NAME/Downloads/APACo-pipeline
 ```
 
-- Step 6: Ensure you have an internet connexion, build the required
-  Docker image (the place where will be run the analytical pipeline),
-  and run the Docker container executing the analytical pipeline and
-  placing the generated results in a Docker volume, this by running the
-  following command line in the Command Prompt (Terminal) app (do not
-  forget the point at the end of the line):
+- Step 6: Ensure you have an internet connexion, and build the Docker
+  image with the installation of the required package dependencies and
+  the run of the analytical pipeline that generates the results, this by
+  running the following command line in the Command Prompt (Terminal)
+  app (do not forget the point at the end of the line):
 
 ``` r
 docker build -t apaco_image .
@@ -253,11 +252,11 @@ package), building a new Docker image on the top of it by downloading
 and installing the R package dependencies, and finally running the
 analytical pipeline in R.
 
-- Step 7: Move the files embedding the results from the Docker volume to
-  your machine, and more precisely to the folder named `shared_folder`
-  that is inside the unzipped folder named `APACo-pipeline`. To do this,
-  run the following command line in the Command Prompt (or Terminal)
-  app:
+- Step 7: Create a Docker container to move the files embedding the
+  results from a Docker volume to your machine, and more precisely to
+  the folder named `shared_folder` that is inside the unzipped folder
+  named `APACo-pipeline`. To do this, run the following command line in
+  the Command Prompt (or Terminal) app:
 
 ``` r
 docker run --rm --name apaco_container -v C:/Users/YOUR_USER_NAME/Downloads/APACo-pipeline/shared_folder:/project/shared_folder:rw apaco_image
@@ -278,11 +277,12 @@ fits your needs. This is the only part of the code you should modify
 
 While the presented approach is in principle robust to reproduce the
 analytical pipeline, the downside of this approach is that you will not
-can easily interact with the content to explore the intermediate objects
-created to finally get the results (it is possible using additional
-command lines). However, if you have sufficient knowledge about R
-programming language, you can infere the content of these objects from
-the code shown in the `master` branch of the APACo repository.
+can easily interact with R to explore the content of the functions and
+of the intermediate objects created to get the results (it is possible
+using additional command lines). However, if you have sufficient
+knowledge about R programming language, you can infere the content of
+the objects from the code shown in the `master` branch of the APACo
+repository.
 
 ## How to be sure of the `{APACo}` package version that is used when running the analytical pipeline?
 
