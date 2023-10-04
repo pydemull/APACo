@@ -53,7 +53,7 @@ list(
   tar_target(p_BARRIERS, get_plot_BARRIERS(BARRIERS_cleaned)),
 
   # Export figures 1, 2, and 3
-  tar_target(fig1, save_figure("pipeline_output/fig1.tiff", change_6MWT$p), format = "file"),
+  tar_target(fig1, save_figure("pipeline_output/fig1.tiff", change_6MWT$p, width = 21), format = "file"),
   tar_target(fig2, save_figure("pipeline_output/fig2.tiff", change_IPAQ$p, scaling = 0.40, width = 21), format = "file"),
   tar_target(fig3, save_figure("pipeline_output/fig3.tiff", p_BARRIERS, scaling = 0.3, height = 5, width = 10), format = "file"),
 
