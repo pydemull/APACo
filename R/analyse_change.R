@@ -200,7 +200,7 @@ analyse_change <- function(data,
          x = labs_2x,
          y = labs_2y) +
     coord_flip() +
-    theme(axis.ticks.x = element_blank())
+    theme(axis.ticks.y = element_line(size = 0))
 
   # Make a scatter plot
   p3 <-
@@ -472,7 +472,7 @@ analyse_change <- function(data,
 
   # Build figure
   layout <- "
-  #AAABBB#
+  AAAAABBB
   CCCCCDDD
   EEEEEFFF
   "
