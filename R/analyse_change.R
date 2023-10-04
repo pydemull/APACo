@@ -199,6 +199,7 @@ analyse_change <- function(data,
     labs(title = "Pairwise differences",
          x = labs_2x,
          y = labs_2y) +
+    coord_flip() +
     theme(axis.ticks.x = element_blank())
 
   # Make a scatter plot
@@ -470,10 +471,15 @@ analyse_change <- function(data,
 
 
   # Build figure
+  layout <- "
+  #AAABBB#
+  CCCCCDDD
+  EEEEEFFF
+  "
   p <-
-    p1 + p4 + p2 + p5 + p3 + p6 +
+    p1 + p3 + p4 + p2 + p5 + p6 +
     patchwork::plot_annotation(tag_levels = 'A') +
-    patchwork::plot_layout(widths = c(1, 3)) & theme(
+    patchwork::plot_layout(design = layout) & theme(
       plot.title = element_text(size = 20),
       axis.title = element_text(size = 15),
       axis.text = element_text(size = 15),
