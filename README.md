@@ -247,7 +247,7 @@ docker build -t apaco_image .
 ```
 
 The whole process may take several minutes as it consists in downloading
-the base Docker image (with R v4.3.1 and a version of `{renv}` r
+the base Docker image (with R v4.3.1 and a version of the `{renv}`
 package), building a new Docker image on the top of it by downloading
 and installing the R package dependencies, and finally running the
 analytical pipeline in R.

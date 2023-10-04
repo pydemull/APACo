@@ -85,7 +85,7 @@ cd C:/Users/YOUR_USER_NAME/Downloads/APACo-pipeline
 docker build -t apaco_image .
 ```
 
-The whole process may take several minutes as it consists in downloading the base Docker image (with R v4.3.1 and a version of `{renv}` r package), building a new Docker image on the top of it by downloading and installing the R package dependencies, and finally running the analytical pipeline in R.
+The whole process may take several minutes as it consists in downloading the base Docker image (with R v4.3.1 and a version of the `{renv}` package), building a new Docker image on the top of it by downloading and installing the R package dependencies, and finally running the analytical pipeline in R.
 
 * Step 7: Create a Docker container to move the files embedding the results from a Docker volume to your machine, and more precisely to the folder named `shared_folder` that is inside the unzipped folder named `APACo-pipeline`. To do this, run the following command line in the Command Prompt (or Terminal) app:
 ```{r, eval=FALSE}

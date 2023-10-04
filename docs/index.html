@@ -112,7 +112,7 @@
 <li>Step 6: Ensure you have an internet connexion, and build the Docker image with the installation of the required package dependencies and the run of the analytical pipeline that generates the results, this by running the following command line in the Command Prompt (Terminal) app (do not forget the point at the end of the line):</li>
 </ul>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>docker build <span class="sc">-</span>t apaco_image .</span></code></pre></div>
-<p>The whole process may take several minutes as it consists in downloading the base Docker image (with R v4.3.1 and a version of <a href="https://rstudio.github.io/renv/" class="external-link">renv</a> r package), building a new Docker image on the top of it by downloading and installing the R package dependencies, and finally running the analytical pipeline in R.</p>
+<p>The whole process may take several minutes as it consists in downloading the base Docker image (with R v4.3.1 and a version of the <a href="https://rstudio.github.io/renv/" class="external-link">renv</a> package), building a new Docker image on the top of it by downloading and installing the R package dependencies, and finally running the analytical pipeline in R.</p>
 <ul>
 <li>Step 7: Create a Docker container to move the files embedding the results from a Docker volume to your machine, and more precisely to the folder named <code>shared_folder</code> that is inside the unzipped folder named <code>APACo-pipeline</code>. To do this, run the following command line in the Command Prompt (or Terminal) app:</li>
 </ul>
