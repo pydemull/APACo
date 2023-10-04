@@ -54,7 +54,7 @@ list(
 
   # Export figures 1, 2, and 3
   tar_target(fig1, save_figure("pipeline_output/fig1.tiff", change_6MWT$p), format = "file"),
-  tar_target(fig2, save_figure("pipeline_output/fig2.tiff", change_IPAQ$p, scaling = 0.41, width = 20), format = "file"),
+  tar_target(fig2, save_figure("pipeline_output/fig2.tiff", change_IPAQ$p, scaling = 0.40, width = 21), format = "file"),
   tar_target(fig3, save_figure("pipeline_output/fig3.tiff", p_BARRIERS, scaling = 0.3, height = 5, width = 10), format = "file"),
 
   # Build report including main results
