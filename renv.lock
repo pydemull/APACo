@@ -11,13 +11,13 @@
   "Packages": {
     "APACo": {
       "Package": "APACo",
-      "Version": "0.0.3",
+      "Version": "0.0.3.9000",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteUsername": "pydemull",
       "RemoteRepo": "APACo",
       "RemoteRef": "HEAD",
-      "RemoteSha": "c76c0038370238a047427755f4694ec5699d3f19",
+      "RemoteSha": "935374d3d641d83057353a29e5a9b2df460a8d59",
       "RemoteHost": "api.github.com",
       "Remotes": "GRousselet/rogme",
       "Requirements": [
@@ -41,7 +41,7 @@
         "tidyr",
         "tidyselect"
       ],
-      "Hash": "2ead1a2239a34089154fb497335bf894"
+      "Hash": "00a0468a15538a7ad041f983b6c5df1f"
     },
     "Formula": {
       "Package": "Formula",
