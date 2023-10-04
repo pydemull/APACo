@@ -472,12 +472,12 @@ analyse_change <- function(data,
 
   # Build figure
   layout <- "
-  ##AABB##
-  CCDDDDDD
-  EEFFFFFF
+  #AAABBB#
+  CCCCCDDD
+  EEEEEFFF
   "
   p <-
-    p1 + p3 + p4 + p5 + p2 + p6 +
+    p1 + p3 + p4 + p2 + p5 + p6 +
     patchwork::plot_annotation(tag_levels = 'A') +
     patchwork::plot_layout(design = layout) & theme(
       plot.title = element_text(size = 20),
