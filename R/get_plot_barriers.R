@@ -73,7 +73,7 @@ get_plot_BARRIERS <- function(data) {
     ) |>
     ggplot(aes(
       x = forcats::fct_reorder(var, n),
-      y = n,
+      y = prop_estimate,
       color = magnitude
     )) +
     ggrepel::geom_text_repel(
@@ -128,6 +128,7 @@ get_plot_BARRIERS <- function(data) {
       axis.text = element_text(size = 20),
       legend.position = "none",
       axis.ticks.x = element_blank(),
-      axis.text.x = element_blank()
+      axis.text.x = element_blank(),
+      plot.margin = margin(1, 1, 1, 1, "cm")
     )
 }
