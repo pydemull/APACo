@@ -82,12 +82,12 @@ targets::tar_read(analysis_bmi)
 
 ## Angioplasty (0 = no angioplasty; 1 = with angioplasty)
 ```{r}
-targets::tar_read(analysis_angioplasty)
+targets::tar_read(analysis_angioplasty)[, c(1:2)]
 ```
 
 ## Bypass (0 = no bypass; 1 = with bypass)
 ```{r}
-targets::tar_read(analysis_bypass)
+targets::tar_read(analysis_bypass)[, c(1:2)]
 ```
 
 # Change in 6MWT distance between 0 and 12 months
