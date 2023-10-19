@@ -82,11 +82,11 @@
 <li>Step 1: <a href="https://cran.rstudio.com/" class="external-link">Install R</a> (recommended versions: &gt;= 4.1.0 and &lt;= 4.3.1), <a href="https://posit.co/download/rstudio-desktop/" class="external-link">RStudio</a>, and the latest version of <a href="https://cran.r-project.org/bin/windows/Rtools/" class="external-link">Rtools</a> (if your are a Windows user) on your machine. To retrieve previous releases of R, you can go <a href="https://cran.r-project.org/bin/windows/base/old/" class="external-link">here</a> for Windows, and <a href="https://cran.r-project.org/bin/macosx/" class="external-link">here</a> for Mac.</li>
 <li>Step 2: Go to the <a href="https://github.com/pydemull/APACo/tree/pipeline" class="external-link"><code>pipeline</code></a> branch of the APACo repository and click on the green button called <code>Code</code>. Then click on <code>Download ZIP</code>.</li>
 <li>Step 3: Unzip the zipped folder on your machine, open it, and double-click on the <code>APACo.Rproj</code> file to open the project in RStudio.</li>
-<li>Step 4: Restore the package dependencies of the project with <a href="https://rstudio.github.io/renv/" class="external-link">renv</a> using the following command line in the Console:</li>
+<li>Step 4: Restore the package dependencies of the project with <a href="https://rstudio.github.io/renv/" class="external-link">renv</a> using in the Console the command line shown below and then following the instructions proposed in the Console.</li>
 </ul>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/restore.html" class="external-link">restore</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>This may take some time so that all the required packages are downloaded from the web and then installed in the project directory.</p>
+<p>This may take several minutes so that all the required packages are downloaded from the web and then installed in the project directory.</p>
 <ul>
 <li>Step 5: Run the analytical pipeline with <a href="https://docs.ropensci.org/targets/" class="external-link">targets</a> using the following command line in the Console:</li>
 </ul>
@@ -100,7 +100,7 @@
 </h3>
 <p>Using a Docker image is a robust approach to reproducibly run an analytical pipeline. Indeed, a Docker image is a kind of virtual environment where all the settings can be defined as wanted so that all the analyses can be performed as when developping the analytical pipeline. Please follow the steps below to use this approach with your machine:</p>
 <ul>
-<li>Step 1: Install <a href="https://www.docker.com/" class="external-link">Docker Desktop</a> on your machine.</li>
+<li>Step 1: Install <a href="https://www.docker.com/get-started/" class="external-link">Docker Desktop</a> on your machine.</li>
 <li>Step 2: Open Docker Desktop on your machine. If you are a Windows user, you could have a warning message indicating that Docker Desktop requires a newer WSL kernel version. As suggested in the message, run the command line <code>wsl --update</code> in the Command Prompt app (you know, this software that shows you only a window with a black background; do not be afraid of it). When the installation is done, try again to open Docker Desktop.</li>
 <li>Step 3: Go to the <a href="https://github.com/pydemull/APACo/tree/pipeline" class="external-link"><code>pipeline</code></a> branch of the APACo repository and click on the green button called <code>Code</code>. Then click on <code>Download ZIP</code>.</li>
 <li>Step 4: Unzip the zipped folder on your machine and open it.</li>

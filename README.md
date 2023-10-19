@@ -128,14 +128,15 @@ environment, please follow the steps below.
 - Step 3: Unzip the zipped folder on your machine, open it, and
   double-click on the `APACo.Rproj` file to open the project in RStudio.
 - Step 4: Restore the package dependencies of the project with `{renv}`
-  using the following command line in the Console:
+  using in the Console the command line shown below and then following
+  the instructions proposed in the Console.
 
 ``` r
 renv::restore()
 ```
 
-This may take some time so that all the required packages are downloaded
-from the web and then installed in the project directory.
+This may take several minutes so that all the required packages are
+downloaded from the web and then installed in the project directory.
 
 - Step 5: Run the analytical pipeline with `{targets}` using the
   following command line in the Console:
@@ -185,8 +186,8 @@ the analyses can be performed as when developping the analytical
 pipeline. Please follow the steps below to use this approach with your
 machine:
 
-- Step 1: Install [Docker Desktop](https://www.docker.com/) on your
-  machine.
+- Step 1: Install [Docker Desktop](https://www.docker.com/get-started/)
+  on your machine.
 - Step 2: Open Docker Desktop on your machine. If you are a Windows
   user, you could have a warning message indicating that Docker Desktop
   requires a newer WSL kernel version. As suggested in the message, run
