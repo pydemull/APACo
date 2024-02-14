@@ -91,6 +91,15 @@ targets::tar_read(analysis_bypass)[, c(1:2)]
 ```
 
 # Change in 6MWT distance between 0 and 12 months
+## Descriptive statistics
+```{r}
+targets::tar_read(DB_6MWT_0_12) |> 
+  dplyr::group_by(MONTH) |> 
+  skimr::skim() |> 
+  skimr::yank("numeric") |> 
+  dplyr::filter(skim_variable == "DIST_M")
+```
+
 ## T-test
 ```{r}
 targets::tar_read(t_test_results_6MWT)
@@ -116,13 +125,21 @@ dav <- mean_diff / sqrt(((sd1^2 + sd2^2) / 2))
 dav
 ```
 
-
 ## Shift and difference asymmetry functions
 ```{r, fig.width=20, fig.height=16, fig.cap='Change in 6-min walking test (6MWT) distance between 0 and 12 months (N = 75). On panels A and D, the error bars over the points are the standard deviations around the means. On panels E and F, the error bars are the percentile bootstrap 95% confidence intervals non corrected for multiple comparisons. On panel B, the black line depicts the identity line. If any, significant results (based on adjusted p-values) in the shift (panel E) and difference asymmetry (panel F) functions are highlighted using thick red circles. A small pseudo-random movement has been added horizontally and vertically to the raw data displayed on panel B to minimize the presence of points fully overlapped. The decile differences (panels C and E) and the quantile sums (panel F) have been computed using the Harrel-Davis estimator.'}
 targets::tar_read(change_6MWT)$p
 ```
 
 # Change in IPAQ MET-min/week between 6 and 12 months
+## Descriptive statistics
+```{r}
+targets::tar_read(DB_IPAQ_6_12) |> 
+  dplyr::group_by(MONTH) |> 
+  skimr::skim() |> 
+  skimr::yank("numeric") |> 
+  dplyr::filter(skim_variable == "MET_MIN_WK")
+```
+
 ## Shift and difference asymmetry functions
 ```{r, fig.width=22, fig.height=16, fig.cap='Change in IPAQ-SF MET-min/week between 6 and 12 months (N = 77). On panels A and D, the error bars over the points are the standard deviations around the means. On panels E and F, the error bars are the percentile bootstrap 95% confidence intervals non corrected for multiple comparisons. On panel B, the black line depicts the identity line. If any, significant results (based on adjusted p-values) in the shift (panel E) and difference asymmetry (panel F) functions are highlighted using thick red circles. A small pseudo-random movement has been added horizontally and vertically to the raw data displayed on panel B to minimize the presence of points fully overlapped. The decile differences (panels C and E) and the quantile sums (panel F) have been computed using the Harrel-Davis estimator.'}
 targets::tar_read(change_IPAQ)$p
