@@ -8,6 +8,7 @@ output:
     toc_float: yes
     number_sections: yes
     df_print: paged
+    code_folding: hide
 toc-title: "Table of content"
 
 ---
@@ -45,7 +46,7 @@ pre code {
 ```
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE)
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
 ggplot2::theme_set(ggplot2::theme_bw())
 ```
 
@@ -95,9 +96,7 @@ targets::tar_read(analysis_bypass)[, c(1:2)]
 ```{r}
 targets::tar_read(DB_6MWT_0_12) |> 
   dplyr::group_by(MONTH) |> 
-  skimr::skim() |> 
-  skimr::yank("numeric") |> 
-  dplyr::filter(skim_variable == "DIST_M")
+  skimr::skim()
 ```
 
 ## T-test
@@ -135,9 +134,7 @@ targets::tar_read(change_6MWT)$p
 ```{r}
 targets::tar_read(DB_IPAQ_6_12) |> 
   dplyr::group_by(MONTH) |> 
-  skimr::skim() |> 
-  skimr::yank("numeric") |> 
-  dplyr::filter(skim_variable == "MET_MIN_WK")
+  skimr::skim()
 ```
 
 ## Shift and difference asymmetry functions

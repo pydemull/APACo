@@ -8,6 +8,7 @@ output:
     toc_float: yes
     number_sections: yes
     df_print: paged
+    code_folding: hide
 toc-title: "Table of content"
 ---
 ```{css, echo=FALSE}
@@ -44,13 +45,14 @@ pre code {
 ```
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE)
-targets::tar_load(change_6MWT)
-targets::tar_load(change_IPAQ)
-targets::tar_load(change_EMAPS)
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
 ```
 
 ```{r, include=FALSE}
+targets::tar_load(change_6MWT)
+targets::tar_load(change_IPAQ)
+targets::tar_load(change_EMAPS)
+
 list_titles <- list(
   "6MWT distance",
   "IPAQ-SF MET-min / week",
