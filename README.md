@@ -114,7 +114,7 @@ reproduce the analytical pipeline on your machine using an RStudio
 environment, please follow the steps below.
 
 - Step 1: [Install R](https://cran.rstudio.com/) (recommended versions:
-  \>= 4.1.0 and \<= 4.3.1),
+  \>= 4.1.0 and \<= 4.3.2),
   [RStudio](https://posit.co/download/rstudio-desktop/), and the latest
   version of [Rtools](https://cran.r-project.org/bin/windows/Rtools/)
   (if your are a Windows user) on your machine. To retrieve previous
