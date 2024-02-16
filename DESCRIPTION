@@ -1,6 +1,6 @@
 Package: APACo
 Title: Reproduce APA&Co project analyses
-Version: 0.0.3.9000
+Version: 0.0.4
 Authors@R: 
     person("Pierre-Yves", "de Müllenheim", , "pydemull@uco.frm", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
