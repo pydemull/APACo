@@ -165,11 +165,35 @@ analyse_change <- function(data,
     tidyr::pivot_wider(names_from = {{ x }}, values_from = {{ y }}) |>
     dplyr::mutate(diff = .data[[level2]] - .data[[level1]])
 
+  ## Get the estimates of the quantiles of the individual changes using
+  ## the Harrell-Davis estimator
+  df_diff_hd <-
+    seq(0.05, 0.95, 0.05) |>
+    purrr::map(\(q) {
+
+      # Get estimates
+      res <- rogme::hdpbci(x = data2$diff, q = q)
+
+      # Make a dataframe with the results
+      df <-
+        data.frame(
+          q = res$q,
+          estimate = res$estimate,
+          ci_l = res$ci[1],
+          ci_u = res$ci[2]
+        )
+    }
+    ) |>
+    dplyr::bind_rows()
+
   ## Make plot
   p2 <-
     ggplot(data = data2, aes(x = "", y = diff)) +
     ggrain::geom_rain(
       fill = color_fill,
+      boxplot.args = rlang::list2(
+        color = NA, fill = NA
+      ),
       point.args = rlang::list2(
         alpha = 0.3,
         color = color_fill,
@@ -182,20 +206,12 @@ analyse_change <- function(data,
       ))
     ) +
     geom_hline(yintercept = 0, linetype = "dashed") +
-    stat_summary(
-      fun = "mean",
-      geom = "point",
-      size = 3,
-      color = color_stat
-    ) +
-    stat_summary(
-      fun.data = "mean_sdl",
-      geom = "errorbar",
-      fun.args = list(mult = 1),
-      width = 0.05,
-      linewidth = 0.7,
-      color = color_stat
-    ) +
+    geom_segment(data = df_diff_hd,
+                 aes(x = 0.9, xend = 1.1, y = estimate, yend = estimate),
+                 linewidth = 0.6) +
+    geom_segment(data = df_diff_hd |> dplyr::filter(q == 0.5),
+                 aes(x = 0.9, xend = 1.1, y = estimate, yend = estimate),
+                 linewidth = 1.2) +
     labs(title = "Pairwise differences",
          x = labs_2x,
          y = labs_2y) +
