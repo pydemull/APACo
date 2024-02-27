@@ -95,6 +95,7 @@ targets::tar_read(analysis_bypass)[, c(1:2)]
 ## Descriptive statistics
 ```{r}
 targets::tar_read(DB_6MWT_0_12) |> 
+  dplyr::select(-n_visits) |>   
   dplyr::group_by(MONTH) |> 
   skimr::skim()
 ```
@@ -132,7 +133,8 @@ targets::tar_read(change_6MWT)$p
 # Change in IPAQ MET-min/week between 6 and 12 months
 ## Descriptive statistics
 ```{r}
-targets::tar_read(DB_IPAQ_6_12) |> 
+targets::tar_read(DB_IPAQ_6_12) |>
+  dplyr::select(-n_visits) |>  
   dplyr::group_by(MONTH) |> 
   skimr::skim()
 ```
@@ -140,6 +142,15 @@ targets::tar_read(DB_IPAQ_6_12) |>
 ## Shift and difference asymmetry functions
 ```{r, fig.width=22, fig.height=16, fig.cap='Change in IPAQ-SF MET-min/week between 6 and 12 months (N = 77). On panels A and D, the error bars over the points are the standard deviations around the means. On panels E and F, the error bars are the percentile bootstrap 95% confidence intervals non corrected for multiple comparisons. On panel B, the black line depicts the identity line. If any, significant results (based on adjusted p-values) in the shift (panel E) and difference asymmetry (panel F) functions are highlighted using thick red circles. A small pseudo-random movement has been added horizontally and vertically to the raw data displayed on panel B to minimize the presence of points fully overlapped. The decile differences (panels C and E) and the quantile sums (panel F) have been computed using the Harrel-Davis estimator.'}
 targets::tar_read(change_IPAQ)$p
+```
+
+# Change in EMAPS scores between 0 and 12 months
+## Descriptive statistics
+```{r}
+targets::tar_read(DB_EMAPS_0_12) |> 
+  dplyr::select(-n_visits) |>  
+  dplyr::group_by(MONTH) |> 
+  skimr::skim()
 ```
 
 # Barriers to physical activity at 12 months
