@@ -72,7 +72,8 @@ and for a 2-by-2 use ("f2x2").}
 \item{labs_6y}{A character string to name the Y axis of the 6th graphic (difference asymmetry function).}
 }
 \value{
-A ggplot object.
+A list of objects (one figure, and three tables: the estimates of the quantiles of
+the individual changes, the shift function, and the difference asymetry function).
 }
 \description{
 Get a set of figures and tables for analysing the change in the variable of interest

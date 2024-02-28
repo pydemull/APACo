@@ -24,7 +24,8 @@
 #' @param labs_6x A character string to name the X axis of the 6th graphic (difference asymmetry function).
 #' @param labs_6y A character string to name the Y axis of the 6th graphic (difference asymmetry function).
 #'
-#' @return A ggplot object.
+#' @return A list of objects (one figure, and three tables: the estimates of the quantiles of
+#'     the individual changes, the shift function, and the difference asymetry function).
 #' @export
 #' @import ggplot2
 #' @import Hmisc
@@ -510,6 +511,7 @@ analyse_change <- function(data,
       variable = labs_1y,
       p = p,
       sf = sf |> dplyr::select(-c(diff_sign, alpha, adj_p_value)),
+      hd_pbci_diff = df_diff_hd,
       daf = daf |> dplyr::select(-p_crit)
     )
   return(objects)
