@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.3.1",
+    "Version": "4.3.2",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -11,13 +11,13 @@
   "Packages": {
     "APACo": {
       "Package": "APACo",
-      "Version": "0.0.3.9000",
+      "Version": "0.0.4.9000",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteUsername": "pydemull",
       "RemoteRepo": "APACo",
       "RemoteRef": "HEAD",
-      "RemoteSha": "935374d3d641d83057353a29e5a9b2df460a8d59",
+      "RemoteSha": "87debaf03e196895d88c0de5192a929eba48eff3",
       "RemoteHost": "api.github.com",
       "Remotes": "GRousselet/rogme",
       "Requirements": [
@@ -41,7 +41,7 @@
         "tidyr",
         "tidyselect"
       ],
-      "Hash": "00a0468a15538a7ad041f983b6c5df1f"
+      "Hash": "924e87be69f1aeda218c55a1b92f8932"
     },
     "Formula": {
       "Package": "Formula",
