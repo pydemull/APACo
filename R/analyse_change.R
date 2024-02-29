@@ -223,7 +223,7 @@ analyse_change <- function(data,
     geom_label(
       data = df_diff_hd |> dplyr::filter(q == 0.5),
       aes(
-        x = 0.60,
+        x = 0.7,
         y = estimate,
         label = round(estimate, 2),
       ),
@@ -231,11 +231,12 @@ analyse_change <- function(data,
       color = "white",
       alpha = 0.9,
       size = 6,
+      nudge_y = -nudge_y
     ) +
     geom_label(
       data = df_diff_hd |> dplyr::filter(q == 0.5),
       aes(
-        x = 0.60,
+        x = 0.7,
         y = estimate,
         label = round(estimate, 2),
       ),
@@ -243,6 +244,7 @@ analyse_change <- function(data,
       color = "white",
       fontface = "bold",
       size = 6,
+      nudge_y = -nudge_y
     ) +
     labs(title = "Pairwise differences",
          x = labs_2x,
