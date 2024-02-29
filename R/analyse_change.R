@@ -230,8 +230,7 @@ analyse_change <- function(data,
       fill = color_fill,
       color = "white",
       alpha = 0.9,
-      size = 6,
-      nudge_y = -nudge_y
+      size = 6
     ) +
     geom_label(
       data = df_diff_hd |> dplyr::filter(q == 0.5),
@@ -243,8 +242,7 @@ analyse_change <- function(data,
       fill = NA,
       color = "white",
       fontface = "bold",
-      size = 6,
-      nudge_y = -nudge_y
+      size = 6
     ) +
     labs(title = "Pairwise differences",
          x = labs_2x,
