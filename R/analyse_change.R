@@ -213,6 +213,12 @@ analyse_change <- function(data,
     geom_segment(data = df_diff_hd |> dplyr::filter(q == 0.5),
                  aes(x = 0.9, xend = 1.1, y = estimate, yend = estimate),
                  linewidth = 1.2) +
+    geom_point(data = df_diff_hd |> dplyr::filter(q == 0.5),
+               aes(x = 0.8, y = estimate),
+               size = 4) +
+    geom_segment(data = df_diff_hd |> dplyr::filter(q == 0.5),
+                 aes(x = 0.8, xend = 0.8, y = ci_l, yend = ci_u),
+                 linewidth = 1.2) +
     labs(title = "Pairwise differences",
          x = labs_2x,
          y = labs_2y) +
