@@ -225,7 +225,7 @@ analyse_change <- function(data,
       aes(
         x = 0.7,
         y = estimate,
-        label = round(estimate, 2),
+        label = format(round(estimate, 2), nsmall = 2),
       ),
       fill = color_fill,
       color = "white",
@@ -237,7 +237,7 @@ analyse_change <- function(data,
       aes(
         x = 0.7,
         y = estimate,
-        label = round(estimate, 2),
+        label = format(round(estimate, 2), nsmall = 2),
       ),
       fill = NA,
       color = "white",
@@ -375,7 +375,7 @@ analyse_change <- function(data,
     ggrepel::geom_label_repel(
       aes(
         y = ifelse(diff_sign == "positive", ci_upper, ci_lower),
-        label = round(difference, 2),
+        label = format(round(difference, 2), nsmall = 2),
         fill = diff_sign,
         alpha = alpha
       ),
@@ -390,7 +390,7 @@ analyse_change <- function(data,
     ggrepel::geom_label_repel(
       aes(
         y = ifelse(diff_sign == "positive", ci_upper, ci_lower),
-        label = round(difference, 2),
+        label = format(round(difference, 2), nsmall = 2),
       ),
       fill = NA,
       color = "white",
@@ -465,7 +465,7 @@ analyse_change <- function(data,
       aes(
         x = 1.5,
         y = pos_label,
-        label = round(difference, 2),
+        label = format(round(difference, 2), nsmall = 2),
         fill = diff_sign,
         alpha = alpha
       ),
