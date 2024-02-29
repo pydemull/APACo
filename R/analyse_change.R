@@ -220,38 +220,29 @@ analyse_change <- function(data,
     geom_segment(data = df_diff_hd |> dplyr::filter(q == 0.5),
                  aes(x = 0.8, xend = 0.8, y = ci_l, yend = ci_u),
                  linewidth = 1.2) +
-    ggrepel::geom_label_repel(
+    geom_label(
       data = df_diff_hd |> dplyr::filter(q == 0.5),
       aes(
-        x = 0.75,
+        x = 0.60,
         y = estimate,
         label = round(estimate, 2),
       ),
       fill = color_fill,
       color = "white",
       alpha = 0.9,
-      direction = "y",
-      force = 0.2,
-      nudge_y = -nudge_y,
-      fontface = "bold",
       size = 6,
-      seed = 123
     ) +
-    ggrepel::geom_label_repel(
+    geom_label(
       data = df_diff_hd |> dplyr::filter(q == 0.5),
       aes(
-        x = 0.75,
+        x = 0.60,
         y = estimate,
         label = round(estimate, 2),
       ),
       fill = NA,
       color = "white",
-      direction = "y",
-      force = 0.2,
-      nudge_y = -nudge_y,
       fontface = "bold",
       size = 6,
-      seed = 123
     ) +
     labs(title = "Pairwise differences",
          x = labs_2x,

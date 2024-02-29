@@ -73,7 +73,7 @@ and for a 2-by-2 use ("f2x2").}
 }
 \value{
 A list of objects (one figure, and three tables: the estimates of the quantiles of
-the individual changes, the shift function, and the difference asymetry function).
+the individual changes, the shift function, and the difference asymmetry function).
 }
 \description{
 Get a set of figures and tables for analysing the change in the variable of interest
