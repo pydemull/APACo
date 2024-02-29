@@ -25,7 +25,7 @@
 #' @param labs_6y A character string to name the Y axis of the 6th graphic (difference asymmetry function).
 #'
 #' @return A list of objects (one figure, and three tables: the estimates of the quantiles of
-#'     the individual changes, the shift function, and the difference asymetry function).
+#'     the individual changes, the shift function, and the difference asymmetry function).
 #' @export
 #' @import ggplot2
 #' @import Hmisc
@@ -219,7 +219,17 @@ analyse_change <- function(data,
     coord_flip() +
     theme(axis.ticks.y = element_line(size = 0))
 
-  # Make a scatter plot
+  # Make a scatter plot with the Harrell-Davis estimator-based deciles
+
+  ## Get the estimates of the deciles for the two marginal distributions
+  df_dec_hd <-
+    data.frame(q = seq(0.1, 0.9, 0.1)) |>
+    dplyr::mutate(
+      dec_var1 =  purrr::map_dbl(q, \(q) {rogme::hd(x = data2[[level1]], q = q)}),
+      dec_var2 =  purrr::map_dbl(q, \(q) {rogme::hd(x = data2[[level2]], q = q)})
+      )
+
+  ## Make plot
   p3 <-
     ggplot(data = data2, aes(x = .data[[level1]], y = .data[[level2]])) +
     geom_abline(slope = 1, intercept = 0) +
@@ -233,6 +243,18 @@ analyse_change <- function(data,
       ),
       size = 4
     ) +
+    geom_segment(
+      data = df_dec_hd,
+      aes(x = dec_var1, xend = dec_var1, y = -Inf, yend = dec_var2),
+      linetype = ifelse(df_dec_hd$q == 0.5, "longdash", "dashed"),
+      linewidth = ifelse(df_dec_hd$q == 0.5, 1.2, 0.6),
+      ) +
+    geom_segment(
+      data = df_dec_hd,
+      aes(x = -Inf, xend = dec_var1, y = dec_var2, yend = dec_var2),
+      linetype = ifelse(df_dec_hd$q == 0.5, "longdash", "dashed"),
+      linewidth = ifelse(df_dec_hd$q == 0.5, 1.2, 0.6)
+      ) +
     labs(title = "Bivariate relationship",
          x = labs_3x,
          y = labs_3y)
