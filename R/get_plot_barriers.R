@@ -78,17 +78,17 @@ get_plot_BARRIERS <- function(data) {
     )) +
     ggrepel::geom_text_repel(
       aes(label = paste0(
-        round(prop_estimate, 1),
+        format(round(prop_estimate, 1), nsmall = 1, trim = TRUE),
         "% [",
-        round(prop_ci_low, 1),
+        format(round(prop_ci_low, 1), nsmall = 1, trim = TRUE),
         "%; ",
-        round(prop_ci_up, 1),
+        format(round(prop_ci_up, 1), nsmall = 1, trim = TRUE),
         "%]"
       )),
       hjust = 0,
-      nudge_x = 0.3,
+      nudge_x = 0.4,
       nudge_y = 1.5,
-      size = 7,
+      size = 6,
       direction = "y",
       force = 0.2
     ) +
@@ -97,7 +97,7 @@ get_plot_BARRIERS <- function(data) {
         x = forcats::fct_reorder(var, n),
         y = 0,
         xend = forcats::fct_reorder(var, n),
-        yend = 60
+        yend = prop_estimate
       ),
       linewidth  = 0.5,
       color = "grey80"
