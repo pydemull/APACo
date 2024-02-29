@@ -17,7 +17,7 @@
       "RemoteUsername": "pydemull",
       "RemoteRepo": "APACo",
       "RemoteRef": "HEAD",
-      "RemoteSha": "dc6eaf05f2426d65b36993abe62d0a7cbd6a92ca",
+      "RemoteSha": "f92eb8dc143711a7778eee29fce88398c88a05f0",
       "RemoteHost": "api.github.com",
       "Remotes": "GRousselet/rogme",
       "Requirements": [
@@ -41,7 +41,7 @@
         "tidyr",
         "tidyselect"
       ],
-      "Hash": "34690696aa700b0a5cdfc3fe0d22092b"
+      "Hash": "bbf940e0e20193d59d851fd8beb27491"
     },
     "Formula": {
       "Package": "Formula",
