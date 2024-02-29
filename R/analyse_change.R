@@ -91,7 +91,8 @@ analyse_change <- function(data,
   if (is.null(nudge_y))
     nudge_y <- 0
 
-  # Make a raincloud plot to visualize individual changes
+  # Make a raincloud plot to visualize both the distributions and
+  # the individual changes
   p1 <-
     suppressWarnings(
       ggplot(data = data, aes(x = .data[[x]], y = .data[[y]])) +
@@ -136,7 +137,7 @@ analyse_change <- function(data,
           aes(group = .data[[x]]),
           fun = "mean",
           geom = "point",
-          size = 3,
+          size = 4,
           color = color_stat
         ) +
         stat_summary(
@@ -219,6 +220,39 @@ analyse_change <- function(data,
     geom_segment(data = df_diff_hd |> dplyr::filter(q == 0.5),
                  aes(x = 0.8, xend = 0.8, y = ci_l, yend = ci_u),
                  linewidth = 1.2) +
+    ggrepel::geom_label_repel(
+      data = df_diff_hd |> dplyr::filter(q == 0.5),
+      aes(
+        x = 0.75,
+        y = estimate,
+        label = round(estimate, 2),
+      ),
+      fill = color_fill,
+      color = "white",
+      alpha = 0.9,
+      direction = "y",
+      force = 0.2,
+      nudge_y = -nudge_y,
+      fontface = "bold",
+      size = 6,
+      seed = 123
+    ) +
+    ggrepel::geom_label_repel(
+      data = df_diff_hd |> dplyr::filter(q == 0.5),
+      aes(
+        x = 0.75,
+        y = estimate,
+        label = round(estimate, 2),
+      ),
+      fill = NA,
+      color = "white",
+      direction = "y",
+      force = 0.2,
+      nudge_y = -nudge_y,
+      fontface = "bold",
+      size = 6,
+      seed = 123
+    ) +
     labs(title = "Pairwise differences",
          x = labs_2x,
          y = labs_2y) +
