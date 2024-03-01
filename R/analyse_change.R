@@ -331,7 +331,7 @@ analyse_change <- function(data,
     )
 
   ## Add p-values adjusted using the Benjamini-Hochbergs False Discovery Rate method
-  sf$adj_p_value_bh <- round(p.adjust(sf$p_value, method = "BH"), 2)
+  sf$adj_p_value_bh <- p.adjust(sf$p_value, method = "BH")
 
   ##  Make plot
   p5 <-
@@ -504,8 +504,7 @@ analyse_change <- function(data,
   set.seed(NULL)
 
   ## Add p-values adjusted using the Benjamini-Hochberg False Discovery Rate method
-  daf$adj_p_value_bh <-
-    round(p.adjust(daf$p.value, method = "BH"), 2)
+  daf$adj_p_value_bh <- p.adjust(daf$p.value, method = "BH")
 
   ## Make plot
   p6 <-
