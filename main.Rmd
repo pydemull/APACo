@@ -122,16 +122,18 @@ mean_diff <- mean(data_6MWT$`12` - data_6MWT$`0`)
 sd1 <- sd(data_6MWT$`0`)
 sd2 <- sd(data_6MWT$`12`)
 dav <- mean_diff / sqrt(((sd1^2 + sd2^2) / 2))
-dav
+round(dav, 2)
 ```
 
 ## Estimate of the median of the individual changes
 ```{r}
-tar_read(change_6MWT)$hd_pbci_diff |> dplyr::filter(q == 0.5)
+tar_read(change_6MWT)$hd_pbci_diff |> 
+  dplyr::filter(q == 0.5)  |> 
+  dplyr::mutate(dplyr::across(estimate:ci_u, ~round(.x, digits = 2)))
 ```
 
 ## Shift and difference asymmetry functions
-```{r, fig.width=20, fig.height=16, fig.cap='Change in 6-min walking test (6MWT) distance between 0 and 12 months (N = 75). On panels A and D, the error bars over the points are the standard deviations around the means. On panels E and F, the error bars are the percentile bootstrap 95% confidence intervals non corrected for multiple comparisons. On panel B, the black line depicts the identity line. If any, significant results (based on adjusted p-values) in the shift (panel E) and difference asymmetry (panel F) functions are highlighted using thick red circles. A small pseudo-random movement has been added horizontally and vertically to the raw data displayed on panel B to minimize the presence of points fully overlapped. The decile differences (panels C and E) and the quantile sums (panel F) have been computed using the Harrel-Davis estimator.'}
+```{r, fig.width=20, fig.height=16, fig.cap='Change in 6-min walking test (6MWT) distance between 0 and 12 months (N = 75). On panel A, the errors bars over the points are the standard deviations around the means, while on panel D it is the percentile bootstrap 95% confidence interval around the median estimate. On panels E and F, the error bars are percentile bootstrap 95% confidence intervals non corrected for multiple comparisons. On panels B, C and D, the horizontal and/or vertical segments are the estimates of the deciles (panels B and C) or the quantiles (panel D, step of 0.05) of the distributions; the thickest segments are the median estimates. On panel B, the diagonal black line depicts the identity line. If any, significant results (based on adjusted p-values) in the shift (panel E) and difference asymmetry (panel F) functions are highlighted using thick red circles. A small pseudo-random movement has been added horizontally and vertically to the raw data displayed on panel B to minimize the presence of points fully overlapped. The estimates of the deciles of the marginal distributions (panels B, C and D), the quantiles of the individual differences (panel D), the decile differences (panel E) and the quantile sums (panel F) have been computed using the Harrell-Davis estimator.'}
 targets::tar_read(change_6MWT)$p
 ```
 
@@ -146,11 +148,13 @@ targets::tar_read(DB_IPAQ_6_12) |>
 
 ## Estimate of the median of the individual changes
 ```{r}
-tar_read(change_IPAQ)$hd_pbci_diff |> dplyr::filter(q == 0.5)
+tar_read(change_IPAQ)$hd_pbci_diff |> 
+  dplyr::filter(q == 0.5) |> 
+  dplyr::mutate(dplyr::across(estimate:ci_u, ~round(.x, digits = 2)))
 ```
 
 ## Shift and difference asymmetry functions
-```{r, fig.width=22, fig.height=16, fig.cap='Change in IPAQ-SF MET-min/week between 6 and 12 months (N = 77). On panels A and D, the error bars over the points are the standard deviations around the means. On panels E and F, the error bars are the percentile bootstrap 95% confidence intervals non corrected for multiple comparisons. On panel B, the black line depicts the identity line. If any, significant results (based on adjusted p-values) in the shift (panel E) and difference asymmetry (panel F) functions are highlighted using thick red circles. A small pseudo-random movement has been added horizontally and vertically to the raw data displayed on panel B to minimize the presence of points fully overlapped. The decile differences (panels C and E) and the quantile sums (panel F) have been computed using the Harrel-Davis estimator.'}
+```{r, fig.width=22, fig.height=16, fig.cap='Change in IPAQ-SF MET-min/week between 6 and 12 months (N = 77). On panel A, the errors bars over the points are the standard deviations around the means, while on panel D it is the percentile bootstrap 95% confidence interval around the median estimate. On panels E and F, the error bars are percentile bootstrap 95% confidence intervals non corrected for multiple comparisons. On panels B, C and D, the horizontal and/or vertical segments are the estimates of the deciles (panels B and C) or the quantiles (panel D, step of 0.05) of the distributions; the thickest segments are the median estimates. On panel B, the diagonal black line depicts the identity line. If any, significant results (based on adjusted p-values) in the shift (panel E) and difference asymmetry (panel F) functions are highlighted using thick red circles. A small pseudo-random movement has been added horizontally and vertically to the raw data displayed on panel B to minimize the presence of points fully overlapped. The estimates of the deciles of the marginal distributions (panels B, C and D), the quantiles of the individual differences (panel D), the decile differences (panel E) and the quantile sums (panel F) have been computed using the Harrell-Davis estimator.'}
 targets::tar_read(change_IPAQ)$p
 ```
 
@@ -175,7 +179,9 @@ res <-
                     "### `r x$variable`",
                     "\n",
                     "```{r, echo = FALSE}",
-                    "x$hd_pbci_diff |> dplyr::filter(q == 0.5)",
+                    "x$hd_pbci_diff |>  
+                     dplyr::filter(q == 0.5) |> 
+                     dplyr::mutate(dplyr::across(estimate:ci_u, ~round(.x, digits = 2)))",
                     "```"
   ),
   envir = environment(),
