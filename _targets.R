@@ -4,7 +4,7 @@ library(targets)
 library(tarchetypes)
 
 # Set target options:
-tar_option_set(packages = c("APACo", "dplyr", "ggplot2", "Hmisc", "tidyr"))
+tar_option_set(packages = c("APACo", "dplyr", "ggplot2", "Hmisc", "tidyr", "patchwork"))
 
 # Define pipeline
 list(
@@ -198,7 +198,10 @@ tar_target(p_BARRIERS_BY_IPAQ_DECILE, {
   tar_render(SM4, "SM4.Rmd", output_dir = "pipeline_output/"),
 
   # Build Supplemental Materials 5
-  tar_render(SM5, "SM5.Rmd", output_dir = "pipeline_output/")
+  tar_render(SM5, "SM5.Rmd", output_dir = "pipeline_output/"),
+
+  # Build Supplemental Materials 6
+  tar_render(SM6, "SM6.Rmd", output_dir = "pipeline_output/")
 
 )
 

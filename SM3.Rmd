@@ -10,7 +10,6 @@ output:
     df_print: paged
     code_folding: hide
 toc-title: "Table of content"
-
 ---
 ```{css, echo=FALSE}
 .title {
