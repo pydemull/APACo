@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_DB_IPAQ_6_12.R
 \name{get_DB_IPAQ_6_12}
 \alias{get_DB_IPAQ_6_12}
-\title{Filtering DB_IPAQ}
+\title{Filtering DB_IPAQ to exclude data at 0 month}
 \usage{
 get_DB_IPAQ_6_12(data)
 }
