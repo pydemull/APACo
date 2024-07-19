@@ -1,5 +1,5 @@
 ---
-title: 'APA&Co project | SM6. Characteristics of the participants with missing data at follow-up'
+title: "APA&Co project | SM6. Data relating to the shift and difference asymmetry functions to describe the change in 6MWT distance (0-12 months), IPAQ-SF MET-min/week (6-12 months), and EMAPS scores (0-12 months)"
 output: 
   html_document:
     theme: cosmo
@@ -45,124 +45,84 @@ pre code {
 ```
 
 ```{r setup, include=FALSE}
-# Set general settings
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
-ggplot2::theme_set(ggplot2::theme_bw())
+```
 
-# Define a function to extract the IDs of the participants with missing data at follow-up
-extract_missing_ids <- function(data1, data2, MONTH = "0") {
+```{r, include=FALSE}
+targets::tar_load(change_6MWT)
+targets::tar_load(change_IPAQ_6_12)
+targets::tar_load(change_EMAPS)
+
+list_titles <- list(
+  "6MWT distance",
+  "IPAQ-SF MET-min / week",
+  "EMAPS | Intrinsic motivation",
+  "EMAPS | Integrated regulation",
+  "EMAPS | Identified regulation",
+  "EMAPS | Introjected regulation",
+  "EMAPS | External regulation",
+  "EMAPS | Amotivation"
+)
   
- ids_init <- 
-  (data1 |> 
-     dplyr::filter(MONTH == MONTH) |>  
-     dplyr::mutate(patient = as.character(patient)) |>  
-     dplyr::select(patient)
-   )[[1]]
-ids_final <- 
-  (data2 |> 
-     dplyr::filter(MONTH == MONTH) |>  
-     dplyr::mutate(patient = as.character(patient)) |>  
-     dplyr::select(patient)
-   )[[1]]
-ids_missing <- setdiff(ids_init, ids_final)  
+list_tables <- list(
+  change_6MWT,
+  change_IPAQ_6_12,
+  change_EMAPS[[1]],
+  change_EMAPS[[2]],
+  change_EMAPS[[3]],
+  change_EMAPS[[4]],
+  change_EMAPS[[5]],
+  change_EMAPS[[6]]
+)
 
-return(ids_missing)
-}
+legend_sf <- "q = quantile; ci.low = lower bounds of the confidence intervals; ci.up = upper bounds of the confidence intervals; adj_p_value_bh = p value adjusted for multiple comparisons using the Benjamini-Hochberg False Discovery Rate method."
 
-# Get data of interest
-INCLUSION_cleaned <- tar_read(INCLUSION_cleaned) |> dplyr::select(-DIST_6WT_M0)
-db_6MWT_init <- tar_read(DB_6MWT)
-db_6MWT_final <- tar_read(DB_6MWT_0_12)
-db_IPAQ_init <- tar_read(DB_IPAQ)
-db_IPAQ_final <- tar_read(DB_IPAQ_6_12)
-db_EMAPS_init <- tar_read(DB_EMAPS)
-db_EMAPS_final <- tar_read(DB_EMAPS_0_12)
+legend_asym <- "Est_q = quantiles of differences; Est_1.minus.q = 1 - quantiles of differences; SUM = sum of quantiles; ci.low = lower bounds of the confidence intervals; ci.up = upper bounds of the confidence intervals; adj_p_value_bh = p value adjusted for multiple comparisons using the Benjamini-Hochberg False Discovery Rate method." 
+  
 ```
 
-```{r 6MWT}
-ids_6MWT_missing <- extract_missing_ids(data1 = db_6MWT_init, data2 = db_6MWT_final)
-db_6MWT_init$na_status <- ifelse(db_6MWT_init$patient %in% ids_6MWT_missing, "Incomplete", "Complete")
-db_6MWT_init$na_status <- factor(db_6MWT_init$na_status, levels = c("Incomplete", "Complete"))
-p_6MWT <-
-  ggplot(data = db_6MWT_init |>  dplyr::filter(MONTH == "0"), aes(x = "", y = DIST_M, color = na_status)) +
-  geom_boxplot(position = position_dodge(width = 0.75), width = 0.25, outlier.size = 0) +
-  geom_point(position = position_jitterdodge(jitter.width = 0.05, dodge.width = 0.75)) +
-  coord_flip() +
-  scale_color_manual(values = c("red", "blue"), guide = guide_legend(reverse = TRUE)) +
-  labs(title = "6MWT", x = NULL, y = "6-min walking distance (m)", color = "Data completness status") +
-  theme(axis.ticks.y = element_blank())
+```{r, results = "asis"}
+res <-
+  purrr::map2(list_titles, list_tables, function(x, y) {
+  
+  knitr::knit_child(text = c(
+                    
+                    "\n",
+                    "# `r x`",
+                    "\n",
+                    "## Shift function",
+                    "\n",
+                    "```{r, echo = FALSE}",
+                    "y$sf |> dplyr::mutate(
+                    dplyr::across(`12`:ci_upper, ~round(.x, digits = 2)),
+                    p_value = format(round(p_value, 3), nsmall = 3),
+                    adj_p_value_bh = format(round(adj_p_value_bh, 3), nsmall = 3)
+                    )",
+                    "```",
+                    "```{r, results='asis'}",
+                    "cat(legend_sf)",
+                    "```",
+                    "\n",
+                    "## Difference asymmetry function",
+                    "\n",
+                    "```{r, echo = FALSE}",
+                    "y$daf |> dplyr::mutate(
+                    dplyr::across(Est_q:ci.up, ~round(.x, digits = 2)),
+                    p.value = format(round(p.value, 3), nsmall = 3),
+                    adj_p_value_bh = format(round(adj_p_value_bh, 3), nsmall = 3)
+                    )",
+                    "```",
+                    "```{r, results='asis'}",
+                    "cat(legend_asym)",
+                    "```"
+  ),
+  envir = environment(),
+  quiet  = TRUE
+  )
+})
+
+cat(unlist(res), sep = "\n")
+
 ```
 
-```{r IPAQ}
-ids_IPAQ_missing <- extract_missing_ids(data1 = db_IPAQ_init, data2 = db_IPAQ_final, MONTH = "6")
-db_IPAQ_init$na_status <- ifelse(db_IPAQ_init$patient %in% ids_IPAQ_missing, "Incomplete", "Complete")
-db_IPAQ_init$na_status <- factor(db_IPAQ_init$na_status, levels = c("Incomplete", "Complete"))
-p_IPAQ <-
-  ggplot(data = db_IPAQ_init |>  dplyr::filter(MONTH == "0"), aes(x = "", y = MET_MIN_WK, color = na_status)) +
-  geom_boxplot(position = position_dodge(width = 0.75), width = 0.25, outlier.size = 0) +
-  geom_point(position = position_jitterdodge(jitter.width = 0.05, dodge.width = 0.75)) +
-  coord_flip() +
-  scale_color_manual(values = c("red", "blue"), guide = guide_legend(reverse = TRUE)) +
-  labs(title = "IPAQ-SF", x = NULL, y = "IPAQ-SF (MET-min/week)", color = "Data completness status") +
-  theme(axis.ticks.y = element_blank())
-```
-
-```{r EMAPS}
-ids_EMAPS_missing <- extract_missing_ids(data1 = db_EMAPS_init, data2 = db_EMAPS_final)
-db_EMAPS_init$na_status <- ifelse(db_EMAPS_init$patient %in% ids_EMAPS_missing, "Incomplete", "Complete")
-db_EMAPS_init$na_status <- factor(db_EMAPS_init$na_status, levels = c("Incomplete", "Complete"))
-p_EMAPS <-
-  ggplot(data = db_EMAPS_init |>  
-         dplyr::filter(MONTH == "0") |> 
-         tidyr::pivot_longer(
-           cols = c(INTRINSIC:AMOTIVATION), 
-           names_to = "type_motivation", 
-           values_to = "Score"
-           ) |> 
-         dplyr::mutate(type_motivation = factor(type_motivation, levels = c("INTRINSIC", "INTEGRATED", "IDENTIFIED", "INTROJECTED", "EXTERNAL", "AMOTIVATION"))), 
-       
-       aes(x = "", y = Score, color = na_status)) +
-  geom_boxplot(position = position_dodge(width = 0.75), width = 0.25, outlier.size = 0) +
-  geom_point(position = position_jitterdodge(jitter.width = 0.05, dodge.width = 0.75)) +
-  coord_flip() +
-  scale_color_manual(values = c("red", "blue"), guide = guide_legend(reverse = TRUE)) +
-  labs(title = "EMAPS", x = NULL, color = "Data completness status") +
-  theme(axis.ticks.y = element_blank()) +
-  facet_wrap(~ type_motivation)
-```
-# Physical characteristics
-## 6MWT
-```{r phys_char_missing_6mwt}
-INCLUSION_cleaned[INCLUSION_cleaned$patient %in% ids_6MWT_missing, ] |> 
-  skimr::skim() |> 
-  as.data.frame()
-```
-
-## IPAQ
-```{r phys_char_missing_ipaq}
-INCLUSION_cleaned[INCLUSION_cleaned$patient %in% ids_IPAQ_missing,] |> 
-  skimr::skim() |> 
-  as.data.frame()
-```
-
-## EMAPS
-```{r phys_char_missing_emaps}
-INCLUSION_cleaned[INCLUSION_cleaned$patient %in% ids_EMAPS_missing,] |> 
-  skimr::skim() |> 
-  as.data.frame()
-```
-
-
-# Six-min walking distance, IPAQ-SF MET-min/week, and EMAPS scores
-```{r whole_figure, fig.height = 7, out.width="100%", fig.width=20}
-p_6MWT + p_IPAQ + p_EMAPS +
-  plot_layout(guides = "collect") &
-  theme(legend.position = "bottom", axis.text = element_text(size = 15),
-        title = element_text(size = 15),
-        axis.title = element_text(size = 20),
-        legend.title = element_text(size = 20),
-        legend.text = element_text(size = 20),
-        strip.text = element_text(size = 15)
-        )
-```
 
