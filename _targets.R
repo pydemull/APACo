@@ -49,9 +49,13 @@ list(
   tar_target(t_test_results_6MWT, t_test_6MWT_0_12(DB_6MWT_0_12)),
   tar_target(change_6MWT, analyse_change_6MWT(DB_6MWT_0_12)),
 
+  # Analyse change in IPAQ MET-min/week between 60 and 12 months
+  tar_target(DB_IPAQ_0_12, get_DB_IPAQ_0_12(DB_IPAQ)),
+  tar_target(change_IPAQ_0_12, analyse_change_IPAQ(DB_IPAQ_0_12)),
+
   # Analyse change in IPAQ MET-min/week between 6 and 12 months
   tar_target(DB_IPAQ_6_12, get_DB_IPAQ_6_12(DB_IPAQ)),
-  tar_target(change_IPAQ, analyse_change_IPAQ(DB_IPAQ_6_12)),
+  tar_target(change_IPAQ_6_12, analyse_change_IPAQ(DB_IPAQ_6_12)),
 
   # Analyse change in EMAPS scores between 0 and 12 months
   tar_target(DB_EMAPS_0_12, get_DB_EMAPS_0_12(DB_EMAPS)),
@@ -125,19 +129,19 @@ tar_target(p_BARRIERS_BY_IPAQ_DECILE, {
   DB_IPAQ_6_12_wide <-
     DB_IPAQ_6_12 |>
     pivot_wider(names_from = MONTH, values_from = MET_MIN_WK) |>
-    mutate(change_IPAQ = `12` - `6`)
+    mutate(change_IPAQ_6_12 = `12` - `6`)
 
   # Get the deciles of the changes in MET_MIN_WK
-  deciles_change_IPAQ <- quantile(
-    x = DB_IPAQ_6_12_wide$change_IPAQ,
+  deciles_change_IPAQ_6_12 <- quantile(
+    x = DB_IPAQ_6_12_wide$change_IPAQ_6_12,
     probs = seq(0, 1, 0.1)
   )
 
   # Add decile categories to the initial dataset
   DB_IPAQ_6_12_wide$decile_change <-
     cut(
-      DB_IPAQ_6_12_wide$change_IPAQ,
-      deciles_change_IPAQ,
+      DB_IPAQ_6_12_wide$change_IPAQ_6_12,
+      deciles_change_IPAQ_6_12,
       include.lowest = T,
       labels = F
     )
@@ -181,7 +185,7 @@ tar_target(p_BARRIERS_BY_IPAQ_DECILE, {
 
   # Export figures 1, 2, and 3
   tar_target(fig1, save_figure("pipeline_output/fig1.tiff", change_6MWT$p, width = 21), format = "file"),
-  tar_target(fig2, save_figure("pipeline_output/fig2.tiff", change_IPAQ$p, scaling = 0.40, width = 21), format = "file"),
+  tar_target(fig2, save_figure("pipeline_output/fig2.tiff", change_IPAQ_6_12$p, scaling = 0.40, width = 21), format = "file"),
   tar_target(fig3, save_figure("pipeline_output/fig3.tiff", p_BARRIERS, scaling = 0.3, height = 5, width = 10), format = "file"),
 
   # Build report including main results
@@ -201,7 +205,10 @@ tar_target(p_BARRIERS_BY_IPAQ_DECILE, {
   tar_render(SM5, "SM5.Rmd", output_dir = "pipeline_output/"),
 
   # Build Supplemental Materials 6
-  tar_render(SM6, "SM6.Rmd", output_dir = "pipeline_output/")
+  tar_render(SM6, "SM6.Rmd", output_dir = "pipeline_output/"),
+
+  # Build Supplemental Materials 7
+  tar_render(SM7, "SM7.Rmd", output_dir = "pipeline_output/")
 
 )
 
