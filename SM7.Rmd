@@ -1,5 +1,5 @@
 ---
-title: "APA&Co project | Change in IPAQ MET-min/week between 0 and 12 months"
+title: 'APA&Co project | SM7. Characteristics of the participants with missing data at 12 months'
 output: 
   html_document:
     theme: cosmo
@@ -10,7 +10,6 @@ output:
     df_print: paged
     code_folding: hide
 toc-title: "Table of content"
-
 ---
 ```{css, echo=FALSE}
 .title {
@@ -46,70 +45,116 @@ pre code {
 ```
 
 ```{r setup, include=FALSE}
+# Set general settings
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
 ggplot2::theme_set(ggplot2::theme_bw())
-```
 
-
-# Change in IPAQ MET-min/week between 0 and 12 months
-## Descriptive statistics
-```{r}
-targets::tar_read(DB_IPAQ_0_12) |>
-  dplyr::select(-n_visits) |>  
-  dplyr::group_by(MONTH) |> 
-  skimr::skim()
-```
-
-## Estimate of the median of the individual changes
-```{r}
-tar_read(change_IPAQ)$hd_pbci_diff |> 
-  dplyr::filter(q == 0.5) |> 
-  dplyr::mutate(dplyr::across(estimate:ci_u, ~round(.x, digits = 2)))
-```
-
-## Shift and difference asymmetry functions
-```{r, fig.width=22, fig.height=16, fig.cap='Change in IPAQ-SF MET-min/week between 6 and 12 months (N = 77). On panel A, the errors bars over the points are the standard deviations around the means, while on panel D it is the percentile bootstrap 95% confidence interval around the median estimate. On panels E and F, the error bars are percentile bootstrap 95% confidence intervals non corrected for multiple comparisons. On panels B, C and D, the horizontal and/or vertical segments are the estimates of the deciles (panels B and C) or the quantiles (panel D, step of 0.05) of the distributions; the thickest segments are the median estimates. On panel B, the diagonal black line depicts the identity line. If any, significant results (based on adjusted p-values) in the shift (panel E) and difference asymmetry (panel F) functions are highlighted using thick red circles. A small pseudo-random movement has been added horizontally and vertically to the raw data displayed on panel B to minimize the presence of points fully overlapped. The estimates of the deciles of the marginal distributions (panels B, C and D), the quantiles of the individual differences (panel D), the decile differences (panel E) and the quantile sums (panel F) have been computed using the Harrell-Davis estimator.'}
-targets::tar_read(change_IPAQ)$p
-```
-
-# Change in EMAPS scores between 0 and 12 months
-## Descriptive statistics
-```{r}
-targets::tar_read(DB_EMAPS_0_12) |> 
-  dplyr::select(-n_visits) |>  
-  dplyr::group_by(MONTH) |> 
-  skimr::skim()
-```
-
-## Estimates of the medians of the individual changes
-```{r, results = "asis"}
-targets::tar_load(change_EMAPS)
-res <-
-  purrr::map(change_EMAPS, function(x) {
+# Define a function to extract the IDs of the participants with missing data at follow-up
+extract_missing_ids <- function(data1, data2, MONTH = "0") {
   
-  knitr::knit_child(text = c(
-                    
-                    "\n",
-                    "### `r x$variable`",
-                    "\n",
-                    "```{r, echo = FALSE}",
-                    "x$hd_pbci_diff |>  
-                     dplyr::filter(q == 0.5) |> 
-                     dplyr::mutate(dplyr::across(estimate:ci_u, ~round(.x, digits = 2)))",
-                    "```"
-  ),
-  envir = environment(),
-  quiet  = TRUE
-  )
-})
+ ids_init <- 
+  (data1 |> 
+     dplyr::filter(MONTH == MONTH) |>  
+     dplyr::mutate(patient = as.character(patient)) |>  
+     dplyr::select(patient)
+   )[[1]]
+ids_final <- 
+  (data2 |> 
+     dplyr::filter(MONTH == MONTH) |>  
+     dplyr::mutate(patient = as.character(patient)) |>  
+     dplyr::select(patient)
+   )[[1]]
+ids_missing <- setdiff(ids_init, ids_final)  
 
-cat(unlist(res), sep = "\n")
+return(ids_missing)
+}
+
+# Get data of interest
+INCLUSION_cleaned <- tar_read(INCLUSION_cleaned) |> dplyr::select(-DIST_6WT_M0)
+db_6MWT_init <- tar_read(DB_6MWT)
+db_6MWT_final <- tar_read(DB_6MWT_0_12)
+db_IPAQ_init <- tar_read(DB_IPAQ)
+db_IPAQ_final <- tar_read(DB_IPAQ_6_12)
+db_EMAPS_init <- tar_read(DB_EMAPS)
+db_EMAPS_final <- tar_read(DB_EMAPS_0_12)
 ```
 
+# Six-min walking test distance
+```{r phys_char_missing_6MWT}
+# Get IDs with missing data
+ids_6MWT_missing <- extract_missing_ids(data1 = db_6MWT_init, data2 = db_6MWT_final)
+db_6MWT_init$na_status <- ifelse(db_6MWT_init$patient %in% ids_6MWT_missing, "Incomplete", "Complete")
+db_6MWT_init$na_status <- factor(db_6MWT_init$na_status, levels = c("Incomplete", "Complete"))
 
-# Barriers to physical activity at 12 months
-```{r, fig.width=12, fig.height=8, fig.cap='Barriers to physical activity (N = 77). Answers have been translated from French to English for the reader’s understanding of the figure. The most frequently evocated barriers have been highlighted with darker colours.'}
-targets::tar_read(p_BARRIERS)
+# Show descriptive statistics
+INCLUSION_cleaned[INCLUSION_cleaned$patient %in% ids_6MWT_missing, ] |> 
+  skimr::skim() |> 
+  as.data.frame()
 ```
 
+```{r plot_6MWT, fig.align="center"}
+ggplot(data = db_6MWT_init |>  dplyr::filter(MONTH == "0"), aes(x = "", y = DIST_M, color = na_status)) +
+  geom_boxplot(position = position_dodge(width = 0.75), width = 0.25, outlier.size = 0) +
+  geom_point(position = position_jitterdodge(jitter.width = 0.05, dodge.width = 0.75)) +
+  coord_flip() +
+  scale_color_manual(values = c("red", "blue"), guide = guide_legend(reverse = TRUE)) +
+  labs(title = "6MWT", x = NULL, y = "6-min walking distance (m)", color = "Data completness status") +
+  theme(axis.ticks.y = element_blank())
+```
+
+## IPAQ-SF MET-min/week
+```{r phys_char_missing_IPAQ}
+# Get IDs with missing data
+ids_IPAQ_missing <- extract_missing_ids(data1 = db_IPAQ_init, data2 = db_IPAQ_final, MONTH = "6")
+db_IPAQ_init$na_status <- ifelse(db_IPAQ_init$patient %in% ids_IPAQ_missing, "Incomplete", "Complete")
+db_IPAQ_init$na_status <- factor(db_IPAQ_init$na_status, levels = c("Incomplete", "Complete"))
+
+# Show descriptive statistics
+INCLUSION_cleaned[INCLUSION_cleaned$patient %in% ids_IPAQ_missing,] |> 
+  skimr::skim() |> 
+  as.data.frame()
+```
+
+```{r plot_IPAQ, fig.align="center"}
+ggplot(data = db_IPAQ_init |>  dplyr::filter(MONTH == "0"), aes(x = "", y = MET_MIN_WK, color = na_status)) +
+  geom_boxplot(position = position_dodge(width = 0.75), width = 0.25, outlier.size = 0) +
+  geom_point(position = position_jitterdodge(jitter.width = 0.05, dodge.width = 0.75)) +
+  coord_flip() +
+  scale_color_manual(values = c("red", "blue"), guide = guide_legend(reverse = TRUE)) +
+  labs(title = "IPAQ-SF", x = NULL, y = "IPAQ-SF (MET-min/week)", color = "Data completness status") +
+  theme(axis.ticks.y = element_blank())
+```
+
+## EMAPS
+```{r phys_char_missing_EMAPS}
+# Get IDs with missing data
+ids_EMAPS_missing <- extract_missing_ids(data1 = db_EMAPS_init, data2 = db_EMAPS_final)
+db_EMAPS_init$na_status <- ifelse(db_EMAPS_init$patient %in% ids_EMAPS_missing, "Incomplete", "Complete")
+db_EMAPS_init$na_status <- factor(db_EMAPS_init$na_status, levels = c("Incomplete", "Complete"))
+
+# Show descriptive statistics
+INCLUSION_cleaned[INCLUSION_cleaned$patient %in% ids_EMAPS_missing,] |> 
+  skimr::skim() |> 
+  as.data.frame()
+```
+
+```{r plot_EMAPS, fig.align="center"}
+ggplot(data = db_EMAPS_init |>  
+         dplyr::filter(MONTH == "0") |> 
+         tidyr::pivot_longer(
+           cols = c(INTRINSIC:AMOTIVATION), 
+           names_to = "type_motivation", 
+           values_to = "Score"
+           ) |> 
+         dplyr::mutate(type_motivation = factor(type_motivation, levels = c("INTRINSIC", "INTEGRATED", "IDENTIFIED", "INTROJECTED", "EXTERNAL", "AMOTIVATION"))), 
+       
+       aes(x = "", y = Score, color = na_status)) +
+  geom_boxplot(position = position_dodge(width = 0.75), width = 0.25, outlier.size = 0) +
+  geom_point(position = position_jitterdodge(jitter.width = 0.05, dodge.width = 0.75)) +
+  coord_flip() +
+  scale_color_manual(values = c("red", "blue"), guide = guide_legend(reverse = TRUE)) +
+  labs(title = "EMAPS", x = NULL, color = "Data completness status") +
+  theme(axis.ticks.y = element_blank()) +
+  facet_wrap(~ type_motivation)
+```
 
