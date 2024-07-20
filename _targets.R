@@ -17,9 +17,9 @@ list(
   tar_target(BARRIERS, read_data("BARRIERS", "APACo")),
 
   # Prepare general datasets
-  tar_target(INCLUSION_cleaned, INCLUSION |> dplyr::mutate(dplyr::across(c(patient, sex, angioplasty, bypass), as.factor), BMI = weight / ((height / 100) ^ 2))),
-  tar_target(VISIT_6M_cleaned, VISIT_6M |> dplyr::mutate(patient = as.factor(patient))),
-  tar_target(VISIT_12M_cleaned, VISIT_12M |> dplyr::mutate(patient = as.factor(patient))),
+  tar_target(INCLUSION_cleaned, INCLUSION |> mutate(across(c(patient, sex, angioplasty, bypass), as.factor), BMI = weight / ((height / 100) ^ 2))),
+  tar_target(VISIT_6M_cleaned, VISIT_6M |> mutate(patient = as.factor(patient))),
+  tar_target(VISIT_12M_cleaned, VISIT_12M |> mutate(patient = as.factor(patient))),
   tar_target(DB_6MWT, get_DB_6MWT(INCLUSION_cleaned, VISIT_6M_cleaned, VISIT_12M_cleaned)),
   tar_target(DB_IPAQ, get_DB_IPAQ(IPAQ)),
   tar_target(DB_EMAPS, get_DB_EMAPS(EMAPS)),
@@ -29,10 +29,9 @@ list(
              BARRIERS[BARRIERS$patient == "32", "meteo_defavorable"] <- 0
 
              # Convert questionnaire variables to factors
-             BARRIERS <- BARRIERS |> dplyr::mutate(dplyr::across(patient:autres, as.factor))
+             BARRIERS <- BARRIERS |> mutate(across(patient:autres, as.factor))
          }
-  )
-  ,
+  ),
 
   # Perform descriptive analysis of the participants
   tar_target(analysis_INCLUSION, INCLUSION_cleaned |> skimr::skim()),
@@ -49,7 +48,7 @@ list(
   tar_target(t_test_results_6MWT, t_test_6MWT_0_12(DB_6MWT_0_12)),
   tar_target(change_6MWT, analyse_change_6MWT(DB_6MWT_0_12)),
 
-  # Analyse change in IPAQ MET-min/week between 60 and 12 months
+  # Analyse change in IPAQ MET-min/week between 0 and 12 months
   tar_target(DB_IPAQ_0_12, get_DB_IPAQ_0_12(DB_IPAQ)),
   tar_target(change_IPAQ_0_12, analyse_change_IPAQ(DB_IPAQ_0_12)),
 
@@ -61,34 +60,49 @@ list(
   tar_target(DB_EMAPS_0_12, get_DB_EMAPS_0_12(DB_EMAPS)),
   tar_target(change_EMAPS, analyse_change_EMAPS(DB_EMAPS_0_12)),
 
+  # Get a data frame with the changes in 6MWT distance in wide format
+  tar_target(DB_6MWT_0_12_wide, {
+    DB_6MWT_0_12 |>
+      pivot_wider(names_from = MONTH, values_from = DIST_M) |>
+      mutate(change_6MWT = `12` - `0`)
+  }),
+
+  # Get a data frame with the changes in IPAQ MET-min in wide format
+  tar_target(DB_IPAQ_6_12_wide, {
+    DB_IPAQ_6_12 |>
+    pivot_wider(names_from = MONTH, values_from = MET_MIN_WK) |>
+    mutate(change_IPAQ_6_12 = `12` - `6`)
+  }),
+
   # Analyse barriers to physical activities at 12 months
   tar_target(analysis_BARRIERS, BARRIERS_cleaned |> skimr::skim()),
   tar_target(p_BARRIERS, get_plot_BARRIERS(BARRIERS_cleaned)),
+
+  # Analyse barriers to physical activities at 12 months
+  # by 6MWT change (0-12 months) decile
   tar_target(p_BARRIERS_BY_6MWT_DECILE, {
 
-    # Get a data frame with the changes in 6MWT distance
-    DB_6MWT_0_12_wide <-
-      DB_6MWT_0_12 |>
-      pivot_wider(names_from = MONTH, values_from = DIST_M) |>
-      mutate(change_6MWT = `12` - `0`)
+    # Get data frame with the changes in 6MWT distance
+    df <- DB_6MWT_0_12_wide
 
     # Get the deciles of the changes in 6MWT distance
     deciles_change_6MWT <- quantile(
-      x = DB_6MWT_0_12_wide$change_6MWT,
+      x = df$change_6MWT,
       probs = seq(0, 1, 0.1)
     )
 
     # Add decile categories to the initial dataset
-    DB_6MWT_0_12_wide$decile_change <-
+    df$decile_change <-
       cut(
-        DB_6MWT_0_12_wide$change_6MWT,
+        df$change_6MWT,
         deciles_change_6MWT,
         include.lowest = T,
         labels = F
       )
 
-    # Plot positive response rate to PA barriers questionnaire by decile of 6MWT change
-    DB_6MWT_0_12_wide |>
+    # Plot positive response rate to PA barriers questionnaire
+    # by decile of 6MWT change
+    df |>
       left_join(BARRIERS_cleaned) |>
       select(-c(autres, autre_precision_obstacle)) |>
       pivot_longer(
@@ -117,71 +131,70 @@ list(
       filter(response == 1) |>
       ggplot(aes(x = decile_change, y = prop)) +
       geom_bar(stat = "identity") +
-      labs(x = "Decile of the change in 6MWT distance", y = "% of patients evocating the barrier to physical activity") +
+      labs(x = "Decile of the change in 6MWT distance",
+           y = "% of patients evocating the barrier to physical activity") +
       scale_y_continuous(limits = c(0, 100)) +
       scale_x_continuous(breaks = seq(1, 10, 1)) +
       facet_wrap( ~ barrier)
   }
   ),
-tar_target(p_BARRIERS_BY_IPAQ_DECILE, {
 
-  # Get a data frame with the changes in IPAQ MET-min
-  DB_IPAQ_6_12_wide <-
-    DB_IPAQ_6_12 |>
-    pivot_wider(names_from = MONTH, values_from = MET_MIN_WK) |>
-    mutate(change_IPAQ_6_12 = `12` - `6`)
+  # Analyse barriers to physical activities at 12 months
+  # by IPAQ change (6-12 months) decile
+  tar_target(p_BARRIERS_BY_IPAQ_DECILE, {
 
-  # Get the deciles of the changes in MET_MIN_WK
-  deciles_change_IPAQ_6_12 <- quantile(
-    x = DB_IPAQ_6_12_wide$change_IPAQ_6_12,
-    probs = seq(0, 1, 0.1)
-  )
+    # Get data frame
+    df <- DB_IPAQ_6_12_wide
 
-  # Add decile categories to the initial dataset
-  DB_IPAQ_6_12_wide$decile_change <-
-    cut(
-      DB_IPAQ_6_12_wide$change_IPAQ_6_12,
-      deciles_change_IPAQ_6_12,
-      include.lowest = T,
-      labels = F
-    )
+    # Get the deciles of the changes in MET_MIN_WK
+    deciles_change_IPAQ_6_12 <-
+      quantile(x = df$change_IPAQ_6_12, probs = seq(0, 1, 0.1))
 
-  # Plot response rate to PA barriers questionnaire by decile of MET_MIN_WK
-  DB_IPAQ_6_12_wide |>
-    left_join(BARRIERS_cleaned) |>
-    select(-c(autres, autre_precision_obstacle)) |>
-    pivot_longer(
-      cols = c(trop_vieux:isolement_faible_RS),
-      names_to = "barrier",
-      values_to = "response"
-    ) |>
-    mutate(
-      barrier = as.factor(barrier),
-      barrier = forcats::fct_recode(
-        barrier,
-        "Unfavourable weather" = "meteo_defavorable",
-        "Lack of time" = "manque_temps",
-        "Heavy effort / too tired" = "effort_import_fatig",
-        "Fear of injury / pain" = "crainte_blessures_douleurs",
-        "Lack of interest" = "manque_interet",
-        "Difficulty to move" = "deplacements_diff",
-        "Too old" = "trop_vieux",
-        "Social isolation / weak social network" = "isolement_faible_RS",
-        "Too costly" = "cout_trop_eleve"
+    # Add decile categories to the initial dataset
+    df$decile_change <-
+      cut(
+        df$change_IPAQ_6_12,
+        deciles_change_IPAQ_6_12,
+        include.lowest = T,
+        labels = F
       )
-    ) |>
-    count(decile_change, barrier, response, .drop = FALSE) |>
-    group_by(decile_change, barrier) |>
-    mutate(prop = n / sum(n) * 100) |>
-    filter(response == 1) |>
-    ggplot(aes(x = decile_change, y = prop)) +
-    geom_bar(stat = "identity") +
-    labs(x = "Decile of the change in IPAQ MET-min/week", y = "% of patients evocating the barrier to physical activity") +
-    scale_y_continuous(limits = c(0, 100)) +
-    scale_x_continuous(breaks = seq(1, 10, 1)) +
-    facet_wrap( ~ barrier)
-}
-),
+
+    # Plot response rate to PA barriers questionnaire by decile of MET_MIN_WK
+    df |>
+      left_join(BARRIERS_cleaned) |>
+      select(-c(autres, autre_precision_obstacle)) |>
+      pivot_longer(
+        cols = c(trop_vieux:isolement_faible_RS),
+        names_to = "barrier",
+        values_to = "response"
+      ) |>
+      mutate(
+        barrier = as.factor(barrier),
+        barrier = forcats::fct_recode(
+          barrier,
+          "Unfavourable weather" = "meteo_defavorable",
+          "Lack of time" = "manque_temps",
+          "Heavy effort / too tired" = "effort_import_fatig",
+          "Fear of injury / pain" = "crainte_blessures_douleurs",
+          "Lack of interest" = "manque_interet",
+          "Difficulty to move" = "deplacements_diff",
+          "Too old" = "trop_vieux",
+          "Social isolation / weak social network" = "isolement_faible_RS",
+          "Too costly" = "cout_trop_eleve"
+        )
+      ) |>
+      count(decile_change, barrier, response, .drop = FALSE) |>
+      group_by(decile_change, barrier) |>
+      mutate(prop = n / sum(n) * 100) |>
+      filter(response == 1) |>
+      ggplot(aes(x = decile_change, y = prop)) +
+      geom_bar(stat = "identity") +
+      labs(x = "Decile of the change in IPAQ MET-min/week", y = "% of patients evocating the barrier to physical activity") +
+      scale_y_continuous(limits = c(0, 100)) +
+      scale_x_continuous(breaks = seq(1, 10, 1)) +
+      facet_wrap(~ barrier)
+  }
+  ),
 
   # Export figures 1, 2, and 3
   tar_target(fig1, save_figure("pipeline_output/fig1.tiff", change_6MWT$p, width = 21), format = "file"),
