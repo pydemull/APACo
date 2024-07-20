@@ -61,18 +61,32 @@ list(
   tar_target(change_EMAPS, analyse_change_EMAPS(DB_EMAPS_0_12)),
 
   # Get a data frame with the changes in 6MWT distance in wide format
-  tar_target(DB_6MWT_0_12_wide, {
+  tar_target(DB_6MWT_0_12_wide,
     DB_6MWT_0_12 |>
       pivot_wider(names_from = MONTH, values_from = DIST_M) |>
-      mutate(change_6MWT = `12` - `0`)
-  }),
+      mutate(change_6MWT_0_12 = `12` - `0`)
+  ),
 
   # Get a data frame with the changes in IPAQ MET-min in wide format
-  tar_target(DB_IPAQ_6_12_wide, {
+  tar_target(DB_IPAQ_6_12_wide,
     DB_IPAQ_6_12 |>
     pivot_wider(names_from = MONTH, values_from = MET_MIN_WK) |>
     mutate(change_IPAQ_6_12 = `12` - `6`)
-  }),
+  ),
+
+  # Get a data frame with the changes in EMAPS scores in wide format
+  tar_target(DB_EMAPS_0_12_wide,
+    DB_EMAPS_0_12 |>
+      pivot_wider(names_from = MONTH, values_from = c(INTRINSIC:AMOTIVATION)) |>
+      mutate(
+        change_EMAPS_0_12_INTRINSIC = INTRINSIC_12 - INTRINSIC_0,
+        change_EMAPS_0_12_INTEGRATED = INTEGRATED_12 - INTEGRATED_0,
+        change_EMAPS_0_12_IDENTIFIED = IDENTIFIED_12 - IDENTIFIED_0,
+        change_EMAPS_0_12_INTROJECTED = INTROJECTED_12 - INTROJECTED_0,
+        change_EMAPS_0_12_EXTERNAL = EXTERNAL_12 - EXTERNAL_0,
+        change_EMAPS_0_12_AMOTIVATION = AMOTIVATION_12 - AMOTIVATION_0
+        )
+  ),
 
   # Analyse barriers to physical activities at 12 months
   tar_target(analysis_BARRIERS, BARRIERS_cleaned |> skimr::skim()),
@@ -87,14 +101,14 @@ list(
 
     # Get the deciles of the changes in 6MWT distance
     deciles_change_6MWT <- quantile(
-      x = df$change_6MWT,
+      x = df$change_6MWT_0_12,
       probs = seq(0, 1, 0.1)
     )
 
     # Add decile categories to the initial dataset
     df$decile_change <-
       cut(
-        df$change_6MWT,
+        df$change_6MWT_0_12,
         deciles_change_6MWT,
         include.lowest = T,
         labels = F
@@ -195,6 +209,14 @@ list(
       facet_wrap(~ barrier)
   }
   ),
+
+  # Get a data frame for PCA/clustering analysis
+  tar_target(DB_PCA,
+    INCLUSION_cleaned |>
+      left_join(DB_6MWT_0_12_wide |> select(patient, change_6MWT_0_12)) |>
+      left_join(DB_IPAQ_6_12_wide |> select(patient, change_IPAQ_6_12)) |>
+      left_join(DB_EMAPS_0_12_wide |> select(patient, change_EMAPS_0_12_INTRINSIC:change_EMAPS_0_12_AMOTIVATION))
+    ),
 
   # Export figures 1, 2, and 3
   tar_target(fig1, save_figure("pipeline_output/fig1.tiff", change_6MWT$p, width = 21), format = "file"),
