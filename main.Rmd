@@ -43,57 +43,64 @@ pre {
 pre code {
   white-space: inherit;
 }
+p {
+  font-size: 20px;
+}
 ```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+library(hopkins)
+library(performance)
 ggplot2::theme_set(ggplot2::theme_bw())
+tar_load(DB_EMAPS_0_12_M0_scaled)
+tar_load(DB_EMAPS_0_12_M12_scaled)
 ```
 
 # Descriptive analysis of the participants
 ## Overview
-```{r}
+```{r inclusion_analysis}
 targets::tar_read(analysis_INCLUSION)
 ```
 
 ## Sex (1 = men; 2 = women)
-```{r}
+```{r sex_analysis}
 targets::tar_read(analysis_sex)
 ```
 
 ## Age
-```{r}
+```{r age_analysis}
 targets::tar_read(analysis_age)
 ```
 
 ## Height
-```{r}
+```{r height_analysis}
 targets::tar_read(analysis_height)
 ```
 
 ## Weight
-```{r}
+```{r weight_analysis}
 targets::tar_read(analysis_weight)
 ```
 
 ## Body mass index
-```{r}
+```{r bmi_analysis}
 targets::tar_read(analysis_bmi)
 ```
 
 ## Angioplasty (0 = no angioplasty; 1 = with angioplasty)
-```{r}
+```{r angioplasty_analysis}
 targets::tar_read(analysis_angioplasty)[, c(1:2)]
 ```
 
 ## Bypass (0 = no bypass; 1 = with bypass)
-```{r}
+```{r bypass_analysis}
 targets::tar_read(analysis_bypass)[, c(1:2)]
 ```
 
 # Change in 6MWT distance between 0 and 12 months
 ## Descriptive statistics
-```{r}
+```{r 6MWT_desc_stats}
 targets::tar_read(DB_6MWT_0_12) |> 
   dplyr::select(-n_visits) |>   
   dplyr::group_by(MONTH) |> 
@@ -101,12 +108,12 @@ targets::tar_read(DB_6MWT_0_12) |>
 ```
 
 ## T-test
-```{r}
+```{r 6MWT_ttest}
 targets::tar_read(t_test_results_6MWT)
 ```
 
 ## Pearson correlation
-```{r}
+```{r 6MWT_corr}
 # Rearrange data
 data_6MWT <- 
   targets::tar_read(DB_6MWT_0_12) |> 
@@ -117,7 +124,7 @@ cor.test(data_6MWT$`0`, data_6MWT$`12`)
 ```
 
 ## Effect size (dav)
-```{r}
+```{r 6MWT_dav}
 mean_diff <- mean(data_6MWT$`12` - data_6MWT$`0`)
 sd1 <- sd(data_6MWT$`0`)
 sd2 <- sd(data_6MWT$`12`)
@@ -126,20 +133,20 @@ round(dav, 2)
 ```
 
 ## Estimate of the median of the individual changes
-```{r}
+```{r 6MWT_median_change}
 tar_read(change_6MWT)$hd_pbci_diff |> 
   dplyr::filter(q == 0.5)  |> 
   dplyr::mutate(dplyr::across(estimate:ci_u, ~round(.x, digits = 2)))
 ```
 
 ## Shift and difference asymmetry functions
-```{r, fig.width=20, fig.height=16, fig.cap='Change in 6-min walking test (6MWT) distance between 0 and 12 months (N = 75). On panel A, the errors bars over the points are the standard deviations around the means, while on panel D it is the percentile bootstrap 95% confidence interval around the median estimate. On panels E and F, the error bars are percentile bootstrap 95% confidence intervals non corrected for multiple comparisons. On panels B, C and D, the horizontal and/or vertical segments are the estimates of the deciles (panels B and C) or the quantiles (panel D, step of 0.05) of the distributions; the thickest segments are the median estimates. On panel B, the diagonal black line depicts the identity line. If any, significant results (based on adjusted p-values) in the shift (panel E) and difference asymmetry (panel F) functions are highlighted using thick red circles. A small pseudo-random movement has been added horizontally and vertically to the raw data displayed on panel B to minimize the presence of points fully overlapped. The estimates of the deciles of the marginal distributions (panels B, C and D), the quantiles of the individual differences (panel D), the decile differences (panel E) and the quantile sums (panel F) have been computed using the Harrell-Davis estimator.'}
+```{r 6MWT_shift_function, fig.width=20, fig.height=16, fig.cap='Change in 6-min walking test (6MWT) distance between 0 and 12 months (N = 75). On panel A, the errors bars over the points are the standard deviations around the means, while on panel D it is the percentile bootstrap 95% confidence interval around the median estimate. On panels E and F, the error bars are percentile bootstrap 95% confidence intervals non corrected for multiple comparisons. On panels B, C and D, the horizontal and/or vertical segments are the estimates of the deciles (panels B and C) or the quantiles (panel D, step of 0.05) of the distributions; the thickest segments are the median estimates. On panel B, the diagonal black line depicts the identity line. If any, significant results (based on adjusted p-values) in the shift (panel E) and difference asymmetry (panel F) functions are highlighted using thick red circles. A small pseudo-random movement has been added horizontally and vertically to the raw data displayed on panel B to minimize the presence of points fully overlapped. The estimates of the deciles of the marginal distributions (panels B, C and D), the quantiles of the individual differences (panel D), the decile differences (panel E) and the quantile sums (panel F) have been computed using the Harrell-Davis estimator.'}
 targets::tar_read(change_6MWT)$p
 ```
 
 # Change in IPAQ MET-min/week between 6 and 12 months
 ## Descriptive statistics
-```{r}
+```{r IPAQ_desc_stats}
 targets::tar_read(DB_IPAQ_6_12) |>
   dplyr::select(-n_visits) |>  
   dplyr::group_by(MONTH) |> 
@@ -147,20 +154,20 @@ targets::tar_read(DB_IPAQ_6_12) |>
 ```
 
 ## Estimate of the median of the individual changes
-```{r}
+```{r IPAQ_median_change}
 tar_read(change_IPAQ_6_12)$hd_pbci_diff |> 
   dplyr::filter(q == 0.5) |> 
   dplyr::mutate(dplyr::across(estimate:ci_u, ~round(.x, digits = 2)))
 ```
 
 ## Shift and difference asymmetry functions
-```{r, fig.width=22, fig.height=16, fig.cap='Change in IPAQ-SF MET-min/week between 6 and 12 months (N = 77). On panel A, the errors bars over the points are the standard deviations around the means, while on panel D it is the percentile bootstrap 95% confidence interval around the median estimate. On panels E and F, the error bars are percentile bootstrap 95% confidence intervals non corrected for multiple comparisons. On panels B, C and D, the horizontal and/or vertical segments are the estimates of the deciles (panels B and C) or the quantiles (panel D, step of 0.05) of the distributions; the thickest segments are the median estimates. On panel B, the diagonal black line depicts the identity line. If any, significant results (based on adjusted p-values) in the shift (panel E) and difference asymmetry (panel F) functions are highlighted using thick red circles. A small pseudo-random movement has been added horizontally and vertically to the raw data displayed on panel B to minimize the presence of points fully overlapped. The estimates of the deciles of the marginal distributions (panels B, C and D), the quantiles of the individual differences (panel D), the decile differences (panel E) and the quantile sums (panel F) have been computed using the Harrell-Davis estimator.'}
+```{r IPAQ_shift_function, fig.width=22, fig.height=16, fig.cap='Change in IPAQ-SF MET-min/week between 6 and 12 months (N = 77). On panel A, the errors bars over the points are the standard deviations around the means, while on panel D it is the percentile bootstrap 95% confidence interval around the median estimate. On panels E and F, the error bars are percentile bootstrap 95% confidence intervals non corrected for multiple comparisons. On panels B, C and D, the horizontal and/or vertical segments are the estimates of the deciles (panels B and C) or the quantiles (panel D, step of 0.05) of the distributions; the thickest segments are the median estimates. On panel B, the diagonal black line depicts the identity line. If any, significant results (based on adjusted p-values) in the shift (panel E) and difference asymmetry (panel F) functions are highlighted using thick red circles. A small pseudo-random movement has been added horizontally and vertically to the raw data displayed on panel B to minimize the presence of points fully overlapped. The estimates of the deciles of the marginal distributions (panels B, C and D), the quantiles of the individual differences (panel D), the decile differences (panel E) and the quantile sums (panel F) have been computed using the Harrell-Davis estimator.'}
 targets::tar_read(change_IPAQ_6_12)$p
 ```
 
 # Change in EMAPS scores between 0 and 12 months
 ## Descriptive statistics
-```{r}
+```{r emaps_desc_stats}
 targets::tar_read(DB_EMAPS_0_12) |> 
   dplyr::select(-n_visits) |>  
   dplyr::group_by(MONTH) |> 
@@ -168,7 +175,7 @@ targets::tar_read(DB_EMAPS_0_12) |>
 ```
 
 ## Estimates of the medians of the individual changes
-```{r, results = "asis"}
+```{r emaps_median_change, results = "asis"}
 targets::tar_load(change_EMAPS)
 res <-
   purrr::map(change_EMAPS, function(x) {
@@ -192,6 +199,121 @@ res <-
 cat(unlist(res), sep = "\n")
 ```
 
+# Change in profile of motivation for physical activity
+## Assess cluster tendency
+### Graphically inspect data using principal component analysis
+```{r inspect_data_with_pca}
+targets::tar_read(p_pca)
+```
+
+### Confirm cluser tendency using graphical method
+```{r assess_cluster_tendency_viz, fig.cap="Red: high similarity (ie: low dissimilarity) | Blue: low similarity"}
+targets::tar_read(cluster_tendency)
+```
+
+### Confirm cluser tendency using the Hopkins statistic
+#### Hopkins statistic for the dataset at month 0
+```{r assess_cluster_tendency_stat_m0}
+set.seed(123)
+hopkins(DB_EMAPS_0_12_M0_scaled)
+```
+
+Comment: Data seem clustered (Hopkins statistic >0.7).
+
+#### Hopkins statistic for the dataset at month 12
+```{r assess_cluster_tendency_stat_m12}
+set.seed(123)
+hopkins(DB_EMAPS_0_12_M12_scaled)
+```
+
+Comment: Data seem clustered (Hopkins statistic >0.7).
+
+## Check outliers relating to a multivariate setting
+### Month 0
+```{r check_outliers_m0}
+check_outliers(DB_EMAPS_0_12_M0_scaled, method = "mcd")
+```
+
+### Month 12
+```{r check_outliers_m12}
+check_outliers(DB_EMAPS_0_12_M12_scaled[, c(names(DB_EMAPS_0_12_M12_scaled)[1:5])], method = "mcd") 
+# removed AMOTIVATION variable that caused an error due to an IQR of 0.
+```
+
+## Determine the optimal number of clusters for K-Medoid approach using the silhouette method
+```{r, get_optimal_clusters_number_emaps}
+targets::tar_read(optim_n_clusters)
+```
+
+Comment : The optimal number of clusters related to the K-Medoid approach is 2 at both 0 and 12 months post-program (according to the silhouette method).
+
+## Visualize the final clusters using K-Medoid approach
+```{r get_final_clusters_emaps}
+targets::tar_read(final_clusters_emaps_viz)
+```
+
+## Visualize the EMAPS descriptive statistics related the motivation profiles (clusters)
+```{r viz_clusters, fig.width=15}
+targets::tar_read(p_emaps_clust)
+```
+
+```{r show_desc_stats_by_cluster_emaps_tab, rows.print=14}
+targets::tar_read(table_stats_clusters_emaps)
+```
+
+## Compare motivation profiles
+### Comparison at Month 0
+#### Global analysis
+```{r, nonpartest_global_month0}
+targets::tar_read(nonpartest_global_month0)
+```
+
+#### Localisation of the difference(s)
+```{r, nonpartest_local_month0}
+ssnonpartest(IDENTIFIED | INTROJECTED | EXTERNAL | AMOTIVATION ~ cluster, data = tar_read(DB_EMAPS_0_12_clust) |> filter(MONTH == "0"), test = c(1, 0, 0, 0), alpha = 0.05, factors.and.variables = TRUE)
+```
+
+### Comparison at Month 12
+#### Global analysis
+```{r, nonpartest_global_month12}
+targets::tar_read(nonpartest_global_month12)
+```
+
+#### Localisation of the difference(s)
+```{r, nonpartest_local_month12}
+ssnonpartest(IDENTIFIED | INTROJECTED | EXTERNAL | AMOTIVATION ~ cluster, data = tar_read(DB_EMAPS_0_12_clust) |> filter(MONTH == "12"), test = c(1, 0, 0, 0), alpha = 0.05, factors.and.variables = TRUE)
+```
+
+## Characterize the change in motivation profile
+### Visualize the change in motivation profile
+```{r, change_emaps_profile_alluvial}
+targets::tar_read(change_emaps_profile_alluvial)
+```
+
+### Visualize the EMAPS score deltas depending on the cluster transition
+```{r, p_DB_EMAPS_0_12_diffs}
+targets::tar_read(p_DB_EMAPS_0_12_diffs)
+```
+
+### Compare the EMAPS scores between month 0 and month 12 for participants who stayed in the 'Very High AU-High C' cluster
+```{r, compa_intra_clust_VHAUHC}
+targets::tar_read(compa_intra_clust_VHAUHC)
+```
+
+### Compare the EMAPS scores between month 0 and month 12 for participants who stayed in the 'High AU-Mod C' cluster
+```{r, compa_intra_clust_HAUMODC}
+targets::tar_read(compa_intra_clust_HAUMODC)
+```
+
+### Compare the EMAPS scores between month 0 and month 12 for participants who transited from the 'Very High AU-Mod C' to the 'High AU-Mod C' cluster
+```{r, compa_intra_clust_VHAUHC_to_HAUMODC}
+targets::tar_read(compa_intra_clust_VHAUHC_to_HAUMODC)
+```
+
+### Compare the EMAPS scores between month 0 and month 12 for participants who transited from the 'High AU-Mod C' to the 'Very High AU-High C' cluster
+```{r, compa_intra_clust_HAUMODCto_VHAUHC}
+targets::tar_read(compa_intra_clust_HAUMODCto_VHAUHC)
+```
 
 # Barriers to physical activity at 12 months
 ```{r, fig.width=12, fig.height=8, fig.cap='Barriers to physical activity (N = 77). Answers have been translated from French to English for the reader’s understanding of the figure. The most frequently evocated barriers have been highlighted with darker colours.'}
