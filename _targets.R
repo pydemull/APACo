@@ -12,8 +12,8 @@ tar_option_set(
     "ggalluvial",
     "ggplot2",
     "factoextra",
-    "FactoMineR",
     "Hmisc",
+    "lcmm",
     "npmv",
     "tidyr",
     "patchwork",
@@ -293,8 +293,8 @@ list(
                 color = "Cluster",
                 shape = "Cluster"
               ) +
-              theme(legend.position = "bottom") +
-              facet_grid(MONTH ~ cluster, switch = "y")
+              theme(legend.position = "right", axis.text.x = element_text(angle = 45, hjust = 1)) +
+              facet_grid(cluster ~ MONTH, switch = "y")
           ),
 
         ## Get a table with the descriptive statistics of the clusters ----
@@ -368,9 +368,11 @@ list(
                   ### Group comparison at Month 0: detection of a global difference
                   tar_target(nonpartest_global_month0,
                   nonpartest(
-                    IDENTIFIED |
+                      INTRINSIC   |
+                      INTEGRATED  |
+                      IDENTIFIED  |
                       INTROJECTED |
-                      EXTERNAL |
+                      EXTERNAL    |
                       AMOTIVATION ~ cluster,
                     data = DB_EMAPS_0_12_clust |> filter(MONTH == "0"),
                     permreps = 1000,
@@ -381,9 +383,11 @@ list(
                   tar_target(
                     nonpartest_local_month0,
                     ssnonpartest(
-                      IDENTIFIED |
+                        INTRINSIC   |
+                        INTEGRATED  |
+                        IDENTIFIED  |
                         INTROJECTED |
-                        EXTERNAL |
+                        EXTERNAL    |
                         AMOTIVATION ~ cluster,
                       data = DB_EMAPS_0_12_clust |> filter(MONTH == "0"),
                       test = c(1, 0, 0, 0),
@@ -394,9 +398,11 @@ list(
                   ### Group comparison at Month 12: detection of a global difference
                   tar_target(nonpartest_global_month12,
                              nonpartest(
-                               IDENTIFIED |
+                                 INTRINSIC   |
+                                 INTEGRATED  |
+                                 IDENTIFIED  |
                                  INTROJECTED |
-                                 EXTERNAL |
+                                 EXTERNAL    |
                                  AMOTIVATION ~ cluster,
                                data = DB_EMAPS_0_12_clust |> filter(MONTH == "12"),
                                permreps = 1000,
@@ -407,9 +413,11 @@ list(
                   tar_target(
                     nonpartest_local_month12,
                     ssnonpartest(
-                      IDENTIFIED |
+                        INTRINSIC   |
+                        INTEGRATED  |
+                        IDENTIFIED  |
                         INTROJECTED |
-                        EXTERNAL |
+                        EXTERNAL    |
                         AMOTIVATION ~ cluster,
                       data = DB_EMAPS_0_12_clust |> filter(MONTH == "12"),
                       test = c(1, 0, 0, 0),
@@ -421,7 +429,7 @@ list(
       ## Explore the change in motivational profile ----
 
           ### Build an alluvial plot to see the proportion of profile changes
-          tar_target(change_emaps_profile_alluvial, {
+          tar_target(p_change_emaps_profile_alluvial, {
             DB_EMAPS_0_12_clust_piv |>
               group_by(MONTH, patient) |>
               slice(1) |>
@@ -442,7 +450,7 @@ list(
               )) +
               geom_flow() +
               geom_stratum(alpha = .5, linewidth = 0.6, fill = "grey90") +
-              geom_text(stat = "stratum", size = 3,
+              geom_text(stat = "stratum", size = 4,
                         aes(label = percent(after_stat(prop), accuracy = .1))) +
               scale_fill_manual(
                 values = c("#7570B3", "#E7298A")
@@ -450,15 +458,15 @@ list(
               scale_color_manual(
                 values = c("#7570B3", "#E7298A")
               ) +
-              coord_cartesian(xlim = c(1.43, 1.57), ylim = c(0, 75)) +
+              scale_y_continuous(breaks = seq(0, 75, 25), expand = expansion(0)) +
+              coord_cartesian(xlim = c(1.43, 1.57), ylim = c(0, 76)) +
               theme_bw() +
               theme(
-                panel.grid = element_blank(), axis.ticks = element_blank(),
-                axis.text.y = element_blank(),
-                panel.background = element_rect(color = NA)
+                panel.grid = element_blank(),
+                panel.background = element_rect(color = NA),
+                panel.border = element_blank()
               ) +
-              labs(x = "Months post-rehabilitation", y = "Number of participants", fill = "Cluster", color = "Cluster") +
-              scale_y_continuous(breaks = seq(1, 7, 1), expand = expansion(0))
+              labs(x = "Months post-rehabilitation", y = "Number of participants", fill = "Cluster", color = "Cluster")
           }),
 
           ### Build a data frame with the EMAPS scores deltas associated to the different scenarios ----
@@ -481,6 +489,49 @@ list(
                          )
                        )
           ),
+
+            ### Compute the proportions of patients per profile transition scenarios ----
+            tar_target(prop_trans_prof_motiv,
+                       questionr::freq(DB_EMAPS_0_12_diffs$clus_trans) |>
+                         tibble::rownames_to_column("clust_trans") |>
+                         mutate(n_tot = sum(n)) |>
+                         group_by(n) |>
+                         mutate(
+                           prop_estimate = purrr::map2_dbl(n, n_tot, function(n, n_tot) {
+                             ((
+                               binom.test(
+                                 n,
+                                 n_tot,
+                                 0.5,
+                                 alternative = "two.sided",
+                                 conf.level = 0.95
+                               )
+                             )$estimate[[1]]) * 100
+                           }),
+                           prop_ci_low = purrr::map2_dbl(n, n_tot, function(n, n_tot) {
+                             ((
+                               binom.test(
+                                 n,
+                                 n_tot,
+                                 0.5,
+                                 alternative = "two.sided",
+                                 conf.level = 0.95
+                               )
+                             )$conf.int[[1]]) * 100
+                           }),
+                           prop_ci_up = purrr::map2_dbl(n, n_tot, function(n, n_tot) {
+                             ((
+                               binom.test(
+                                 n,
+                                 n_tot,
+                                 0.5,
+                                 alternative = "two.sided",
+                                 conf.level = 0.95
+                               )
+                             )$conf.int[[2]]) * 100
+                           })
+                         )
+                       ),
 
             ### Build a plot with the EMAPS scores deltas associated to the different scenarios ----
             ### (same/different cluster between month 0 and month 12) ----
@@ -524,9 +575,11 @@ list(
               #### Intra-cluster comparison for Very High AU-High C
               set.seed(123)
               nonpartest(
-                IDENTIFIED |
+                  INTRINSIC   |
+                  INTEGRATED  |
+                  IDENTIFIED  |
                   INTROJECTED |
-                  EXTERNAL |
+                  EXTERNAL    |
                   AMOTIVATION ~ MONTH,
                 data = DB_EMAPS_0_12[DB_EMAPS_0_12$patient %in% id_parts_VHAUHC_0_12, ],
                 permreps = 1000,
@@ -547,9 +600,11 @@ list(
               ##### Intra-cluster comparison for High AU-Mod C
               set.seed(123)
               nonpartest(
-                IDENTIFIED |
+                  INTRINSIC   |
+                  INTEGRATED  |
+                  IDENTIFIED  |
                   INTROJECTED |
-                  EXTERNAL |
+                  EXTERNAL    |
                   AMOTIVATION ~ MONTH,
                 data = DB_EMAPS_0_12[DB_EMAPS_0_12$patient %in% id_parts_HAUMODC_0_12, ],
                 permreps = 1000,
@@ -611,247 +666,618 @@ list(
 
   ),
 
-
-  # Get a data frame with the changes in 6MWT distance in wide format ----
-  tar_target(DB_6MWT_0_12_wide,
-    DB_6MWT_0_12 |>
-      pivot_wider(names_from = MONTH, values_from = DIST_M) |>
-      mutate(change_6MWT_0_12 = `12` - `0`)
-  ),
-
-  # Get a data frame with the changes in IPAQ MET-min in wide format ----
-  tar_target(DB_IPAQ_6_12_wide,
-    DB_IPAQ_6_12 |>
-    pivot_wider(names_from = MONTH, values_from = MET_MIN_WK) |>
-    mutate(change_IPAQ_6_12 = `12` - `6`)
-  ),
-
-  # Get a data frame with the changes in EMAPS scores in wide format ----
-  tar_target(DB_EMAPS_0_12_wide,
-    DB_EMAPS_0_12 |>
-      pivot_wider(names_from = MONTH, values_from = c(INTRINSIC:AMOTIVATION)) |>
-      mutate(
-        change_EMAPS_0_12_INTRINSIC = INTRINSIC_12 - INTRINSIC_0,
-        change_EMAPS_0_12_INTEGRATED = INTEGRATED_12 - INTEGRATED_0,
-        change_EMAPS_0_12_IDENTIFIED = IDENTIFIED_12 - IDENTIFIED_0,
-        change_EMAPS_0_12_INTROJECTED = INTROJECTED_12 - INTROJECTED_0,
-        change_EMAPS_0_12_EXTERNAL = EXTERNAL_12 - EXTERNAL_0,
-        change_EMAPS_0_12_AMOTIVATION = AMOTIVATION_12 - AMOTIVATION_0
-        )
-  ),
-
-
-
-
   # Analyse barriers to physical activities at 12 months ----
   tar_target(analysis_BARRIERS, BARRIERS_cleaned |> skimr::skim()),
   tar_target(p_BARRIERS, get_plot_BARRIERS(BARRIERS_cleaned)),
 
-  # Analyse barriers to physical activities at 12 months ----
-  # by 6MWT change (0-12 months) decile ----
-  tar_target(p_BARRIERS_BY_6MWT_DECILE, {
 
-    ## Get data frame with the changes in 6MWT distance
-    df <- DB_6MWT_0_12_wide
+  # Latent class mixed modeling to analyse the type of change in 6MWT distance ----
 
-    ## Get the deciles of the changes in 6MWT distance
-    deciles_change_6MWT <- quantile(
-      x = df$change_6MWT_0_12,
-      probs = seq(0, 1, 0.1)
+  ## Get an appropriate data frame for analysing predictors of the changes in ----
+  ## exercise capacity ----
+  tar_target(
+    DB_PRED_6MWT_0_12,
+    DB_6MWT_0_12 |>
+      rename(DIST_6MWT = DIST_M) |>
+      left_join(
+        DB_IPAQ_0_12 |>
+          filter(MONTH == "0") |>
+          rename(MET_MIN_WK_M0 = MET_MIN_WK) |>
+          select(patient, MET_MIN_WK_M0)
+      ) |>
+      left_join(
+        DB_EMAPS_0_12_clust |>
+          filter(MONTH == "0") |>
+          rename(MOTIVATION_CLUSTER_M0 = cluster) |>
+          select(patient, MOTIVATION_CLUSTER_M0)
+      ) |>
+      left_join(INCLUSION_cleaned |> rename(DIST_6MWT_M0 = DIST_6WT_M0)) |>
+      left_join(BARRIERS_cleaned |> select(patient:isolement_faible_RS)) |>
+      select(
+        patient,
+        MONTH,
+        sex,
+        age,
+        angioplasty,
+        bypass,
+        BMI,
+        DIST_6MWT_M0,
+        MET_MIN_WK_M0,
+        MOTIVATION_CLUSTER_M0,
+        c(trop_vieux:isolement_faible_RS),
+        DIST_6MWT
+      ) |>
+      mutate(
+        patient = as.integer(patient),
+        MONTH = as.numeric(as.character(MONTH)),
+        MOTIVATION_CLUSTER_M0 = as.factor(MOTIVATION_CLUSTER_M0)
+      ) |>
+      as.data.frame()
+  ),
+
+  ## Estimate model 1a: MONTH + random intercept ----
+  tar_target(
+    model_6MWT_1a,
+    hlme(
+      fixed = DIST_6MWT ~ MONTH,
+      random = ~ 1,
+      subject = "patient",
+      var.time = "MONTH",
+      data = DB_PRED_6MWT_0_12,
+      ng = 1
+    )
+  ),
+
+  ## Estimate model 1b: model 1a + MONTH * 6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0 ----
+  tar_target(
+    model_6MWT_1b,
+    hlme(
+      fixed = DIST_6MWT ~ MONTH * DIST_6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0,
+      random = ~ 1,
+      subject = "patient",
+      var.time = "MONTH",
+      data = DB_PRED_6MWT_0_12,
+      ng = 1
+    )
+  ),
+
+  ## Estimate model 1c: MONTH * 6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0 + sex + age ----
+  tar_target(
+    model_6MWT_1c,
+    hlme(
+      fixed = DIST_6MWT ~ MONTH * DIST_6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0 + sex + age,
+      random = ~ 1,
+      subject = "patient",
+      var.time = "MONTH",
+      data = DB_PRED_6MWT_0_12,
+      ng = 1
+    )
+  ),
+
+  ## Estimate model 1d: model 1c + meteo_defavorable + manque_temps ----
+  tar_target(
+    model_6MWT_1d,
+    hlme(
+      fixed = DIST_6MWT ~ MONTH * DIST_6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0 +
+        sex + age + meteo_defavorable + manque_temps,
+      random = ~ 1,
+      subject = "patient",
+      var.time = "MONTH",
+      data = DB_PRED_6MWT_0_12,
+      ng = 1
+    )
+  ),
+
+  ## Compare simple mixed models ----
+  tar_target(
+    compa_simple_mixed_models_6MWT,
+    summarytable(
+      model_6MWT_1a,
+      model_6MWT_1b,
+      model_6MWT_1c,
+      model_6MWT_1d,
+      which = c("AIC", "BIC")
+    )
+  ),
+
+  ## Estimate model 1e: model 1b + random slope for MONTH ----
+  tar_target(
+    model_6MWT_1e,
+    hlme(
+      fixed = DIST_6MWT ~ MONTH * DIST_6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0,
+      random = ~ MONTH,
+      subject = "patient",
+      var.time = "MONTH",
+      data = DB_PRED_6MWT_0_12,
+      ng = 1
+    )
+  ),
+
+  ## Estimate model 2a: model 1b + 2 classes ----
+  tar_target(model_6MWT_2a, {
+    set.seed(123)
+    gridsearch(
+      hlme(
+        fixed = DIST_6MWT ~ MONTH * DIST_6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0,
+        random = ~ 1,
+        subject = "patient",
+        var.time = "MONTH",
+        data = DB_PRED_6MWT_0_12,
+        ng = 2,
+        mixture = ~ MONTH
+      ),
+      rep = 100,
+      maxiter = 30,
+      minit = model_6MWT_1b
+    )
+  }),
+
+  ## Estimate model 2b: model 1b + 3 classes ----
+  tar_target(model_6MWT_2b, {
+    set.seed(123)
+    gridsearch(
+      hlme(
+        fixed = DIST_6MWT ~ MONTH * DIST_6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0,
+        random = ~ 1,
+        subject = "patient",
+        var.time = "MONTH",
+        data = DB_PRED_6MWT_0_12,
+        ng = 3,
+        mixture = ~ MONTH
+      ),
+      rep = 100,
+      maxiter = 30,
+      minit = model_6MWT_1b
+    )
+  }),
+
+  ## Estimate model 2c: model 1b + 4 classes ----
+  tar_target(model_6MWT_2c, {
+    set.seed(123)
+    gridsearch(
+      hlme(
+        fixed = DIST_6MWT ~ MONTH * DIST_6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0,
+        random = ~ 1,
+        subject = "patient",
+        var.time = "MONTH",
+        data = DB_PRED_6MWT_0_12,
+        ng = 4,
+        mixture = ~ MONTH
+      ),
+      rep = 100,
+      maxiter = 30,
+      minit = model_6MWT_1b
+    )
+  }),
+
+  ## Estimate model 2d: model 1b + 5 classes ----
+  tar_target(model_6MWT_2d, {
+    set.seed(123)
+    gridsearch(
+      hlme(
+        fixed = DIST_6MWT ~ MONTH * DIST_6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0,
+        random = ~ 1,
+        subject = "patient",
+        var.time = "MONTH",
+        data = DB_PRED_6MWT_0_12,
+        ng = 5,
+        mixture = ~ MONTH
+      ),
+      rep = 100,
+      maxiter = 30,
+      minit = model_6MWT_1b
+    )
+  }),
+
+  ## Compare latent class mixed models ----
+  tar_target(
+    compa_latent_mixed_models_table_6MWT,
+    summarytable(
+      model_6MWT_1b,
+      model_6MWT_2a,
+      model_6MWT_2b,
+      model_6MWT_2c,
+      model_6MWT_2d,
+      which = c("AIC", "BIC", "entropy", "%class")
+    )
+  ),
+
+  ## Reorder the latent classes of the chosen model ----
+  tar_target(model_6MWT_2d_permut, {
+
+    # For unknown reasons, we had to explicitly assign the DB_PRED_6MWT_0_12
+    # object to the parent environment of the function so that the permut() function works
+    assign("DB_PRED_6MWT_0_12", DB_PRED_6MWT_0_12, env = parent.frame())
+    permut(model_6MWT_2d, order = c(1,5,2,3,4))
+  }),
+  # Now the order is the following:
+  # Class1 = group with clear decrease
+  # Class2 = group with slight decrease
+  # Class3 = group with clear change
+  # Class4 = group with slight increase
+  # Class5 = group with clear increase
+
+  ## Make a plot with the predicted trajectories for 6MWT distance ----
+  tar_target(plot_preds_6MWT, {
+
+    # Compute predictions for MONTH effect per latent class
+    newdat_6MWT <-
+      (predictY(
+        model_6MWT_2d_permut,
+        DB_PRED_6MWT_0_12,
+        var.time = "MONTH",
+        draws = TRUE
+      )[1]) |>
+      as.data.frame() |>
+      mutate(MONTH = rep(c(0, 12), 74)) |>
+      group_by(MONTH) |>
+      summarise(across(everything(), mean)) |>
+      pivot_longer(
+        cols = c(everything(), -MONTH),
+        names_to = c("lines", "class"),
+        names_pattern = "(.*)_(.*)",
+        values_to = "pred"
+      ) |>
+      pivot_wider(names_from = lines, values_from = pred)
+
+     # Rename classes
+     newdat_6MWT$class <- factor(newdat_6MWT$class,
+                                 labels = c("Class 1", "Class 2", "Class 3", "Class 4", "Class 5")
+                                 )
+
+      # Make plot
+      ggplot() +
+        geom_line(data = DB_PRED_6MWT_0_12 |>
+                    inner_join(model_6MWT_2d_permut$pprob) |>
+                    mutate(
+                      class = as.factor(paste0("class", class)),
+                      class = forcats::fct_recode(class,
+                                                  "Class 1" = "class1",
+                                                  "Class 2" = "class2",
+                                                  "Class 3" = "class3",
+                                                  "Class 4" = "class4",
+                                                  "Class 5" = "class5"
+                      )
+                    ),
+                  aes(x = MONTH, y = DIST_6MWT, group = patient, linetype = "Individual trajectories"), color = "grey", alpha = 0.5) +
+      geom_ribbon(data = newdat_6MWT,
+                    aes(x = MONTH, ymin = pred.lower.Ypred, ymax = pred.upper.Ypred,
+                        fill = class, group = class), alpha = 0.3) +
+      geom_line(data = newdat_6MWT,
+                aes(x = MONTH, y = pred.Ypred, color = class, group = class)) +
+        scale_x_continuous(breaks = seq(0, 12, 12)) +
+        facet_wrap(~ class) +
+        labs(x = "Months post-program",
+             y = "Six-min walking test distance (m)",
+             color = "Predictions [95% CI]",
+             fill = "Predictions [95% CI]",
+             linetype = "Raw data"
+             ) +
+        theme_bw() +
+        theme(
+          panel.grid = element_blank()
+          )
+  }),
+
+  ## Get predictors of the latent classes ----
+  tar_target(
+    predictors_6MWT_classes,
+    externVar(
+      model = model_6MWT_2d_permut,
+      classmb = ~  DIST_6MWT_M0 + MET_MIN_WK_M0 + MOTIVATION_CLUSTER_M0 + meteo_defavorable,
+      subject = "patient",
+      data = DB_PRED_6MWT_0_12,
+      method = "twoStageJoint"
+    )
+  ),
+
+
+  # Latent class mixed modeling to analyse the type of change in IPAQ MET-min/wk ----
+
+  # Get an appropriate data frame for analysing predictors of the changes in ----
+  # physical activity ----
+  tar_target(
+    DB_PRED_IPAQ_6_12,
+    DB_IPAQ_6_12 |>
+      left_join(
+        DB_IPAQ_0_12 |>
+          filter(MONTH == "0") |>
+          rename(MET_MIN_WK_M0 = MET_MIN_WK) |>
+          select(patient, MET_MIN_WK_M0)
+      ) |>
+      left_join(
+        DB_EMAPS_0_12_clust |>
+          filter(MONTH == "0") |>
+          rename(MOTIVATION_CLUSTER_M0 = cluster) |>
+          select(patient, MOTIVATION_CLUSTER_M0)
+      ) |>
+      left_join(INCLUSION_cleaned |> rename(DIST_6MWT_M0 = DIST_6WT_M0)) |>
+      left_join(BARRIERS_cleaned |> select(patient:isolement_faible_RS)) |>
+      select(
+        patient,
+        MONTH,
+        sex,
+        age,
+        angioplasty,
+        bypass,
+        BMI,
+        DIST_6MWT_M0,
+        MET_MIN_WK_M0,
+        MOTIVATION_CLUSTER_M0,
+        c(trop_vieux:isolement_faible_RS),
+        MET_MIN_WK
+      ) |>
+      mutate(
+        patient = as.integer(patient),
+        MONTH = as.numeric(as.character(MONTH)),
+        MOTIVATION_CLUSTER_M0 = as.factor(MOTIVATION_CLUSTER_M0)
+      ) |>
+      as.data.frame()
+  ),
+
+  ## Estimate model 1a: MONTH + random intercept ----
+  tar_target(
+    model_IPAQ_1a,
+    hlme(
+      fixed = MET_MIN_WK ~ MONTH,
+      random = ~ 1,
+      subject = "patient",
+      var.time = "MONTH",
+      data = DB_PRED_IPAQ_6_12,
+      ng = 1
+    )
+  ),
+
+  ## Estimate model 1b: model 1a + MONTH * 6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0 ----
+  tar_target(
+    model_IPAQ_1b,
+    hlme(
+      fixed = MET_MIN_WK ~ MONTH * DIST_6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0,
+      random = ~ 1,
+      subject = "patient",
+      var.time = "MONTH",
+      data = DB_PRED_IPAQ_6_12,
+      ng = 1
+    )
+  ),
+
+  ## Estimate model 1c: MONTH * 6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0 + sex + age ----
+  tar_target(
+    model_IPAQ_1c,
+    hlme(
+      fixed = MET_MIN_WK ~ MONTH * DIST_6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0 + sex + age,
+      random = ~ 1,
+      subject = "patient",
+      var.time = "MONTH",
+      data = DB_PRED_IPAQ_6_12,
+      ng = 1
+    )
+  ),
+
+  ## Estimate model 1d: model 1c + meteo_defavorable + manque_temps ----
+  tar_target(
+    model_IPAQ_1d,
+    hlme(
+      fixed = MET_MIN_WK ~ MONTH * DIST_6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0 +
+        sex + age + meteo_defavorable + manque_temps,
+      random = ~ 1,
+      subject = "patient",
+      var.time = "MONTH",
+      data = DB_PRED_IPAQ_6_12,
+      ng = 1
+    )
+  ),
+
+  ## Compare simple mixed models ----
+  tar_target(
+    compa_simple_mixed_models_IPAQ,
+    summarytable(
+      model_IPAQ_1a,
+      model_IPAQ_1b,
+      model_IPAQ_1c,
+      model_IPAQ_1d,
+      which = c("AIC", "BIC")
+    )
+  ),
+
+  ## Estimate model 1e: model 1b + random slope for MONTH ----
+  tar_target(
+    model_IPAQ_1e,
+    hlme(
+      fixed = MET_MIN_WK ~ MONTH * DIST_6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0,
+      random = ~ MONTH,
+      subject = "patient",
+      var.time = "MONTH",
+      data = DB_PRED_IPAQ_6_12,
+      ng = 1
+    )
+  ),
+
+  ## Compare random intercept and random slope mixed models ----
+  tar_target(
+    compa_rand_mixed_models_IPAQ,
+    summarytable(
+      model_IPAQ_1b,
+      model_IPAQ_1e,
+      which = c("AIC", "BIC")
+    )
+  ),
+
+  ## Estimate model 2a: model 1b + 2 classes ----
+  tar_target(model_IPAQ_2a, {
+    set.seed(123)
+    gridsearch(
+      hlme(
+        fixed = MET_MIN_WK ~ MONTH * DIST_6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0,
+        random = ~ 1,
+        subject = "patient",
+        var.time = "MONTH",
+        data = DB_PRED_IPAQ_6_12,
+        ng = 2,
+        mixture = ~ MONTH
+      ),
+      rep = 100,
+      maxiter = 30,
+      minit = model_IPAQ_1b
+    )
+  }),
+
+  ## Estimate model 2b: model 1b + 3 classes ----
+  tar_target(model_IPAQ_2b, {
+    set.seed(123)
+    gridsearch(
+      hlme(
+        fixed = MET_MIN_WK ~ MONTH * DIST_6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0,
+        random = ~ 1,
+        subject = "patient",
+        var.time = "MONTH",
+        data = DB_PRED_IPAQ_6_12,
+        ng = 3,
+        mixture = ~ MONTH
+      ),
+      rep = 100,
+      maxiter = 30,
+      minit = model_IPAQ_1b
+    )
+  }),
+
+  ## Estimate model 2c: model 1b + 4 classes ----
+  tar_target(model_IPAQ_2c, {
+    set.seed(123)
+    gridsearch(
+      hlme(
+        fixed = MET_MIN_WK ~ MONTH * DIST_6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0,
+        random = ~ 1,
+        subject = "patient",
+        var.time = "MONTH",
+        data = DB_PRED_IPAQ_6_12,
+        ng = 4,
+        mixture = ~ MONTH
+      ),
+      rep = 100,
+      maxiter = 30,
+      minit = model_IPAQ_1b
+    )
+  }),
+
+  ## Estimate model 2d: model 1b + 5 classes ----
+  tar_target(model_IPAQ_2d, {
+    set.seed(123)
+    gridsearch(
+      hlme(
+        fixed = MET_MIN_WK ~ MONTH * DIST_6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0,
+        random = ~ 1,
+        subject = "patient",
+        var.time = "MONTH",
+        data = DB_PRED_IPAQ_6_12,
+        ng = 5,
+        mixture = ~ MONTH
+      ),
+      rep = 100,
+      maxiter = 30,
+      minit = model_IPAQ_1b
+    )
+  }),
+
+  ## Compare latent class mixed models ----
+  tar_target(
+    compa_latent_mixed_models_table_IPAQ,
+    summarytable(
+      model_IPAQ_1b,
+      model_IPAQ_2a,
+      model_IPAQ_2b,
+      model_IPAQ_2c,
+      model_IPAQ_2d,
+      which = c("AIC", "BIC", "entropy", "%class")
+    )
+  ),
+
+  ## Make a plot with the predicted trajectories for 6MWT distance ----
+  tar_target(plot_preds_IPAQ, {
+
+    # Compute predictions for MONTH effect per latent class
+    newdat_IPAQ <-
+      (predictY(
+        model_IPAQ_2a,
+        DB_PRED_IPAQ_6_12,
+        var.time = "MONTH",
+        draws = TRUE
+      )[1]) |>
+      as.data.frame() |>
+      mutate(MONTH = rep(c(6, 12), 76)) |>
+      group_by(MONTH) |>
+      summarise(across(everything(), mean)) |>
+      pivot_longer(
+        cols = c(everything(), -MONTH),
+        names_to = c("lines", "class"),
+        names_pattern = "(.*)_(.*)",
+        values_to = "pred"
+      ) |>
+      pivot_wider(names_from = lines, values_from = pred)
+
+    # Rename classes
+    newdat_IPAQ$class <- factor(newdat_IPAQ$class,
+                                labels = c("Class 1", "Class 2")
     )
 
-    ## Add decile categories to the initial dataset
-    df$decile_change <-
-      cut(
-        df$change_6MWT_0_12,
-        deciles_change_6MWT,
-        include.lowest = T,
-        labels = F
+    # Make plot
+    ggplot() +
+      geom_line(data = DB_PRED_IPAQ_6_12 |>
+                  inner_join(model_IPAQ_2a$pprob) |>
+                  mutate(
+                    class = as.factor(paste0("class", class)),
+                    class = forcats::fct_recode(class,
+                                                "Class 1" = "class1",
+                                                "Class 2" = "class2"
+                    )
+                  ),
+                aes(x = MONTH, y = MET_MIN_WK, group = patient, linetype = "Individual trajectories"), color = "grey", alpha = 0.5) +
+      geom_ribbon(data = newdat_IPAQ,
+                  aes(x = MONTH, ymin = pred.lower.Ypred, ymax = pred.upper.Ypred,
+                      fill = class, group = class), alpha = 0.3) +
+      geom_line(data = newdat_IPAQ,
+                aes(x = MONTH, y = pred.Ypred, color = class, group = class)) +
+      scale_x_continuous(breaks = seq(6, 12, 6)) +
+      facet_wrap(~ class) +
+      labs(x = "Months post-program",
+           y = "IPAQ MET-min/week",
+           color = "Predictions [95% CI]",
+           fill = "Predictions [95% CI]",
+           linetype = "Raw data",
+           ) +
+    theme_bw() +
+      theme(
+        panel.grid = element_blank()
       )
+  }),
 
-    ## Plot positive response rate to PA barriers questionnaire
-    ## by decile of 6MWT change
-    df |>
-      left_join(BARRIERS_cleaned) |>
-      select(-c(autres, autre_precision_obstacle)) |>
-      pivot_longer(
-        cols = c(trop_vieux:isolement_faible_RS),
-        names_to = "barrier",
-        values_to = "response"
-      ) |>
-      mutate(
-        barrier = as.factor(barrier),
-        barrier = forcats::fct_recode(
-          barrier,
-          "Unfavourable weather" = "meteo_defavorable",
-          "Lack of time" = "manque_temps",
-          "Heavy effort / too tired" = "effort_import_fatig",
-          "Fear of injury / pain" = "crainte_blessures_douleurs",
-          "Lack of interest" = "manque_interet",
-          "Difficulty to move" = "deplacements_diff",
-          "Too old" = "trop_vieux",
-          "Social isolation / weak social network" = "isolement_faible_RS",
-          "Too costly" = "cout_trop_eleve"
-        )
-      ) |>
-      count(decile_change, barrier, response, .drop = FALSE) |>
-      group_by(decile_change, barrier) |>
-      mutate(prop = n / sum(n) * 100) |>
-      filter(response == 1) |>
-      ggplot(aes(x = decile_change, y = prop)) +
-      geom_bar(stat = "identity") +
-      labs(x = "Decile of the change in 6MWT distance",
-           y = "% of patients evocating the barrier to physical activity") +
-      scale_y_continuous(limits = c(0, 100)) +
-      scale_x_continuous(breaks = seq(1, 10, 1)) +
-      facet_wrap( ~ barrier)
-  }
+  ## Get predictors of the latent classes ----
+  tar_target(
+    predictors_IPAQ_classes,
+    externVar(
+      model = model_IPAQ_2a,
+      classmb = ~  DIST_6MWT_M0 + MET_MIN_WK_M0 + MOTIVATION_CLUSTER_M0 + meteo_defavorable,
+      subject = "patient",
+      data = DB_PRED_IPAQ_6_12,
+      method = "twoStageJoint"
+    )
   ),
 
-  # Analyse barriers to physical activities at 12 months ----
-  # by IPAQ change (6-12 months) decile ----
-  tar_target(p_BARRIERS_BY_IPAQ_DECILE, {
-
-    ## Get data frame
-    df <- DB_IPAQ_6_12_wide
-
-    ## Get the deciles of the changes in MET_MIN_WK
-    deciles_change_IPAQ_6_12 <-
-      quantile(x = df$change_IPAQ_6_12, probs = seq(0, 1, 0.1))
-
-    ## Add decile categories to the initial dataset
-    df$decile_change <-
-      cut(
-        df$change_IPAQ_6_12,
-        deciles_change_IPAQ_6_12,
-        include.lowest = T,
-        labels = F
-      )
-
-    ## Plot response rate to PA barriers questionnaire by decile of MET_MIN_WK
-    df |>
-      left_join(BARRIERS_cleaned) |>
-      select(-c(autres, autre_precision_obstacle)) |>
-      pivot_longer(
-        cols = c(trop_vieux:isolement_faible_RS),
-        names_to = "barrier",
-        values_to = "response"
-      ) |>
-      mutate(
-        barrier = as.factor(barrier),
-        barrier = forcats::fct_recode(
-          barrier,
-          "Unfavourable weather" = "meteo_defavorable",
-          "Lack of time" = "manque_temps",
-          "Heavy effort / too tired" = "effort_import_fatig",
-          "Fear of injury / pain" = "crainte_blessures_douleurs",
-          "Lack of interest" = "manque_interet",
-          "Difficulty to move" = "deplacements_diff",
-          "Too old" = "trop_vieux",
-          "Social isolation / weak social network" = "isolement_faible_RS",
-          "Too costly" = "cout_trop_eleve"
-        )
-      ) |>
-      count(decile_change, barrier, response, .drop = FALSE) |>
-      group_by(decile_change, barrier) |>
-      mutate(prop = n / sum(n) * 100) |>
-      filter(response == 1) |>
-      ggplot(aes(x = decile_change, y = prop)) +
-      geom_bar(stat = "identity") +
-      labs(x = "Decile of the change in IPAQ MET-min/week", y = "% of patients evocating the barrier to physical activity") +
-      scale_y_continuous(limits = c(0, 100)) +
-      scale_x_continuous(breaks = seq(1, 10, 1)) +
-      facet_wrap(~ barrier)
-  }
-  ),
-
-  # Get an appropriate data frame  for analysing predictors of the changes in ----
-  # exercise capacity and physical activity ----
-  tar_target(DB_ALL_VARS,
-    INCLUSION_cleaned |>
-      left_join(
-        DB_IPAQ |>
-          filter(MONTH == 6) |>
-          rename(MET_MIN_WK_M6 = MET_MIN_WK) |>
-          select(patient, MET_MIN_WK_M6, -MONTH)
-      ) |>
-      left_join(
-        DB_EMAPS |>
-          ungroup() |>
-          filter(MONTH == 0) |>
-          select(patient, INTRINSIC:AMOTIVATION, -MONTH) |>
-          rename_at(
-            vars(
-              "INTRINSIC",
-              "INTEGRATED",
-              "IDENTIFIED",
-              "INTROJECTED",
-              "EXTERNAL",
-              "AMOTIVATION"
-            ),
-            ~ paste0(
-              c(
-                "INTRINSIC",
-                "INTEGRATED",
-                "IDENTIFIED",
-                "INTROJECTED",
-                "EXTERNAL",
-                "AMOTIVATION"
-              ),
-              "_M0"
-            )
-          )
-      ) |>
-      left_join(
-        DB_EMAPS |>
-          ungroup() |>
-          filter(MONTH == 12) |>
-          select(patient, INTRINSIC:AMOTIVATION, -MONTH) |>
-          rename_at(
-            vars(
-              "INTRINSIC",
-              "INTEGRATED",
-              "IDENTIFIED",
-              "INTROJECTED",
-              "EXTERNAL",
-              "AMOTIVATION"
-            ),
-            ~ paste0(
-              c(
-                "INTRINSIC",
-                "INTEGRATED",
-                "IDENTIFIED",
-                "INTROJECTED",
-                "EXTERNAL",
-                "AMOTIVATION"
-              ),
-              "_M12"
-            )
-          )
-      ) |>
-      left_join(DB_6MWT_0_12_wide |> select(patient, change_6MWT_0_12)) |>
-      left_join(DB_IPAQ_6_12_wide |> select(patient, change_IPAQ_6_12)) |>
-      left_join(DB_EMAPS_0_12_wide |> select(patient, change_EMAPS_0_12_INTRINSIC:change_EMAPS_0_12_AMOTIVATION)
-      ) |>
-      left_join(BARRIERS_cleaned |> select(patient:isolement_faible_RS)) |>
-      select(patient:bypass, BMI, everything()) |>
-      rename(
-        "Unfavourable weather" = meteo_defavorable,
-        "Lack of time" = manque_temps,
-        "Heavy effort / too tired" = effort_import_fatig,
-        "Fear of injury / pain" = crainte_blessures_douleurs,
-        "Lack of interest" = manque_interet,
-        "Difficulty to move" = deplacements_diff,
-        "Too old" = trop_vieux,
-        "Social isolation / weak social network" = isolement_faible_RS,
-        "Too costly" = cout_trop_eleve
-      )
-    ),
-
-  # Export figures 1, 2, and 3 ----
+  # Export figures ----
   tar_target(fig1, save_figure("pipeline_output/fig1.tiff", change_6MWT$p, width = 21), format = "file"),
   tar_target(fig2, save_figure("pipeline_output/fig2.tiff", change_IPAQ_6_12$p, scaling = 0.40, width = 21), format = "file"),
-  tar_target(fig3, save_figure("pipeline_output/fig3.tiff", p_BARRIERS, scaling = 0.3, height = 5, width = 10), format = "file"),
+  tar_target(fig3, save_figure("pipeline_output/fig3.tiff",
+                               p_emaps_clust / p_change_emaps_profile_alluvial +
+                                 plot_layout(heights = c(3, 2)) +
+                                 plot_annotation(tag_levels = 'A'),
+                               scaling = 1, height = 20, width = 20), format = "file"
+  ),tar_target(fig4, save_figure("pipeline_output/fig4.tiff", p_BARRIERS, scaling = 0.3, height = 5, width = 10), format = "file"),
+
+  tar_target(fig5, save_figure("pipeline_output/fig5.tiff", (plot_preds_6MWT / plot_preds_IPAQ) +
+                                 plot_layout(heights = c(2, 1)) +
+                                 plot_annotation(tag_levels = 'A'),
+               scaling = 0.7, height = 15, width = 15), format = "file"
+),
 
   # Build report including main results ----
   tar_render(main, "main.Rmd", output_dir = "pipeline_output/"),

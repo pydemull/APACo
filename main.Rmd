@@ -4,7 +4,7 @@ output:
   html_document:
     theme: cosmo
     toc: yes
-    toc_depth: 2
+    toc_depth: 5
     toc_float: yes
     number_sections: yes
     df_print: paged
@@ -228,7 +228,7 @@ hopkins(DB_EMAPS_0_12_M12_scaled)
 
 Comment: Data seem clustered (Hopkins statistic >0.7).
 
-## Check outliers relating to a multivariate setting
+## Check outliers related to a multivariate analysis
 ### Month 0
 ```{r check_outliers_m0}
 check_outliers(DB_EMAPS_0_12_M0_scaled, method = "mcd")
@@ -240,20 +240,20 @@ check_outliers(DB_EMAPS_0_12_M12_scaled[, c(names(DB_EMAPS_0_12_M12_scaled)[1:5]
 # removed AMOTIVATION variable that caused an error due to an IQR of 0.
 ```
 
-## Determine the optimal number of clusters for K-Medoid approach using the silhouette method
-```{r, get_optimal_clusters_number_emaps}
+## Determine the optimal number of clusters related to a K-Medoid approach using the silhouette method
+```{r get_optimal_clusters_number_emaps}
 targets::tar_read(optim_n_clusters)
 ```
 
-Comment : The optimal number of clusters related to the K-Medoid approach is 2 at both 0 and 12 months post-program (according to the silhouette method).
+Comment: The optimal number of clusters related to the K-Medoid approach is 2 at both 0 and 12 months post-program (according to the silhouette method).
 
 ## Visualize the final clusters using K-Medoid approach
 ```{r get_final_clusters_emaps}
 targets::tar_read(final_clusters_emaps_viz)
 ```
 
-## Visualize the EMAPS descriptive statistics related the motivation profiles (clusters)
-```{r viz_clusters, fig.width=15}
+## Visualize the descriptive statistics of the EMAPS scores related the motivation profiles (clusters)
+```{r viz_clusters, fig.width=15, fig.cap = "AU = Autonomous; C = Controlled"}
 targets::tar_read(p_emaps_clust)
 ```
 
@@ -264,60 +264,323 @@ targets::tar_read(table_stats_clusters_emaps)
 ## Compare motivation profiles
 ### Comparison at Month 0
 #### Global analysis
-```{r, nonpartest_global_month0}
+```{r nonpartest_global_month0}
 targets::tar_read(nonpartest_global_month0)
 ```
 
 #### Localisation of the difference(s)
-```{r, nonpartest_local_month0}
-ssnonpartest(IDENTIFIED | INTROJECTED | EXTERNAL | AMOTIVATION ~ cluster, data = tar_read(DB_EMAPS_0_12_clust) |> filter(MONTH == "0"), test = c(1, 0, 0, 0), alpha = 0.05, factors.and.variables = TRUE)
+```{r nonpartest_local_month0}
+ssnonpartest(INTRINSIC | INTEGRATED | IDENTIFIED | INTROJECTED | EXTERNAL | AMOTIVATION ~ cluster, data = tar_read(DB_EMAPS_0_12_clust) |> filter(MONTH == "0"), test = c(1, 0, 0, 0), alpha = 0.05, factors.and.variables = TRUE)
 ```
 
 ### Comparison at Month 12
 #### Global analysis
-```{r, nonpartest_global_month12}
+```{r nonpartest_global_month12}
 targets::tar_read(nonpartest_global_month12)
 ```
 
 #### Localisation of the difference(s)
-```{r, nonpartest_local_month12}
-ssnonpartest(IDENTIFIED | INTROJECTED | EXTERNAL | AMOTIVATION ~ cluster, data = tar_read(DB_EMAPS_0_12_clust) |> filter(MONTH == "12"), test = c(1, 0, 0, 0), alpha = 0.05, factors.and.variables = TRUE)
+```{r nonpartest_local_month12}
+ssnonpartest(INTRINSIC | INTEGRATED | IDENTIFIED | INTROJECTED | EXTERNAL | AMOTIVATION ~ cluster, data = tar_read(DB_EMAPS_0_12_clust) |> filter(MONTH == "12"), test = c(1, 0, 0, 0), alpha = 0.05, factors.and.variables = TRUE)
 ```
 
 ## Characterize the change in motivation profile
 ### Visualize the change in motivation profile
-```{r, change_emaps_profile_alluvial}
-targets::tar_read(change_emaps_profile_alluvial)
+```{r change_emaps_profile_alluvial}
+targets::tar_read(p_change_emaps_profile_alluvial)
+```
+
+### Compute the proportions of patients per profile transition scenarios
+```{r prop_trans_prof_motiv}
+tar_read(prop_trans_prof_motiv)
 ```
 
 ### Visualize the EMAPS score deltas depending on the cluster transition
-```{r, p_DB_EMAPS_0_12_diffs}
+```{r p_DB_EMAPS_0_12_diffs}
 targets::tar_read(p_DB_EMAPS_0_12_diffs)
 ```
 
 ### Compare the EMAPS scores between month 0 and month 12 for participants who stayed in the 'Very High AU-High C' cluster
-```{r, compa_intra_clust_VHAUHC}
+```{r compa_intra_clust_VHAUHC}
 targets::tar_read(compa_intra_clust_VHAUHC)
 ```
 
 ### Compare the EMAPS scores between month 0 and month 12 for participants who stayed in the 'High AU-Mod C' cluster
-```{r, compa_intra_clust_HAUMODC}
+```{r compa_intra_clust_HAUMODC}
 targets::tar_read(compa_intra_clust_HAUMODC)
 ```
 
 ### Compare the EMAPS scores between month 0 and month 12 for participants who transited from the 'Very High AU-Mod C' to the 'High AU-Mod C' cluster
-```{r, compa_intra_clust_VHAUHC_to_HAUMODC}
+```{r compa_intra_clust_VHAUHC_to_HAUMODC}
 targets::tar_read(compa_intra_clust_VHAUHC_to_HAUMODC)
 ```
 
 ### Compare the EMAPS scores between month 0 and month 12 for participants who transited from the 'High AU-Mod C' to the 'Very High AU-High C' cluster
-```{r, compa_intra_clust_HAUMODCto_VHAUHC}
+```{r compa_intra_clust_HAUMODCto_VHAUHC}
 targets::tar_read(compa_intra_clust_HAUMODCto_VHAUHC)
 ```
 
 # Barriers to physical activity at 12 months
-```{r, fig.width=12, fig.height=8, fig.cap='Barriers to physical activity (N = 77). Answers have been translated from French to English for the reader’s understanding of the figure. The most frequently evocated barriers have been highlighted with darker colours.'}
+```{r fig.width=12, fig.height=8, fig.cap='Barriers to physical activity (N = 77). Answers have been translated from French to English for the reader’s understanding of the figure. The most frequently evocated barriers have been highlighted with darker colours.'}
 targets::tar_read(p_BARRIERS)
 ```
 
+# Predict 6WT distance trajectory using latent class analysis
+## Choose the best mixed model with a random intercept for further anaysis
+### Build the models
+```{r load_simple_mixed_models_6MWT}
+# Load the model summarises
+tar_load(model_6MWT_1a)
+tar_load(model_6MWT_1b)
+tar_load(model_6MWT_1c)
+tar_load(model_6MWT_1d)
+```
 
+#### Model 1a: MONTH + random intercept
+```{r}
+summary(model_6MWT_1a)
+```
+
+#### Model 1b: model 1a + MONTH * 6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0
+```{r}
+summary(model_6MWT_1b)
+```
+
+#### Model 1c: MONTH * 6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0 + sex + age
+```{r}
+summary(model_6MWT_1c)
+```
+
+#### Model 1d: model 1c + meteo_defavorable (unfavourable weather) + manque_temps (lack of time)
+```{r}
+summary(model_6MWT_1d)
+```
+
+### Compare the models
+```{r compare_simple_mixed_models_6MWT}
+tar_read(compa_simple_mixed_models_6MWT)
+```
+
+Comment: The model 1b, based on its AIC and BIC, is retained for further analysis.
+
+## Compare the random-intercept and the random-slope mixed models
+### Model 1e: model 1b + random slope for MONTH
+```{r random_slope_mixed_model_6MWT}
+# Load the model
+tar_load(model_6MWT_1e)
+
+# Model summary
+summary(model_6MWT_1e)
+```
+
+Comment: No p value can be provided when adding a random slope term to the initial model (the model did not converge). The initial model 1b with only a random intercept is kept for further analysis
+
+## Choose the best latent class mixed model for further anaysis
+### Build the models
+```{r load_latent_class_models_6MWT}
+tar_load(model_6MWT_2a)
+tar_load(model_6MWT_2b)
+tar_load(model_6MWT_2c)
+tar_load(model_6MWT_2d)
+```
+
+#### Model 2a: model 1b + 2 classes
+```{r}
+summary(model_6MWT_2a)
+```
+
+####  Model 2b: model 1b + 3 classes
+```{r}
+summary(model_6MWT_2b)
+```
+####  Model 2c: model 1b + 4 classes
+```{r}
+summary(model_6MWT_2c)
+```
+####  Model 2d: model 1b + 5 classes
+```{r}
+summary(model_6MWT_2d)
+```
+
+### Compare the models
+#### Analyse the metrics of the models
+```{r compare_latent_mixed_models_6MWT}
+tar_read(compa_latent_mixed_models_table_6MWT)
+lcmm::summaryplot(
+  model_6MWT_1b,
+  model_6MWT_2a,
+  model_6MWT_2b,
+  model_6MWT_2c,
+  model_6MWT_2d,
+  which = c("AIC", "BIC", "entropy")
+)
+```
+
+#### Posterior classification of the models
+##### Model 2a
+```{r}
+lcmm::postprob(model_6MWT_2a)
+```
+##### Model 2b
+```{r}
+lcmm::postprob(model_6MWT_2b)
+```
+
+##### Model 2c
+```{r}
+lcmm::postprob(model_6MWT_2c)
+```
+##### Model 2d
+```{r}
+lcmm::postprob(model_6MWT_2d)
+```
+
+Comment: Based on the metrics shown above, the model with 5 classes seems the most appropriate model.
+
+### Assess the chosen model
+```{r plot_model_6MWT_2d_resids}
+plot(model_6MWT_2d)
+```
+
+### Visualize the model
+```{r plot_preds_6MWT}
+tar_read(plot_preds_6MWT)
+```
+
+## Analyse the predictors of the latent classes of the model
+```{r predictors_6MWT_classes}
+tar_load(predictors_6MWT_classes)
+summary(predictors_6MWT_classes)
+```
+
+# Predict IPAQ MET-min/week  trajectory using latent class analysis
+## Choose the best mixed model with a random intercept for further anaysis
+### Build the models
+```{r load_simple_mixed_models_IPAQ}
+# Load the model summarises
+tar_load(model_IPAQ_1a)
+tar_load(model_IPAQ_1b)
+tar_load(model_IPAQ_1c)
+tar_load(model_IPAQ_1d)
+```
+
+#### Model 1a: MONTH + random intercept
+```{r}
+summary(model_IPAQ_1a)
+```
+
+#### Model 1b: model 1a + MONTH * 6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0
+```{r}
+summary(model_IPAQ_1b)
+```
+
+#### Model 1c: MONTH * 6MWT_M0 + MONTH * MET_MIN_WK_M0 + MONTH * MOTIVATION_CLUSTER_M0 + sex + age
+```{r}
+summary(model_IPAQ_1c)
+```
+
+#### Model 1d: model 1c + meteo_defavorable (unfavourable weather) + manque_temps (lack of time)
+```{r}
+summary(model_IPAQ_1d)
+```
+
+### Compare the models
+```{r compare_simple_mixed_models_IPAQ}
+tar_read(compa_simple_mixed_models_IPAQ)
+```
+
+Comment: The model 1b, based on its AIC and BIC, is retained for further analysis.
+
+## Compare the random-intercept and the random-slope mixed models
+### Model 1e: model 1b + random slope for MONTH
+```{r random_slope_mixed_model_IPAQ}
+# Load the model
+tar_load(model_IPAQ_1e)
+
+# Model summary
+summary(model_IPAQ_1e)
+
+# Compare models 1b and 1e
+tar_read(compa_rand_mixed_models_IPAQ)
+```
+
+Comment: The addition of random slope for MONTH does not add a lot of value. The simplest model is then chosen: model 1b.
+
+
+## Choose the best latent class mixed model for further anaysis
+### Build the models
+```{r load_latent_class_models_IPAQ}
+tar_load(model_IPAQ_2a)
+tar_load(model_IPAQ_2b)
+tar_load(model_IPAQ_2c)
+tar_load(model_IPAQ_2d)
+```
+
+#### Model 2a: model 1b + 2 classes
+```{r}
+summary(model_IPAQ_2a)
+```
+
+####  Model 2b: model 1b + 3 classes
+```{r}
+summary(model_IPAQ_2b)
+```
+####  Model 2c: model 1b + 4 classes
+```{r}
+summary(model_IPAQ_2c)
+```
+####  Model 2d: model 1b + 5 classes
+```{r}
+summary(model_IPAQ_2d)
+```
+
+### Compare the models
+#### Analyse the metrics of the models
+```{r compare_latent_mixed_models_IPAQ}
+tar_read(compa_latent_mixed_models_table_IPAQ)
+lcmm::summaryplot(
+  model_IPAQ_1b,
+  model_IPAQ_2a,
+  model_IPAQ_2b,
+  model_IPAQ_2c,
+  model_IPAQ_2d,
+  which = c("AIC", "BIC", "entropy")
+)
+```
+
+#### Posterior classification of the models
+##### Model 2a
+```{r}
+lcmm::postprob(model_IPAQ_2a)
+```
+##### Model 2b
+```{r}
+lcmm::postprob(model_IPAQ_2b)
+```
+
+##### Model 2c
+```{r}
+lcmm::postprob(model_IPAQ_2c)
+```
+##### Model 2d
+```{r}
+lcmm::postprob(model_IPAQ_2d)
+```
+
+Comment: Only the model with 2 classes could provide p values (the other models did not converge). The model 2a is thus chosen.
+
+### Assess the chosen model
+```{r plot_model_IPAQ_2a_resids}
+plot(model_6MWT_2a)
+```
+
+### Visualize the model
+```{r plot_preds_IPAQ}
+tar_read(plot_preds_IPAQ)
+```
+
+## Analyse the predictors of the latent classes of the model
+```{r predictors_IPAQ_classes}
+tar_load(predictors_IPAQ_classes)
+summary(predictors_IPAQ_classes)
+```
