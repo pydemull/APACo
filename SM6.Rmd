@@ -1,8 +1,9 @@
 ---
-title: "APA&Co project | SM6. Data relating to the shift and difference asymmetry functions to describe the change in 6MWT distance (0-12 months), IPAQ-SF MET-min/week (6-12 months; 0-12 months), and EMAPS scores (0-12 months)"
+title: "APA&Co project | SM6. Data related to the shift and difference asymmetry functions to describe the change in 6MWT distance (0-12 months), IPAQ-SF MET-min/week (6-12 months; 0-12 months), and EMAPS scores (0-12 months)"
 output: 
   html_document:
     theme: cosmo
+    css: "./style.css"
     toc: yes
     toc_depth: 2
     toc_float: yes
@@ -11,38 +12,6 @@ output:
     code_folding: hide
 toc-title: "Table of content"
 ---
-```{css, echo=FALSE}
-.title {
-  font-weight: bold;
-}
-
-
-h1 {
-  font-size: 25px;
-  font-weight: bold;
-}
-h2 {
-  font-size: 23px;
-  font-weight: bold;
-}
-h3 {
-  font-size: 21px;
-}
-p.caption {
-  color: #777;
-  margin-top: 10px;
-}
-p code {
-  white-space: inherit;
-}
-pre {
-  word-break: normal;
-  word-wrap: normal;
-}
-pre code {
-  white-space: inherit;
-}
-```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)

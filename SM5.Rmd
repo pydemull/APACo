@@ -1,8 +1,9 @@
 ---
-title: "APA&Co project | SM5. Change in IPAQ MET-min/week between 0 and 12 months"
+title: "APA&Co project | SM5. Change in IPAQ-SF MET-min/week between 0 and 12 months"
 output: 
   html_document:
     theme: cosmo
+    css: "./style.css"
     toc: yes
     toc_depth: 2
     toc_float: yes
@@ -12,38 +13,6 @@ output:
 toc-title: "Table of content"
 
 ---
-```{css, echo=FALSE}
-.title {
-  font-weight: bold;
-}
-
-
-h1 {
-  font-size: 25px;
-  font-weight: bold;
-}
-h2 {
-  font-size: 23px;
-  font-weight: bold;
-}
-h3 {
-  font-size: 21px;
-}
-p.caption {
-  color: #777;
-  margin-top: 10px;
-}
-p code {
-  white-space: inherit;
-}
-pre {
-  word-break: normal;
-  word-wrap: normal;
-}
-pre code {
-  white-space: inherit;
-}
-```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
@@ -51,7 +20,7 @@ ggplot2::theme_set(ggplot2::theme_bw())
 ```
 
 
-# Change in IPAQ MET-min/week between 0 and 12 months
+# Change in IPAQ-SF MET-min/week between 0 and 12 months
 ## Descriptive statistics
 ```{r}
 targets::tar_read(DB_IPAQ_0_12) |>

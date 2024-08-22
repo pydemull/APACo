@@ -3,6 +3,7 @@ title: "APA&Co project | Results shown in the manuscript"
 output: 
   html_document:
     theme: cosmo
+    css: "./style.css"
     toc: yes
     toc_depth: 5
     toc_float: yes
@@ -12,41 +13,6 @@ output:
 toc-title: "Table of content"
 
 ---
-```{css, echo=FALSE}
-.title {
-  font-weight: bold;
-}
-
-
-h1 {
-  font-size: 25px;
-  font-weight: bold;
-}
-h2 {
-  font-size: 23px;
-  font-weight: bold;
-}
-h3 {
-  font-size: 21px;
-}
-p.caption {
-  color: #777;
-  margin-top: 10px;
-}
-p code {
-  white-space: inherit;
-}
-pre {
-  word-break: normal;
-  word-wrap: normal;
-}
-pre code {
-  white-space: inherit;
-}
-p {
-  font-size: 20px;
-}
-```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
@@ -144,7 +110,7 @@ tar_read(change_6MWT)$hd_pbci_diff |>
 targets::tar_read(change_6MWT)$p
 ```
 
-# Change in IPAQ MET-min/week between 6 and 12 months
+# Change in IPAQ-SF MET-min/week between 6 and 12 months
 ## Descriptive statistics
 ```{r IPAQ_desc_stats}
 targets::tar_read(DB_IPAQ_6_12) |>
@@ -199,7 +165,7 @@ res <-
 cat(unlist(res), sep = "\n")
 ```
 
-# Change in profile of motivation for physical activity
+# Change in the motivational profile for physical activity
 ## Assess cluster tendency
 ### Graphically inspect data using principal component analysis
 ```{r inspect_data_with_pca}
@@ -214,19 +180,32 @@ targets::tar_read(cluster_tendency)
 ### Confirm cluser tendency using the Hopkins statistic
 #### Hopkins statistic for the dataset at month 0
 ```{r assess_cluster_tendency_stat_m0}
+h_vec <- vector("double", 100)
 set.seed(123)
-hopkins(DB_EMAPS_0_12_M0_scaled)
+seeds <- round(sample(rnorm(10000, 1000, 500), 100), 0)
+for (i in 1:100) {
+  set.seed(seeds[i])
+  h_vec[i] <- hopkins(DB_EMAPS_0_12_M0_scaled)
+}
+mean(h_vec)
 ```
 
-Comment: Data seem clustered (Hopkins statistic >0.7).
+**Comment**: Data seem clustered (Hopkins statistic >0.7).
 
 #### Hopkins statistic for the dataset at month 12
 ```{r assess_cluster_tendency_stat_m12}
+h_vec <- vector("double", 100)
 set.seed(123)
-hopkins(DB_EMAPS_0_12_M12_scaled)
+seeds <- round(sample(rnorm(10000, 1000, 500), 100), 0)
+for (i in 1:100) {
+  set.seed(seeds[i])
+  h_vec[i] <- hopkins(DB_EMAPS_0_12_M12_scaled)
+  
+}
+mean(h_vec)
 ```
 
-Comment: Data seem clustered (Hopkins statistic >0.7).
+**Comment**: Data seem clustered (Hopkins statistic >0.7).
 
 ## Check outliers related to a multivariate analysis
 ### Month 0
@@ -236,24 +215,25 @@ check_outliers(DB_EMAPS_0_12_M0_scaled, method = "mcd")
 
 ### Month 12
 ```{r check_outliers_m12}
-check_outliers(DB_EMAPS_0_12_M12_scaled[, c(names(DB_EMAPS_0_12_M12_scaled)[1:5])], method = "mcd") 
-# removed AMOTIVATION variable that caused an error due to an IQR of 0.
+check_outliers(DB_EMAPS_0_12_M12_scaled[, c(names(DB_EMAPS_0_12_M12_scaled)[1:5])], method = "mcd")
 ```
+
+**Comment**: We removed AMOTIVATION variable that caused an error due to an IQR of 0.
 
 ## Determine the optimal number of clusters related to a K-Medoid approach using the silhouette method
 ```{r get_optimal_clusters_number_emaps}
 targets::tar_read(optim_n_clusters)
 ```
 
-Comment: The optimal number of clusters related to the K-Medoid approach is 2 at both 0 and 12 months post-program (according to the silhouette method).
+**Comment**: The optimal number of clusters related to the K-Medoid approach is 2 at both 0 and 12 months post-program (according to the silhouette method).
 
-## Visualize the final clusters using K-Medoid approach
+## Visualize the final clusters from K-Medoid approach
 ```{r get_final_clusters_emaps}
 targets::tar_read(final_clusters_emaps_viz)
 ```
 
-## Visualize the descriptive statistics of the EMAPS scores related the motivation profiles (clusters)
-```{r viz_clusters, fig.width=15, fig.cap = "AU = Autonomous; C = Controlled"}
+## Visualize the descriptive statistics of the EMAPS scores related to the motivational profiles
+```{r viz_clusters, fig.width=15, fig.cap = "AU = Autonomous; C = Controlled."}
 targets::tar_read(p_emaps_clust)
 ```
 
@@ -261,7 +241,7 @@ targets::tar_read(p_emaps_clust)
 targets::tar_read(table_stats_clusters_emaps)
 ```
 
-## Compare motivation profiles
+## Compare the motivational profiles
 ### Comparison at Month 0
 #### Global analysis
 ```{r nonpartest_global_month0}
@@ -284,40 +264,20 @@ targets::tar_read(nonpartest_global_month12)
 ssnonpartest(INTRINSIC | INTEGRATED | IDENTIFIED | INTROJECTED | EXTERNAL | AMOTIVATION ~ cluster, data = tar_read(DB_EMAPS_0_12_clust) |> filter(MONTH == "12"), test = c(1, 0, 0, 0), alpha = 0.05, factors.and.variables = TRUE)
 ```
 
-## Characterize the change in motivation profile
-### Visualize the change in motivation profile
+## Characterize the change in the motivational profile
+### Visualize the change in the motivational profile
 ```{r change_emaps_profile_alluvial}
 targets::tar_read(p_change_emaps_profile_alluvial)
 ```
 
-### Compute the proportions of patients per profile transition scenarios
+### Compute the proportions of patients per profile transition scenario
 ```{r prop_trans_prof_motiv}
 tar_read(prop_trans_prof_motiv)
 ```
 
-### Visualize the EMAPS score deltas depending on the cluster transition
+### Visualize the EMAPS score deltas depending on the profile transition
 ```{r p_DB_EMAPS_0_12_diffs}
 targets::tar_read(p_DB_EMAPS_0_12_diffs)
-```
-
-### Compare the EMAPS scores between month 0 and month 12 for participants who stayed in the 'Very High AU-High C' cluster
-```{r compa_intra_clust_VHAUHC}
-targets::tar_read(compa_intra_clust_VHAUHC)
-```
-
-### Compare the EMAPS scores between month 0 and month 12 for participants who stayed in the 'High AU-Mod C' cluster
-```{r compa_intra_clust_HAUMODC}
-targets::tar_read(compa_intra_clust_HAUMODC)
-```
-
-### Compare the EMAPS scores between month 0 and month 12 for participants who transited from the 'Very High AU-Mod C' to the 'High AU-Mod C' cluster
-```{r compa_intra_clust_VHAUHC_to_HAUMODC}
-targets::tar_read(compa_intra_clust_VHAUHC_to_HAUMODC)
-```
-
-### Compare the EMAPS scores between month 0 and month 12 for participants who transited from the 'High AU-Mod C' to the 'Very High AU-High C' cluster
-```{r compa_intra_clust_HAUMODCto_VHAUHC}
-targets::tar_read(compa_intra_clust_HAUMODCto_VHAUHC)
 ```
 
 # Barriers to physical activity at 12 months
@@ -325,7 +285,7 @@ targets::tar_read(compa_intra_clust_HAUMODCto_VHAUHC)
 targets::tar_read(p_BARRIERS)
 ```
 
-# Predict 6WT distance trajectory using latent class analysis
+# Predict 6WT distance trajectory using latent class mixed modelling
 ## Build the models
 ```{r build_latent_linear_mixed_models_6MWT}
 # Load the model summarises
@@ -397,7 +357,7 @@ lcmm::postprob(model_6MWT_n4)
 lcmm::postprob(model_6MWT_n5)
 ```
 
-Comment: Based on the metrics shown above, the model with 3 classes seems the most appropriate model.
+**Comment**: Based on the metrics shown above, the 4-class model could seem to be the best model but the 3-class model also  showed good metrics and had less classes containing very few participants compared to the 4-class model. Thus the 3-class model was chosen.
 
 ## Permut the classes of the chosen model
 ```{r model_6MWT_2d_permut}
@@ -410,7 +370,7 @@ summary(model_6MWT_n3_permut)
 plot(model_6MWT_n3_permut)
 ```
 
-## Visualize the model
+## Visualize the fixed effetcs of the model
 ```{r plot_preds_6MWT}
 tar_read(plot_preds_6MWT)
 ```
@@ -421,7 +381,7 @@ tar_load(predictors_6MWT_classes)
 summary(predictors_6MWT_classes)
 ```
 
-# Predict IPAQ MET-min/week trajectory using latent class analysis
+# Predict IPAQ-SF MET-min/week trajectory using latent class mixed modelling
 ## Build the models
 ```{r build_latent_linear_mixed_models_IPAQ}
 # Load the model summarises
@@ -493,12 +453,14 @@ lcmm::postprob(model_IPAQ_n4)
 lcmm::postprob(model_IPAQ_n5)
 ```
 
+**Comment**: The 4-class and the 5-class did not converge. The 2-class model seemed to be a reasonable choice.
+
 ### Assess the chosen model
 ```{r plot_model_IPAQ_n2_resids}
 plot(model_IPAQ_n2)
 ```
 
-### Visualize the model
+### Visualize the fixed effetcs of the model
 ```{r plot_preds_IPAQ}
 tar_read(plot_preds_IPAQ)
 ```

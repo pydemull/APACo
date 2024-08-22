@@ -1,0 +1,44 @@
+.title {
+  font-weight: bold;
+  color: #000999;
+}
+
+
+h1 {
+  font-size: 25px;
+  font-weight: bold;
+  color: #000999;
+}
+h2 {
+  font-size: 23px;
+  font-weight: bold;
+  color: #000999;
+}
+h3 {
+  font-size: 21px;
+  color: #000999;
+}
+h4 {
+  font-size: 18px;
+  color: #000999;
+}
+p.caption {
+  margin-top: 10px;
+  color: #000999;
+}
+p code {
+  white-space: inherit;
+  color: #000999;
+}
+pre {
+  word-break: normal;
+  word-wrap: normal;
+}
+pre code {
+  white-space: inherit;
+  color: #000999;
+}
+p {
+  font-size: 20px;
+  color: #000999;
+}
