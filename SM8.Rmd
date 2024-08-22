@@ -1,0 +1,554 @@
+---
+title: "APA&Co project | SM8. Models to analyse the class of changes in 6MWT distance and IPAQ-SF MET-min/week and their potential predictors"
+output: 
+  html_document:
+    theme: cosmo
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+    number_sections: yes
+    df_print: paged
+    code_folding: hide
+toc-title: "Table of content"
+---
+```{css, echo=FALSE}
+.title {
+  font-weight: bold;
+}
+
+
+h1 {
+  font-size: 25px;
+  font-weight: bold;
+}
+h2 {
+  font-size: 23px;
+  font-weight: bold;
+}
+h3 {
+  font-size: 21px;
+}
+p.caption {
+  color: #777;
+  margin-top: 10px;
+}
+p code {
+  white-space: inherit;
+}
+pre {
+  word-break: normal;
+  word-wrap: normal;
+}
+pre code {
+  white-space: inherit;
+}
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+```{r load_model_objects}
+# Load all models and related metrics
+## 6MWT models
+tar_load(model_6MWT_n1)
+tar_load(model_6MWT_n2)
+tar_load(model_6MWT_n3)
+tar_load(model_6MWT_n4)
+tar_load(model_6MWT_n5)
+tar_load(compa_latent_mixed_models_table_6MWT)
+tar_load(predictors_6MWT_classes)
+
+## IPAQ-SF models
+tar_load(model_IPAQ_n1)
+tar_load(model_IPAQ_n2)
+tar_load(model_IPAQ_n3)
+tar_load(model_IPAQ_n4)
+tar_load(model_IPAQ_n5)
+tar_load(compa_latent_mixed_models_table_IPAQ)
+tar_load(predictors_IPAQ_classes)
+```
+
+# 6MWT models
+## Latent class mixed models
+```{r get_6MWT_models, include=FALSE}
+res_model_6MWT_n1 <- 
+  summary(model_6MWT_n1) |> 
+  as.data.frame() |> 
+  tibble::rownames_to_column(var = "coef_name") |> 
+  mutate(model = "model_6MWT_n1")
+
+res_model_6MWT_n2 <- 
+  summary(model_6MWT_n2) |> 
+  as.data.frame() |> 
+  tibble::rownames_to_column(var = "coef_name") |> 
+  mutate(model = "model_6MWT_n2")
+
+res_model_6MWT_n3 <- 
+  summary(model_6MWT_n3) |> 
+  as.data.frame() |> 
+  tibble::rownames_to_column(var = "coef_name") |> 
+  mutate(model = "model_6MWT_n3")
+
+res_model_6MWT_n4 <- 
+  summary(model_6MWT_n4) |> 
+  as.data.frame() |> 
+  tibble::rownames_to_column(var = "coef_name") |> 
+  mutate(model = "model_6MWT_n4")
+
+res_model_6MWT_n5 <- 
+  summary(model_6MWT_n5) |> 
+  as.data.frame() |> 
+  tibble::rownames_to_column(var = "coef_name") |> 
+  mutate(model = "model_6MWT_n5")
+
+res_model_preds_6MWT <-
+  summary(predictors_6MWT_classes) |> 
+  as.data.frame() |> 
+  tibble::rownames_to_column(var = "coef_name") |> 
+  mutate(model = "predictors_6MWT_classes")
+```
+
+```{r show_6MWT_models}
+ bind_rows(
+  res_model_6MWT_n1,
+  res_model_6MWT_n2,
+  res_model_6MWT_n3,
+  res_model_6MWT_n4,
+  res_model_6MWT_n5
+) |> 
+  select(model, everything()) |>
+  left_join(
+    compa_latent_mixed_models_table_6MWT |> 
+      as.data.frame() |>  
+      tibble::rownames_to_column(var = "model")
+  ) |> 
+  mutate(
+    model = forcats::fct_recode(
+      model,
+      "6MWT | 1-class" = "model_6MWT_n1",
+      "6MWT | 2-class" = "model_6MWT_n2",
+      "6MWT | 3-class" = "model_6MWT_n3",
+      "6MWT | 4-class" = "model_6MWT_n4",
+      "6MWT | 5-class" = "model_6MWT_n5"
+    ),
+    `p-value` = ifelse(
+      `p-value` < 0.001,
+      "< 0.001",
+      format(janitor::round_half_up(`p-value`, 3), nsmall = 3)
+    ),
+    across(c(AIC:`%class5`), ~  format(janitor::round_half_up(.x, 2), nsmall = 2))
+  ) |>
+  select(-c(Se, Wald)) |> 
+  rename(
+   Model = model,
+   Term = coef_name,
+   Coefficient = coef,
+   Entropy = entropy,
+   P = "p-value"
+  ) |> 
+  reactable::reactable(
+      columns = list(Model = reactable::colDef(
+        style = reactable::JS(
+          "function(rowInfo, colInfo, state) {
+        var firstSorted = state.sorted[0]
+        // Merge cells if unsorted or sorting by Model
+        if (!firstSorted || firstSorted.id === 'Model') {
+          var prevRow = state.pageRows[rowInfo.viewIndex - 1]
+          if (prevRow && rowInfo.row['Model'] === prevRow['Model']) {
+            return { visibility: 'hidden' }
+          }
+        }
+      }"
+        )
+      ),
+      AIC = reactable::colDef(
+        style = reactable::JS(
+          "function(rowInfo, colInfo, state) {
+        var firstSorted = state.sorted[0]
+        // Merge cells if unsorted or sorting by AIC
+        if (!firstSorted || firstSorted.id === 'AIC') {
+          var prevRow = state.pageRows[rowInfo.viewIndex - 1]
+          if (prevRow && rowInfo.row['AIC'] === prevRow['AIC']) {
+            return { visibility: 'hidden' }
+          }
+        }
+      }"
+        )
+      ),
+      BIC = reactable::colDef(
+        style = reactable::JS(
+          "function(rowInfo, colInfo, state) {
+        var firstSorted = state.sorted[0]
+        // Merge cells if unsorted or sorting by BIC
+        if (!firstSorted || firstSorted.id === 'BIC') {
+          var prevRow = state.pageRows[rowInfo.viewIndex - 1]
+          if (prevRow && rowInfo.row['BIC'] === prevRow['BIC']) {
+            return { visibility: 'hidden' }
+          }
+        }
+      }"
+        )
+      ),
+      Entropy = reactable::colDef(
+        style = reactable::JS(
+          "function(rowInfo, colInfo, state) {
+        var firstSorted = state.sorted[0]
+        // Merge cells if unsorted or sorting by Entropy
+        if (!firstSorted || firstSorted.id === 'Entropy') {
+          var prevRow = state.pageRows[rowInfo.viewIndex - 1]
+          if (prevRow && rowInfo.row['Entropy'] === prevRow['Entropy']) {
+            return { visibility: 'hidden' }
+          }
+        }
+      }"
+        )
+      ),
+      `%class1` = reactable::colDef(
+        style = reactable::JS(
+          "function(rowInfo, colInfo, state) {
+        var firstSorted = state.sorted[0]
+        // Merge cells if unsorted or sorting by %class1
+        if (!firstSorted || firstSorted.id === '%class1') {
+          var prevRow = state.pageRows[rowInfo.viewIndex - 1]
+          if (prevRow && rowInfo.row['%class1'] === prevRow['%class1']) {
+            return { visibility: 'hidden' }
+          }
+        }
+      }"
+        )
+      ),
+      `%class2` = reactable::colDef(
+        style = reactable::JS(
+          "function(rowInfo, colInfo, state) {
+        var firstSorted = state.sorted[0]
+        // Merge cells if unsorted or sorting by %class2
+        if (!firstSorted || firstSorted.id === '%class2') {
+          var prevRow = state.pageRows[rowInfo.viewIndex - 1]
+          if (prevRow && rowInfo.row['%class2'] === prevRow['%class2']) {
+            return { visibility: 'hidden' }
+          }
+        }
+      }"
+        )
+      ),
+      `%class3` = reactable::colDef(
+        style = reactable::JS(
+          "function(rowInfo, colInfo, state) {
+        var firstSorted = state.sorted[0]
+        // Merge cells if unsorted or sorting by %class3
+        if (!firstSorted || firstSorted.id === '%class3') {
+          var prevRow = state.pageRows[rowInfo.viewIndex - 1]
+          if (prevRow && rowInfo.row['%class3'] === prevRow['%class3']) {
+            return { visibility: 'hidden' }
+          }
+        }
+      }"
+        )
+      ),
+      `%class4` = reactable::colDef(
+        style = reactable::JS(
+          "function(rowInfo, colInfo, state) {
+        var firstSorted = state.sorted[0]
+        // Merge cells if unsorted or sorting by %class4
+        if (!firstSorted || firstSorted.id === '%class4') {
+          var prevRow = state.pageRows[rowInfo.viewIndex - 1]
+          if (prevRow && rowInfo.row['%class4'] === prevRow['%class4']) {
+            return { visibility: 'hidden' }
+          }
+        }
+      }"
+        )
+      ),
+      `%class5` = reactable::colDef(
+        style = reactable::JS(
+          "function(rowInfo, colInfo, state) {
+        var firstSorted = state.sorted[0]
+        // Merge cells if unsorted or sorting by %class5
+        if (!firstSorted || firstSorted.id === '%class5') {
+          var prevRow = state.pageRows[rowInfo.viewIndex - 1]
+          if (prevRow && rowInfo.row['%class5'] === prevRow['%class5']) {
+            return { visibility: 'hidden' }
+          }
+        }
+      }"
+        )
+      )
+      ),
+      outlined = TRUE,
+      striped = TRUE,
+      defaultPageSize = 30
+    )
+```
+
+## Multinomial regression model (based on the 3-class latent mixed model)
+
+```{r multinom_6MWT}
+res_model_preds_6MWT |> 
+  select(model, everything()) |>
+  mutate(
+    model = forcats::fct_recode(
+      model,
+      "6MWT | 3-class" = "predictors_6MWT_classes"
+    ),
+    `p-value` = ifelse(
+      as.numeric(`p-value`) < 0.001,
+      "< 0.001",
+      format(janitor::round_half_up(as.numeric(`p-value`), 3), nsmall = 3)
+    )
+  ) |>
+  select(-c(`    Se**`, `  Wald`)) |> 
+  rename(
+   Model = model,
+   Term = coef_name,
+   Coefficient = "     coef",
+   P = "p-value"
+  ) |> 
+  reactable::reactable(
+      columns = list(Model = reactable::colDef(
+        style = reactable::JS(
+          "function(rowInfo, colInfo, state) {
+        var firstSorted = state.sorted[0]
+        // Merge cells if unsorted or sorting by Model
+        if (!firstSorted || firstSorted.id === 'Model') {
+          var prevRow = state.pageRows[rowInfo.viewIndex - 1]
+          if (prevRow && rowInfo.row['Model'] === prevRow['Model']) {
+            return { visibility: 'hidden' }
+          }
+        }
+      }"
+        )
+      )),
+      outlined = TRUE,
+      striped = TRUE,
+      defaultPageSize = 30
+    )
+```
+
+# IPAQ-SF models
+## Latent class mixed models
+```{r get_IPAQ_models, include=FALSE}
+res_model_IPAQ_n1 <- 
+  summary(model_IPAQ_n1) |> 
+  as.data.frame() |> 
+  tibble::rownames_to_column(var = "coef_name") |> 
+  mutate(model = "model_IPAQ_n1")
+
+res_model_IPAQ_n2 <- 
+  summary(model_IPAQ_n2) |> 
+  as.data.frame() |> 
+  tibble::rownames_to_column(var = "coef_name") |> 
+  mutate(model = "model_IPAQ_n2")
+
+res_model_IPAQ_n3 <- 
+  summary(model_IPAQ_n3) |> 
+  as.data.frame() |> 
+  tibble::rownames_to_column(var = "coef_name") |> 
+  mutate(model = "model_IPAQ_n3")
+
+res_model_IPAQ_n4 <- 
+  summary(model_IPAQ_n4) |> 
+  as.data.frame() |> 
+  tibble::rownames_to_column(var = "coef_name") |> 
+  mutate(model = "model_IPAQ_n4")
+
+res_model_IPAQ_n5 <- 
+  summary(model_IPAQ_n5) |> 
+  as.data.frame() |> 
+  tibble::rownames_to_column(var = "coef_name") |> 
+  mutate(model = "model_IPAQ_n5")
+
+res_model_preds_IPAQ <-
+  summary(predictors_IPAQ_classes) |> 
+  as.data.frame() |> 
+  tibble::rownames_to_column(var = "coef_name") |> 
+  mutate(model = "predictors_IPAQ_classes")
+```
+
+```{r show_ipaq_models}
+bind_rows(
+  res_model_IPAQ_n1,
+  res_model_IPAQ_n2,
+  res_model_IPAQ_n3,
+  res_model_IPAQ_n4,
+  res_model_IPAQ_n5
+) |> 
+  select(model, everything()) |>
+  left_join(
+    compa_latent_mixed_models_table_IPAQ |> 
+      as.data.frame() |>  
+      tibble::rownames_to_column(var = "model")
+  ) |> 
+  mutate(
+    model = forcats::fct_recode(
+      model,
+      "IPAQ | 1-class" = "model_IPAQ_n1",
+      "IPAQ | 2-class" = "model_IPAQ_n2",
+      "IPAQ | 3-class" = "model_IPAQ_n3",
+    ),
+    `p-value` = ifelse(
+      `p-value` < 0.001,
+      "< 0.001",
+      format(janitor::round_half_up(`p-value`, 3), nsmall = 3)
+    ),
+    across(c(AIC:`%class5`), ~  format(janitor::round_half_up(.x, 2), nsmall = 2))
+  ) |>
+  select(-c(Se, Wald)) |> 
+  rename(
+   Model = model,
+   Term = coef_name,
+   Coefficient = coef,
+   Entropy = entropy,
+   P = "p-value"
+  ) |> 
+  reactable::reactable(
+      columns = list(Model = reactable::colDef(
+        style = reactable::JS(
+          "function(rowInfo, colInfo, state) {
+        var firstSorted = state.sorted[0]
+        // Merge cells if unsorted or sorting by Model
+        if (!firstSorted || firstSorted.id === 'Model') {
+          var prevRow = state.pageRows[rowInfo.viewIndex - 1]
+          if (prevRow && rowInfo.row['Model'] === prevRow['Model']) {
+            return { visibility: 'hidden' }
+          }
+        }
+      }"
+        )
+      ),
+      AIC = reactable::colDef(
+        style = reactable::JS(
+          "function(rowInfo, colInfo, state) {
+        var firstSorted = state.sorted[0]
+        // Merge cells if unsorted or sorting by AIC
+        if (!firstSorted || firstSorted.id === 'AIC') {
+          var prevRow = state.pageRows[rowInfo.viewIndex - 1]
+          if (prevRow && rowInfo.row['AIC'] === prevRow['AIC']) {
+            return { visibility: 'hidden' }
+          }
+        }
+      }"
+        )
+      ),
+      BIC = reactable::colDef(
+        style = reactable::JS(
+          "function(rowInfo, colInfo, state) {
+        var firstSorted = state.sorted[0]
+        // Merge cells if unsorted or sorting by BIC
+        if (!firstSorted || firstSorted.id === 'BIC') {
+          var prevRow = state.pageRows[rowInfo.viewIndex - 1]
+          if (prevRow && rowInfo.row['BIC'] === prevRow['BIC']) {
+            return { visibility: 'hidden' }
+          }
+        }
+      }"
+        )
+      ),
+      Entropy = reactable::colDef(
+        style = reactable::JS(
+          "function(rowInfo, colInfo, state) {
+        var firstSorted = state.sorted[0]
+        // Merge cells if unsorted or sorting by Entropy
+        if (!firstSorted || firstSorted.id === 'Entropy') {
+          var prevRow = state.pageRows[rowInfo.viewIndex - 1]
+          if (prevRow && rowInfo.row['Entropy'] === prevRow['Entropy']) {
+            return { visibility: 'hidden' }
+          }
+        }
+      }"
+        )
+      ),
+      `%class1` = reactable::colDef(
+        style = reactable::JS(
+          "function(rowInfo, colInfo, state) {
+        var firstSorted = state.sorted[0]
+        // Merge cells if unsorted or sorting by %class1
+        if (!firstSorted || firstSorted.id === '%class1') {
+          var prevRow = state.pageRows[rowInfo.viewIndex - 1]
+          if (prevRow && rowInfo.row['%class1'] === prevRow['%class1']) {
+            return { visibility: 'hidden' }
+          }
+        }
+      }"
+        )
+      ),
+      `%class2` = reactable::colDef(
+        style = reactable::JS(
+          "function(rowInfo, colInfo, state) {
+        var firstSorted = state.sorted[0]
+        // Merge cells if unsorted or sorting by %class2
+        if (!firstSorted || firstSorted.id === '%class2') {
+          var prevRow = state.pageRows[rowInfo.viewIndex - 1]
+          if (prevRow && rowInfo.row['%class2'] === prevRow['%class2']) {
+            return { visibility: 'hidden' }
+          }
+        }
+      }"
+        )
+      ),
+      `%class3` = reactable::colDef(
+        style = reactable::JS(
+          "function(rowInfo, colInfo, state) {
+        var firstSorted = state.sorted[0]
+        // Merge cells if unsorted or sorting by %class3
+        if (!firstSorted || firstSorted.id === '%class3') {
+          var prevRow = state.pageRows[rowInfo.viewIndex - 1]
+          if (prevRow && rowInfo.row['%class3'] === prevRow['%class3']) {
+            return { visibility: 'hidden' }
+          }
+        }
+      }"
+        )
+      )
+      ),
+      outlined = TRUE,
+      striped = TRUE,
+      defaultPageSize = 30
+    )
+```
+
+## Multinomial regression model (based on the 3-class latent mixed model)
+
+```{r multinom_IPAQ}
+res_model_preds_IPAQ |> 
+  select(model, everything()) |>
+  mutate(
+    model = forcats::fct_recode(
+      model,
+      "IPAQ | 2-class" = "predictors_IPAQ_classes"
+    ),
+    `p-value` = ifelse(
+      as.numeric(`p-value`) < 0.001,
+      "< 0.001",
+      format(janitor::round_half_up(as.numeric(`p-value`), 3), nsmall = 3)
+    )
+  ) |>
+  select(-c(`   Se**`, `  Wald`)) |> 
+  rename(
+   Model = model,
+   Term = coef_name,
+   Coefficient = "    coef",
+   P = "p-value"
+  ) |> 
+  reactable::reactable(
+      columns = list(Model = reactable::colDef(
+        style = reactable::JS(
+          "function(rowInfo, colInfo, state) {
+        var firstSorted = state.sorted[0]
+        // Merge cells if unsorted or sorting by Model
+        if (!firstSorted || firstSorted.id === 'Model') {
+          var prevRow = state.pageRows[rowInfo.viewIndex - 1]
+          if (prevRow && rowInfo.row['Model'] === prevRow['Model']) {
+            return { visibility: 'hidden' }
+          }
+        }
+      }"
+        )
+      )),
+      outlined = TRUE,
+      striped = TRUE,
+      defaultPageSize = 30
+    )
+```
+
