@@ -1,5 +1,5 @@
 ---
-title: "APA&Co project | SM6. Data relating to the shift and difference asymmetry functions to describe the change in 6MWT distance (0-12 months), IPAQ-SF MET-min/week (6-12 months), and EMAPS scores (0-12 months)"
+title: "APA&Co project | SM6. Data relating to the shift and difference asymmetry functions to describe the change in 6MWT distance (0-12 months), IPAQ-SF MET-min/week (6-12 months; 0-12 months), and EMAPS scores (0-12 months)"
 output: 
   html_document:
     theme: cosmo
@@ -51,22 +51,25 @@ knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
 ```{r, include=FALSE}
 targets::tar_load(change_6MWT)
 targets::tar_load(change_IPAQ_6_12)
+targets::tar_load(change_IPAQ_0_12)
 targets::tar_load(change_EMAPS)
 
 list_titles <- list(
-  "6MWT distance",
-  "IPAQ-SF MET-min / week",
-  "EMAPS | Intrinsic motivation",
-  "EMAPS | Integrated regulation",
-  "EMAPS | Identified regulation",
-  "EMAPS | Introjected regulation",
-  "EMAPS | External regulation",
-  "EMAPS | Amotivation"
+  "6MWT distance (0-12 months)",
+  "IPAQ-SF MET-min / week (6-12 months)",
+  "IPAQ-SF MET-min / week (0-12 months)",
+  "EMAPS | Intrinsic motivation (0-12 months)",
+  "EMAPS | Integrated regulation (0-12 months)",
+  "EMAPS | Identified regulation (0-12 months)",
+  "EMAPS | Introjected regulation (0-12 months)",
+  "EMAPS | External regulation (0-12 months)",
+  "EMAPS | Amotivation (0-12 months)"
 )
   
 list_tables <- list(
   change_6MWT,
   change_IPAQ_6_12,
+  change_IPAQ_0_12,
   change_EMAPS[[1]],
   change_EMAPS[[2]],
   change_EMAPS[[3]],
