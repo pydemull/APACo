@@ -1224,9 +1224,14 @@
     },
     "ggrepel": {
       "Package": "ggrepel",
-      "Version": "0.9.5",
-      "Source": "Repository",
-      "Repository": "CRAN",
+      "Version": "0.9.5.9999",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "slowkow",
+      "RemoteRepo": "ggrepel",
+      "RemoteRef": "4119c28957e956ad39d65254a4ce76377ed0e5ae",
+      "RemoteSha": "4119c28957e956ad39d65254a4ce76377ed0e5ae",
       "Requirements": [
         "R",
         "Rcpp",
@@ -1236,7 +1241,7 @@
         "scales",
         "withr"
       ],
-      "Hash": "cc3361e234c4a5050e29697d675764aa"
+      "Hash": "3642a40967783ace173412f6af85b5e8"
     },
     "ggsci": {
       "Package": "ggsci",
