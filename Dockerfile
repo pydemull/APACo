@@ -30,6 +30,12 @@ COPY SM4.Rmd SM4.Rmd
 
 COPY SM5.Rmd SM5.Rmd
 
+COPY SM6.Rmd SM6.Rmd
+
+COPY SM7.Rmd SM7.Rmd
+
+COPY SM8.Rmd SM8.Rmd
+
 RUN R -e "renv::restore()"
 
 RUN R -e "targets::tar_make()"
