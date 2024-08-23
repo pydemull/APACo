@@ -54,7 +54,7 @@ The repository has four branches (`master`, `gh-pages`, `docker`, and
   [Docker](https://www.docker.com/) image and to push that image to a
   Docker Hub repository. A Docker image is a kind of virtual
   environment, that can be configured as needed, and that is immutable.
-  In the present case, the Docker image includes R software (v4.3.1) and
+  In the present case, the Docker image includes R software (v4.3.2) and
   a version of the `{renv}` package. The interest of this Docker image
   is to provide an environment in which we can be sure that the
   analytical pipeline of the project will work and will provide exactly
@@ -114,7 +114,7 @@ reproduce the analytical pipeline on your machine using an RStudio
 environment, please follow the steps below.
 
 - Step 1: [Install R](https://cran.rstudio.com/) (recommended versions:
-  \>= 4.1.0 and \<= 4.3.2),
+  \>= 4.1.0 and \<= 4.3.3),
   [RStudio](https://posit.co/download/rstudio-desktop/), and the latest
   version of [Rtools](https://cran.r-project.org/bin/windows/Rtools/)
   (if your are a Windows user) on your machine. To retrieve previous
@@ -248,7 +248,7 @@ docker build -t apaco_image .
 ```
 
 The whole process may take several minutes as it consists in downloading
-the base Docker image (with R v4.3.1 and a version of the `{renv}`
+the base Docker image (with R v4.3.2 and a version of the `{renv}`
 package), building a new Docker image on the top of it by downloading
 and installing the R package dependencies, and finally running the
 analytical pipeline in R.
