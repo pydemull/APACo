@@ -1,4 +1,4 @@
-FROM pydemull/r_4.3.2:docker-37432a7ca88b8ba674fbc009dadc93c0c9b943ed
+FROM pydemull/r_4.3.2:docker-latest
 
 WORKDIR /project
 
