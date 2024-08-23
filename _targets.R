@@ -38,14 +38,7 @@ list(
   tar_target(DB_6MWT, get_DB_6MWT(INCLUSION_cleaned, VISIT_6M_cleaned, VISIT_12M_cleaned)),
   tar_target(DB_IPAQ, get_DB_IPAQ(IPAQ)),
   tar_target(DB_EMAPS, get_DB_EMAPS(EMAPS)),
-  tar_target(BARRIERS_cleaned, {
-
-    # Replace erroneous value 9 by 0 for patient 32
-    BARRIERS[BARRIERS$patient == "32", "meteo_defavorable"] <- 0
-
-    # Convert questionnaire variables to factors
-    BARRIERS <- BARRIERS |> mutate(across(patient:autres, as.factor))
-  }),
+  tar_target(BARRIERS_cleaned, BARRIERS |> mutate(across(patient:autres, as.factor))),
 
   # Perform descriptive analysis of the participants ----
   tar_target(analysis_INCLUSION, INCLUSION_cleaned |> skimr::skim()),
