@@ -1,4 +1,6 @@
-# APACo (development version)
+# APACo 0.0.6
+* Corrected a data entry error in the BARRIERS dataset.
+* Corrected a typo in one of the labels provided by the `get_table_all_measurements()` function.
 
 # APACo 0.0.5
 
