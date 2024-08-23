@@ -53,7 +53,7 @@ get_table_all_measurements <- function(data1, data2, data3) {
       Variable = forcats::fct_recode(
         Variable,
         "6MWT distance (m)" = "DIST_M",
-        "IPAQ-SF (MET-min) / week" = "MET_MIN_WK"
+        "IPAQ-SF (MET-min / week)" = "MET_MIN_WK"
       ),
       dplyr::across(`MONTH 0`:`MONTH 12`, ~ round(.x, 2))
     )
