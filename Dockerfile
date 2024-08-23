@@ -1,4 +1,4 @@
-FROM pydemull/r_4.3.2:docker-latest
+FROM pydemull/r_4.3.2:latest
 
 WORKDIR /project
 
