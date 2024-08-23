@@ -20,5 +20,7 @@ usethis::use_data(EMAPS, overwrite = TRUE)
 
 ## code to prepare `BARRIERS` dataset goes here
 BARRIERS <- readr::read_csv2("data-raw/BARRIERS.csv")
+### Replace erroneous value 9 by 0 for patient 32
+BARRIERS[BARRIERS$patient == "32", "meteo_defavorable"] <- 0
 usethis::use_data(BARRIERS, overwrite = TRUE)
 
