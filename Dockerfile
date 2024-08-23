@@ -34,6 +34,8 @@ COPY run.R run.R
 
 COPY run.sh run.sh
 
+COPY style.css style.css
+
 COPY main.Rmd main.Rmd
 
 COPY SM3.Rmd SM3.Rmd
