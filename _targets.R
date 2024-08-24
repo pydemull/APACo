@@ -1160,7 +1160,7 @@ list(
       scale_x_continuous(breaks = seq(6, 12, 6)) +
       facet_wrap(~ class) +
       labs(x = "Months post-program",
-           y = "IPAQ MET-min/week",
+           y = "IPAQ-SF MET-min/week",
            color = "Predictions [95% CI]",
            fill = "Predictions [95% CI]",
            linetype = "Posterior classification"
