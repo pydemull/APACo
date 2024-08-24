@@ -363,6 +363,7 @@ lcmm::postprob(model_6MWT_n5)
 ```{r model_6MWT_2d_permut}
 tar_load(model_6MWT_n3_permut)
 summary(model_6MWT_n3_permut)
+lcmm::postprob(model_6MWT_n3_permut)
 ```
 
 ## Assess the chosen model
