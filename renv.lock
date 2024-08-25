@@ -2199,13 +2199,13 @@
     },
     "reactR": {
       "Package": "reactR",
-      "Version": "0.6.0",
+      "Version": "0.5.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "htmltools"
       ],
-      "Hash": "10f4d661c235181648a5958c02c0382a"
+      "Hash": "c9014fd1a435b2d790dd506589cb24e5"
     },
     "reactable": {
       "Package": "reactable",
