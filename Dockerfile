@@ -50,6 +50,8 @@ COPY SM7.Rmd SM7.Rmd
 
 COPY SM8.Rmd SM8.Rmd
 
+COPY SM9.Rmd SM9.Rmd
+
 RUN R -e "renv::restore()"
 
 RUN R -e "targets::tar_make()"
