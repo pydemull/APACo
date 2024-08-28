@@ -578,12 +578,12 @@ list(
                                                                "diff_INTROJECTED",
                                                                "diff_EXTERNAL",
                                                                "diff_AMOTIVATION"),
-                                                    labels = c("INTRINSIC",
-                                                               "INTEGRATED",
-                                                               "IDENTIFIED",
-                                                               "INTROJECTED",
-                                                               "EXTERNAL",
-                                                               "AMOTIVATION"))
+                                                    labels = c("I-M",
+                                                               "INTEG-R",
+                                                               "IDENT-R",
+                                                               "INTRO-R",
+                                                               "EXTER-R",
+                                                               "AMOTI"))
                                 ) |>
                          ggplot(aes(x = clus_trans, y = `Change in score (Month 12 - Month 0)`)) +
                          geom_hline(aes(yintercept = 0), linetype = "dashed") +
@@ -593,6 +593,36 @@ list(
                          labs(x = "Profile transition") +
                          facet_wrap(~ Motivation)
                        ),
+
+            ### Build a spaghetti plot with the EMAPS scores deltas associated to the ----
+            ### different scenari (same/different cluster between month 0 and ----
+            ### month 12) ----
+            tar_target(p_DB_EMAPS_0_12_diffs_spag,
+
+                       DB_EMAPS_0_12_clust_piv |>
+                         select(-n_visits) |>
+                         pivot_wider(names_from = MONTH, values_from = c(cluster, Score)) |>
+                         mutate(clust_change = case_when(
+                           cluster_0 == "Very High AU-High C" & cluster_12 == "High AU-Mod C"       ~ "'Very High AU-High C' to 'High AU-Mod C'",
+                           cluster_0 == "High AU-Mod C"      & cluster_12  == "Very High AU-High C" ~ "'High AU-Mod C' to 'Very High AU-High C'",
+                           cluster_0 ==  cluster_12 ~ "Same profile"
+                         ),
+                         diff_score = Score_12 - Score_0
+                         ) |>
+                         ggplot(aes(x = Motivation, y = diff_score)) +
+                         geom_hline(aes(yintercept = 0), linetype = "dashed") +
+                         geom_line(aes(group = patient, color = "Participant change"), alpha = 0.5) +
+                         stat_summary(aes(group = clust_change, color = "Median change"), fun = "median", geom = "line") +
+                         labs(x = "", y = "EMAPS score difference (Month 12 - Month 0)", color = "") +
+                         scale_color_manual(values = c("red", "grey")) +
+                         theme_bw() +
+                         theme(
+                           axis.text.x = element_text(angle = 45, hjust = 1),
+                           strip.text.x = element_text(size = 8),
+                           legend.position = "bottom"
+                           ) +
+                         facet_grid(~ clust_change)
+            ),
 
             ### Compare the EMAPS scores between month 0 and month 12 for ----
             ### participants who stayed in the 'Very High AU-High C' cluster ----
@@ -1221,7 +1251,10 @@ list(
   tar_render(SM7, "SM7.Rmd", output_dir = "pipeline_output/"),
 
   # Build Supplemental Material 8 ----
-  tar_render(SM8, "SM8.Rmd", output_dir = "pipeline_output/")
+  tar_render(SM8, "SM8.Rmd", output_dir = "pipeline_output/"),
+
+  # Build Supplemental Material 9 ----
+  tar_render(SM9, "SM9.Rmd", output_dir = "pipeline_output/")
 
 )
 

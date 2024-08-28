@@ -275,11 +275,6 @@ targets::tar_read(p_change_emaps_profile_alluvial)
 tar_read(prop_trans_prof_motiv)
 ```
 
-### Visualize the EMAPS score deltas depending on the profile transition
-```{r p_DB_EMAPS_0_12_diffs}
-targets::tar_read(p_DB_EMAPS_0_12_diffs)
-```
-
 # Barriers to physical activity at 12 months
 ```{r fig.width=12, fig.height=8, fig.cap='Barriers to physical activity (N = 77). Answers have been translated from French to English for the reader’s understanding of the figure. The most frequently evocated barriers have been highlighted with darker colours.'}
 targets::tar_read(p_BARRIERS)
