@@ -969,9 +969,9 @@ list(
          facet_wrap( ~ class) +
          labs(
            x = "Months post-program",
-           y = "Six-min walking test distance (m)",
-           color = "Predictions [95% CI]",
-           fill = "Predictions [95% CI]",
+           y = "6MWT distance (m)",
+           color = "Model predictions [95% CI]",
+           fill = "Model predictions [95% CI]",
            linetype = "Posterior classification"
          ) +
          theme_bw()
@@ -1190,9 +1190,9 @@ list(
       scale_x_continuous(breaks = seq(6, 12, 6)) +
       facet_wrap(~ class) +
       labs(x = "Months post-program",
-           y = "IPAQ-SF MET-min/week",
-           color = "Predictions [95% CI]",
-           fill = "Predictions [95% CI]",
+           y = "MET-min/week",
+           color = "Model predictions [95% CI]",
+           fill = "Model predictions [95% CI]",
            linetype = "Posterior classification"
            ) +
     theme_bw()
