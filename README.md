@@ -115,12 +115,13 @@ environment, please follow the steps below.
 
 - Step 1: [Install R](https://cran.rstudio.com/) (recommended versions:
   \>= 4.1.0 and \<= 4.3.3),
-  [RStudio](https://posit.co/download/rstudio-desktop/), and the latest
-  version of [Rtools](https://cran.r-project.org/bin/windows/Rtools/)
-  (if your are a Windows user) on your machine. To retrieve previous
-  releases of R, you can go
-  [here](https://cran.r-project.org/bin/windows/base/old/) for Windows,
-  and [here](https://cran.r-project.org/bin/macosx/) for Mac.
+  [RStudio](https://posit.co/download/rstudio-desktop/), and the
+  corresponding version of
+  [Rtools](https://cran.r-project.org/bin/windows/Rtools/) (if your are
+  a Windows user) on your machine. To retrieve previous releases of R,
+  you can go [here](https://cran.r-project.org/bin/windows/base/old/)
+  for Windows, and [here](https://cran.r-project.org/bin/macosx/) for
+  Mac.
 - Step 2: Go to the
   [`pipeline`](https://github.com/pydemull/APACo/tree/pipeline) branch
   of the APACo repository and click on the green button called `Code`.
