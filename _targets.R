@@ -222,10 +222,10 @@ list(
               ) |>
             mutate(
               cluster = case_when(
-                MONTH == "0" & cluster == 1    ~  "High AU-Mod C",
-                MONTH == "0" & cluster == 2    ~  "Very High AU-High C",
-                MONTH == "12" & cluster ==  1  ~  "Very High AU-High C",
-                MONTH == "12" & cluster ==  2  ~  "High AU-Mod C"
+                MONTH == "0" & cluster == 1    ~  "High AU-Mod IR",
+                MONTH == "0" & cluster == 2    ~  "Very High AU-High IR",
+                MONTH == "12" & cluster ==  1  ~  "Very High AU-High IR",
+                MONTH == "12" & cluster ==  2  ~  "High AU-Mod IR"
               )
             )
 
@@ -262,7 +262,7 @@ list(
             DB_EMAPS_0_12_clust_piv |>
               mutate(
                 cluster = factor(cluster,
-                                 levels = c("Very High AU-High C", "High AU-Mod C")),
+                                 levels = c("Very High AU-High IR", "High AU-Mod IR")),
                 MONTH = factor(MONTH, labels = c("Month 0", "Month 12"))
               ) |>
               ggplot(
@@ -331,7 +331,7 @@ list(
               select(-c(N, perc)) |>
               pivot_wider(names_from = cluster, values_from = N_perc) |>
               mutate(skim_variable = "N (%)") |>
-              select(MONTH, skim_variable, `Very High AU-High C`, `High AU-Mod C`)  |>
+              select(MONTH, skim_variable, `Very High AU-High IR`, `High AU-Mod IR`)  |>
               rename(Variable = skim_variable)
 
             ### Get descriptive stats per cluster
@@ -364,7 +364,7 @@ list(
               ) |>
               select(-c(numeric.p50:numeric.p75)) |>
               pivot_wider(names_from = cluster, values_from = median_iqr) |>
-              select(MONTH, skim_variable, `Very High AU-High C`, `High AU-Mod C`)  |>
+              select(MONTH, skim_variable, `Very High AU-High IR`, `High AU-Mod IR`)  |>
               arrange(MONTH) |>
               ungroup()  |>
               rename(Variable = skim_variable)
@@ -455,8 +455,8 @@ list(
               slice(1) |>
               mutate(
                 cluster = factor(cluster, levels = c(
-                  "Very High AU-High C",
-                  "High AU-Mod C"
+                  "Very High AU-High IR",
+                  "High AU-Mod IR"
                 )),
                 Freq = 1
               ) |>
@@ -495,7 +495,7 @@ list(
           }),
 
           ### Build a data frame with the EMAPS scores deltas associated to the ----
-          ### different scenarios (same/different clusters between month 0 and ----
+          ### different scenarii (same/different clusters between month 0 and ----
           ### month 12) ----
           tar_target(DB_EMAPS_0_12_diffs,
                        DB_EMAPS_0_12_clust |>
@@ -509,8 +509,8 @@ list(
                          diff_EXTERNAL    = EXTERNAL_12 - EXTERNAL_0,
                          diff_AMOTIVATION = AMOTIVATION_12 - AMOTIVATION_0,
                          clus_trans = case_when(
-                           cluster_0 == "Very High AU-High C" & cluster_12 == "High AU-Mod C" ~ "From 'Very High AU-High C' to 'High AU-Mod C'",
-                           cluster_0 == "High AU-Mod C" & cluster_12 == "Very High AU-High C" ~ "From 'High AU-Mod C' to 'Very High AU-High C'",
+                           cluster_0 == "Very High AU-High IR" & cluster_12 == "High AU-Mod IR" ~ "From 'Very High AU-High IR' to 'High AU-Mod IR'",
+                           cluster_0 == "High AU-Mod IR" & cluster_12 == "Very High AU-High IR" ~ "From 'High AU-Mod IR' to 'Very High AU-High IR'",
                            cluster_0 == cluster_12 ~ "Same cluster"
                          )
                        )
@@ -560,7 +560,7 @@ list(
                        ),
 
             ### Build a plot with the EMAPS scores deltas associated to the ----
-            ### different scenari (same/different cluster between month 0 and ----
+            ### different scenarii (same/different cluster between month 0 and ----
             ### month 12) ----
             tar_target(p_DB_EMAPS_0_12_diffs,
 
@@ -595,7 +595,7 @@ list(
                        ),
 
             ### Build a spaghetti plot with the EMAPS scores deltas associated to the ----
-            ### different scenari (same/different cluster between month 0 and ----
+            ### different scenarii (same/different cluster between month 0 and ----
             ### month 12) ----
             tar_target(p_DB_EMAPS_0_12_diffs_spag,
 
@@ -603,8 +603,8 @@ list(
                          select(-n_visits) |>
                          pivot_wider(names_from = MONTH, values_from = c(cluster, Score)) |>
                          mutate(clust_change = case_when(
-                           cluster_0 == "Very High AU-High C" & cluster_12 == "High AU-Mod C"       ~ "'Very High AU-High C' to 'High AU-Mod C'",
-                           cluster_0 == "High AU-Mod C"      & cluster_12  == "Very High AU-High C" ~ "'High AU-Mod C' to 'Very High AU-High C'",
+                           cluster_0 == "Very High AU-High IR" & cluster_12 == "High AU-Mod IR"       ~ "'Very High AU-High IR' to 'High AU-Mod IR'",
+                           cluster_0 == "High AU-Mod IR"      & cluster_12  == "Very High AU-High IR" ~ "'High AU-Mod IR' to 'Very High AU-High IR'",
                            cluster_0 ==  cluster_12 ~ "Same profile"
                          ),
                          diff_score = Score_12 - Score_0
@@ -625,19 +625,19 @@ list(
             ),
 
             ### Compare the EMAPS scores between month 0 and month 12 for ----
-            ### participants who stayed in the 'Very High AU-High C' cluster ----
+            ### participants who stayed in the 'Very High AU-High IR' cluster ----
             ### Of note, this analysis violates the assumption of multivariate
             ### observation vectors independance
             tar_target(compa_intra_clust_VHAUHC,{
 
-              #### Get participants IDs in the 'Very High AU-High C' cluster
+              #### Get participants IDs in the 'Very High AU-High IR' cluster
               #### both at month 0 and month 12
               id_parts_VHAUHC_0_12 <-
                 DB_EMAPS_0_12_diffs |>
-                filter(cluster_0 == "Very High AU-High C" & cluster_12 == "Very High AU-High C") |>
+                filter(cluster_0 == "Very High AU-High IR" & cluster_12 == "Very High AU-High IR") |>
                 pull(patient)
 
-              #### Intra-cluster comparison for Very High AU-High C
+              #### Intra-cluster comparison for Very High AU-High IR
               set.seed(123)
               nonpartest(
                   INTRINSIC   |
@@ -653,19 +653,19 @@ list(
             }),
 
             ### Compare the EMAPS scores between month 0 and month 12 for ----
-            ### participants who stayed in the 'High AU-Mod C' cluster ----
+            ### participants who stayed in the 'High AU-Mod IR' cluster ----
             ### Of note, this analysis violates the assumption of multivariate
             ### observation vectors independance
             tar_target(compa_intra_clust_HAUMODC, {
 
-              #### Get participants IDs in the 'High AU-Mod C' cluster both at
+              #### Get participants IDs in the 'High AU-Mod IR' cluster both at
               #### month 0 and month 12
               id_parts_HAUMODC_0_12 <-
                 DB_EMAPS_0_12_diffs |>
-                filter(cluster_0 == "High AU-Mod C" & cluster_12 == "High AU-Mod C") |>
+                filter(cluster_0 == "High AU-Mod IR" & cluster_12 == "High AU-Mod IR") |>
                 pull(patient)
 
-              ##### Intra-cluster comparison for High AU-Mod C
+              ##### Intra-cluster comparison for High AU-Mod IR
               set.seed(123)
               nonpartest(
                   INTRINSIC   |
@@ -683,16 +683,16 @@ list(
       ),
 
   ### Compare the EMAPS scores between month 0 and month 12 for participants who ----
-  ### transited from the 'Very High AU-High C' to the 'High AU-Mod C' cluster ----
+  ### transited from the 'Very High AU-High IR' to the 'High AU-Mod IR' cluster ----
   ### Of note, this analysis violates the assumption of multivariate
   ### observation vectors independance
   tar_target(compa_intra_clust_VHAUHC_to_HAUMODC, {
 
-    #### Get participants IDs in the 'Very High AU-High C' cluster at month 0 and
+    #### Get participants IDs in the 'Very High AU-High IR' cluster at month 0 and
     #### 'High AU-Mod  C' cluster at month 12
     id_parts_less_motivated_0_12 <-
       DB_EMAPS_0_12_diffs |>
-      filter(cluster_0 == "Very High AU-High C" & cluster_12 == "High AU-Mod C") |>
+      filter(cluster_0 == "Very High AU-High IR" & cluster_12 == "High AU-Mod IR") |>
       pull(patient)
 
     ##### Time points comparison
@@ -713,16 +713,16 @@ list(
   ),
 
   ### Compare the EMAPS scores between month 0 and month 12 for participants who ----
-  ### transited from the 'High AU-Mod C' to the 'Very High AU-High C' cluster ----
+  ### transited from the 'High AU-Mod IR' to the 'Very High AU-High IR' cluster ----
   ### Of note, this analysis violates the assumption of multivariate
   ### observation vectors independance
   tar_target(compa_intra_clust_HAUMODCto_VHAUHC, {
 
-    #### Get participants IDs with in 'High AU-Mod C' cluster at month 0 and
+    #### Get participants IDs with in 'High AU-Mod IR' cluster at month 0 and
     #### 'Very High AU-High  C' cluster at month 12
     id_parts_more_motivated_0_12 <-
       DB_EMAPS_0_12_diffs |>
-      filter(cluster_0 == "High AU-Mod C" & cluster_12 == "Very High AU-High C") |>
+      filter(cluster_0 == "High AU-Mod IR" & cluster_12 == "Very High AU-High IR") |>
       pull(patient)
 
     ##### Time point comparison

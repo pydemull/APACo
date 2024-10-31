@@ -233,7 +233,7 @@ targets::tar_read(final_clusters_emaps_viz)
 ```
 
 ## Visualize the descriptive statistics of the EMAPS scores related to the motivational profiles
-```{r viz_clusters, fig.width=15, fig.cap = "AU = Autonomous; C = Controlled."}
+```{r viz_clusters, fig.width=15, fig.cap = "AU = Autonomous; IR = Introjected regulation."}
 targets::tar_read(p_emaps_clust)
 ```
 
