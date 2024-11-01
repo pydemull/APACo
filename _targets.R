@@ -323,7 +323,7 @@ list(
               slice(1:2) |>
               group_by(MONTH, cluster) |>
               summarise(N = n()) |>
-              ungroup() |>
+              group_by(MONTH) |>
               mutate(
                 perc = janitor::round_half_up(N / sum(N) * 100, 1),
                 N_perc = paste0(N, " (", perc, ")")
@@ -332,7 +332,8 @@ list(
               pivot_wider(names_from = cluster, values_from = N_perc) |>
               mutate(skim_variable = "N (%)") |>
               select(MONTH, skim_variable, `Very High AU-High IR`, `High AU-Mod IR`)  |>
-              rename(Variable = skim_variable)
+              rename(Variable = skim_variable) |>
+              ungroup()
 
             ### Get descriptive stats per cluster
             stats_clusters_emaps <-
