@@ -34,7 +34,7 @@ The repository has four branches (`master`, `gh-pages`, `docker`, and
   the project. The code is based on R programming language. Of note, the
   functions of the package have not been written with the aim to make
   them easily reusable in other projects. That being said, one of the
-  major function of the package, called `analyse_change` and that
+  major functions of the package, called `analyse_change` and that
   provides both figures and tables describing the differences between
   two marginal distributions of paired data, has been developped so that
   it may be reused when working with similar data.
