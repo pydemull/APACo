@@ -449,7 +449,7 @@ lcmm::postprob(model_IPAQ_n4)
 lcmm::postprob(model_IPAQ_n5)
 ```
 
-**Comment**: The 4-class and the 5-class did not converge. The 2-class model seemed to be a reasonable choice.
+**Comment**: The 4-class and the 5-class models did not converge. The 2-class model seemed to be a reasonable choice.
 
 ### Assess the chosen model
 ```{r plot_model_IPAQ_n2_resids}
