@@ -1144,7 +1144,7 @@ list(
     newdat_IPAQ <-
       (predictY(
         model_IPAQ_n2,
-        data.frame(MONTH = c(0, 12)),
+        data.frame(MONTH = c(6, 12)),
         var.time = "MONTH",
         draws = TRUE
       )[1]) |>
@@ -1221,7 +1221,7 @@ list(
                                  plot_layout(heights = c(3, 2)) +
                                  plot_annotation(tag_levels = 'A'),
                                scaling = 1, height = 20, width = 20), format = "file"
-  ),tar_target(fig4, save_figure("pipeline_output/fig4.tiff", p_BARRIERS, scaling = 0.3, height = 5, width = 10), format = "file"),
+  ),tar_target(fig4, save_figure("pipeline_output/fig4.tiff", p_BARRIERS, scaling = 0.3, height = 10, width = 10), format = "file"),
 
   tar_target(fig5, save_figure("pipeline_output/fig5.tiff", (plot_preds_6MWT / plot_preds_IPAQ) +
                                  plot_layout(heights = c(1, 1)) +
