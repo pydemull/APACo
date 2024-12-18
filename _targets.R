@@ -1144,7 +1144,7 @@ list(
     newdat_IPAQ <-
       (predictY(
         model_IPAQ_n2,
-        data.frame(MONTH = c(6, 12)),
+        data.frame(MONTH = c(6, 12)), # This was wrongly 'c(0, 12)' in PCI manuscript
         var.time = "MONTH",
         draws = TRUE
       )[1]) |>
